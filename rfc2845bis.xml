@@ -31,12 +31,14 @@
 <?rfc comments="no" ?>
 <?rfc inline="yes" ?>
 
-<rfc category="std" docName="draft-xxxx-dnsop-rfc2845-bis" ipr="trust200902">
+<rfc category="std" docName="draft-morris-dnsop-rfc2845-bis"
+     ipr="trust200902" obsoletes="2845, 4635" >
 
   <front>
     <title abbrev="DNS TSIG">Secret Key Transaction Authentication for DNS (TSIG)</title>
 
-    <author fullname="Paul Vixie" initials="P." surname="Vixie">
+    <author fullname="Stephen Morris" initials="S." surname="Morris"
+            role="editor">
       <organization abbrev="ISC">Internet Software Consortium</organization>
       <address>
         <postal>
@@ -44,62 +46,30 @@
           <city>Redwood City</city>
           <region>CA</region>
           <code>94063</code>
-          <country>USA</country>
+          <country>United States</country>
         </postal>
-        <phone>+1 650 779 7001</phone>
-        <email>vixie@isc.org</email>
+        <email>stephen@isc.org</email>
+        <uri>http://www.isc.org</uri>
       </address>
     </author>
 
-    <author fullname="Olafur Gudmundsson" initials="O." surname="Gudmundsson">
-      <organization>NAI Labs</organization>
-      <address>
-        <postal>
-          <street>3060 Washington Road, Route 97</street>
-          <city>Glenwood</city>
-          <region>MD</region>
-          <code>21738</code>
-          <country>USA</country>
-        </postal>
-        <phone>+1 443 259 2389</phone>
-        <email>ogud@tislabs.com</email>
-      </address>
-    </author>
-
-    <author fullname="Donald E. Eastlake 3rd" initials="D." surname="Eastlake 3rd">
-      <organization>Motorola</organization>
-      <address>
-        <postal>
-          <street>140 Forest Avenue</street>
-          <city>Hudson</city>
-          <region>MA</region>
-          <code>01749</code>
-          <country>USA</country>
-        </postal>
-        <phone>+1 508 261 5434</phone>
-        <email>dee3@torque.pothole.com</email>
-      </address>
-    </author>
-
-    <author fullname="Brian Wellington" initials="B." surname="Wellington">
-      <organization abbrev="Nominum">Nominum, Inc.</organization>
+    <author fullname="Francis Dupont" initials="F." surname="Dupont">
+      <organization abbrev="ISC">Internet Software Consortium</organization>
       <address>
         <postal>
           <street>950 Charter Street</street>
           <city>Redwood City</city>
           <region>CA</region>
           <code>94063</code>
-          <country>USA</country>
+          <country>United States</country>
         </postal>
-        <phone>+1 650 779 6022</phone>
-        <email>Brian.Wellington@nominum.com</email>
+        <email>Francis.Dupont@fdupont.fr</email>
       </address>
     </author>
 
     <date/>
     <area>Operations and Management Area</area>
     <workgroup>Internet Engineering Task Force</workgroup>
-
 
     <abstract>
       <t>This protocol allows for transaction level authentication using
@@ -184,18 +154,22 @@
       servers.  Other uses of DNS secret key authentication and possible
       systems for automatic secret key distribution may be proposed in
       separate future documents.</t>
+    </section>
 
-      <t>New Assigned Numbers:</t>
-
+    <section title="New Assigned Numbers" anchor="numbers">
       <t>RRTYPE = TSIG (250)<vspace/>
       ERROR = 0..15 (a DNS RCODE)<vspace/>
       ERROR = 16 (BADSIG)<vspace/>
       ERROR = 17 (BADKEY)<vspace/>
       ERROR = 18 (BADTIME)</t>
+    </section>
 
-      <t> The key words "MUST", "REQUIRED", "SHOULD", "RECOMMENDED",
-      and "MAY" in this document are to be interpreted as described in
-      <xref target="RFC2119"/>.</t>
+    <section title="Key words">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
+      "MAY", and "OPTIONAL" in this document are to be interpreted as
+      described in BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/>
+      when, and only when, they appear in all capitals, as shown here.</t>
     </section>
 
     <section title="TSIG RR Format">
@@ -223,7 +197,7 @@
         <xref target="RFC1035"/> 2.3.2).</t>
       </section>
 
-      <section title="Record Format">
+      <section title="Record Format" anchor="format">
         <t><list style="hanging" hangIndent="6">
 
           <t hangText="NAME">The name of the key used in domain
@@ -541,7 +515,7 @@
         in practice.</t>
       </section>
 
-      <section title="TSIG on Answers">
+      <section title="TSIG on Answers" anchor="answers">
         <t>When a server has generated a response to a signed request, it
         signs the response using the same algorithm and key.  The server
         MUST not generate a signed response to an unsigned request.  The
@@ -554,7 +528,7 @@
         </list></t>
       </section>
 
-      <section title="TSIG on TSIG Error returns">
+      <section title="TSIG on TSIG Error returns" anchor="on_error">
         <t>When a server detects an error relating to the key or MAC, the
         server SHOULD send back an unsigned error message (MAC size == 0
         and empty MAC).  If an error is detected relating to the TSIG
@@ -570,7 +544,7 @@
         <t>The reason that the request is not included in this digest in
         some cases is to make it possible for the client to verify the
         error.  If the error is not a TSIG error the response MUST be
-        generated as specified in [4.2].</t>
+        generated as specified in <xref target="answers"/>.</t>
       </section>
 
       <section title="TSIG on TCP connection">
@@ -610,8 +584,8 @@
           <t>If a non-forwarding server does not recognize the key
           used by the client, the server MUST generate an error
           response with RCODE 9 (NOTAUTH) and TSIG ERROR 17 (BADKEY).
-          This response MUST be unsigned as specified in [4.3].
-          The server SHOULD log the error.</t>
+          This response MUST be unsigned as specified in <xref target=
+          "on_error"/>. The server SHOULD log the error.</t>
         </section>
 
         <section title="TIME check and error handling">
@@ -629,16 +603,17 @@
           other data length field.  This is done so that the client
           can verify a message with a BADTIME error without the
           verification failing due to another BADTIME error.  The
-          data signed is specified in [4.3].  The server SHOULD log
-          the error.</t>
+          data signed is specified in <xref target="on_error"/>.
+          The server SHOULD log the error.</t>
         </section>
 
         <section title="MAC check and error handling">
           <t>If a TSIG fails to verify, the server MUST generate
-          an error response as specified in [4.3] with RCODE 9
+          an error response as specified in <xref target="on_error"/>
+          with RCODE 9
           (NOTAUTH) and TSIG ERROR 16 (BADSIG).  This response MUST
-          be unsigned as specified in [4.3].  The server SHOULD log
-          the error.</t>
+          be unsigned as specified in <xref target="on_error"/>.
+          The server SHOULD log the error.</t>
         </section>
       </section>
 
@@ -652,7 +627,8 @@
         does not validate, that response MUST be discarded, unless
         the RCODE is 9 (NOTAUTH), in which case the client SHOULD
         attempt to verify the response as if it were a TSIG Error
-        response, as specified in [4.3].  A message containing an
+        response, as specified in <xref target="on_error"/>.
+        A message containing an
         unsigned TSIG record or a TSIG record which fails verification
         SHOULD not be considered an acceptable response; the client
         SHOULD log an error and continue to wait for a signed
@@ -726,7 +702,7 @@
       <t>Use of strong random shared secrets is essential to the
       security of TSIG.  See <xref target="RFC1750"/> for a discussion
       of this issue.  The secret should be at least as long as the keyed
-      message digest, i.e. 16 bytes for HMAC-MD5 or 20 bytes for
+      message digest, i.e., 16 bytes for HMAC-MD5 or 20 bytes for
       HMAC-SHA1.</t>
     </section>
 
@@ -761,9 +737,8 @@
     </section>
 
     <section title="IANA Considerations">
-      <t>IANA is expected to create and maintain a registry of algorithm
-      names to be used as "Algorithm Names" as defined in Section 2.3.
-      The initial value should be "HMAC-MD5.SIG-ALG.REG.INT".  Algorithm
+      <t>IANA maintains a registry of algorithm names to be used as
+       "Algorithm Names" as defined in <xref target="format"/>. Algorithm
       names are text strings encoded using the syntax of a domain name.
       There is no structure required other than names for different
       algorithms must be unique when compared as DNS names, i.e.,
@@ -772,12 +747,12 @@
       registered name within the DNS.  New algorithms are assigned using
       the IETF Consensus policy defined in RFC 2434. The algorithm name
       HMAC-MD5.SIG-ALG.REG.INT looks like a FQDN for historical reasons;
-      future algorithm names are expected to be simple (i.e.,
-      single-component) names.</t>
+      other algorithm names are simple (i.e., single-component) names.</t>
 
-      <t>IANA is expected to create and maintain a registry of "TSIG Error
-      values" to be used for "Error" values as defined in section 2.3.
-      Initial values should be those defined in section 1.7.  New TSIG
+      <t>IANA maintains a registry of "TSIG Error values" to be used
+      for "Error" values as defined in <xref target="format"/>.
+      Initial values should be those defined in <xref target="numbers"/>.
+      New TSIG
       error codes for the TSIG error field are assigned using the IETF
       Consensus policy defined in RFC 2434.</t>
     </section>
@@ -795,6 +770,9 @@
       <?rfc include="reference.RFC.2137.xml"?>
       <?rfc include="reference.RFC.2535.xml"?>
       <?rfc include="reference.RFC.2673.xml"?>
+      <?rfc include="reference.RFC.2845.xml"?>
+      <?rfc include="reference.RFC.4635.xml"?>
+      <?rfc include="reference.RFC.8174.xml"?>
     </references>
   </back>
 
