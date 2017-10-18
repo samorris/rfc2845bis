@@ -112,7 +112,7 @@
       computationally to generate.  In general, these require the same
       complex public key logic that is impractical for stubs.  This
       document specifies use of a message authentication code (MAC),
-      specifically HMAC-MD5 (a keyed hash function), to provide an
+      specifically HMAC-MD5 and HMAC-SHA (keyed hash functions), to provide an
       efficient means of point-to-point authentication and integrity
       checking for transactions.</t>
 
@@ -154,6 +154,16 @@
       servers.  Other uses of DNS secret key authentication and possible
       systems for automatic secret key distribution may be proposed in
       separate future documents.</t>
+
+      <t>Note that use of TSIG presumes prior agreement, between the resolver
+      and server involved, as to the algorithm and key to be used.</t>
+
+<!-- to add -->
+      <t>Asymmetric signatures can be provided using the SIG RR
+      <xref target="RFC2931"/>.</t>
+      <t>Used with a strong hash function, HMAC <xref target="RFC2104"/>
+      provides a way to calculate such symmetric authentication codes.</t>
+
     </section>
 
     <section title="New Assigned Numbers" anchor="numbers">
@@ -161,7 +171,8 @@
       ERROR = 0..15 (a DNS RCODE)<vspace/>
       ERROR = 16 (BADSIG)<vspace/>
       ERROR = 17 (BADKEY)<vspace/>
-      ERROR = 18 (BADTIME)</t>
+      ERROR = 18 (BADTIME)<vspace/>
+      ERROR = 22 (BADTRUC)</t>
     </section>
 
     <section title="Key words">
@@ -187,12 +198,7 @@
         <t>As the TSIG RRs are related to one DNS request/response,
         there is no value in storing or retransmitting them, thus the
         TSIG RR is discarded once it has been used to authenticate a DNS
-        message.  The only message digest algorithm specified in this
-        document is "HMAC- MD5" (see <xref target="RFC1321"/>, <xref
-        target="RFC2104"/>).  The "HMAC-MD5" algorithm is mandatory to
-        implement for interoperability.  Other algorithms can be
-        specified at a later date.  Names and definitions of new
-        algorithms MUST be registered with IANA.  All multi-octet
+        message. All multi-octet
         integers in the TSIG record are sent in network byte order (see
         <xref target="RFC1035"/> 2.3.2).</t>
       </section>
@@ -681,6 +687,137 @@
       </section>
     </section>
 
+    <section title="Algorithms and Identifiers">
+        <t>The only message digest algorithm specified in the first
+        version of these specifications <xref target="RFC2845"/> was
+       "HMAC-MD5" (see <xref target="RFC1321"/>, <xref
+        target="RFC2104"/>).  The "HMAC-MD5" algorithm is mandatory to
+        implement for interoperability.</t>
+
+        <t>The use of SHA-1 <xref target="FIPS180-2"/>,
+        <xref target="RFC3174"/>, which is a 160-bit hash, as
+        compared with the 128 bits for MD5, and additional hash algorithms in
+        the SHA family <xref target="FIPS180-2"/>, <xref target="RFC3874"/>,
+        <xref target="RFC4634"/> with 224, 256, 384, and
+        512 bits may be preferred in some cases.  This is because
+        increasingly successful cryptanalytic attacks are being made on the
+        shorter hashes.</t>
+
+        <t>Use of TSIG between a DNS resolver and server is by mutual
+        agreement.  That agreement can include the support of additional
+        algorithms and criteria as to which algorithms and truncations are
+        acceptable, subject to the restriction and guidelines in
+        <xref target="trunc"/> below.
+        Key agreement can be by the TKEY mechanism <xref target="RFC2930"/>
+        or some other mutually agreeable method.</t>
+
+        <t>The current HMAC-MD5.SIG-ALG.REG.INT and gss-tsig identifiers are
+        included in the table below for convenience.  Implementations that
+        support TSIG MUST also implement HMAC SHA1 and HMAC SHA256 and MAY
+        implement gss-tsig and the other algorithms listed below.</t>
+
+        <texttable style="none">
+          <ttcol align='left'/><ttcol align='left'/>
+          <c>Mandatory</c> <c>HMAC-MD5.SIG-ALG.REG.INT</c>
+          <c>Optional</c>  <c>gss-tsig</c>
+          <c>Mandatory</c> <c>hmac-sha1</c>
+          <c>Optional</c>  <c>hmac-sha224</c>
+          <c>Mandatory</c> <c>hmac-sha256</c>
+          <c>Optional</c>  <c>hmac-sha384</c>
+          <c>Optional</c>  <c>hmac-sha512</c>
+        </texttable>
+
+        <t>SHA-1 truncated to 96 bits (12 octets) SHOULD be implemented.</t>
+    </section>
+
+    <section title="Specifying Truncation" anchor="trunc">
+     <t>When space is at a premium and the strength of the full length of an
+     HMAC is not needed, it is reasonable to truncate the HMAC output and
+     use the truncated value for authentication.  HMAC SHA-1 truncated to
+     96 bits is an option available in several IETF protocols, including
+     IPsec and TLS.</t>
+
+<!-- to merge -->
+     <t>The TSIG RR [RFC2845] includes a "MAC size" field, which gives the
+     size of the MAC field in octets.  However, [RFC2845] does not specify
+     what to do if this MAC size differs from the length of the output of
+     HMAC for a particular hash function.  Truncation is indicated by a
+     MAC size less than the HMAC size, as specified below.</t>
+
+     <!-- Processing -->
+
+     <t>The specification for TSIG handling is changed as follows:
+      <list style="numbers">
+       <t>If "MAC size" field is greater than HMAC output length:<list>
+         <t>This case MUST NOT be generated and, if received, MUST cause
+         the packet to be dropped and RCODE 1 (FORMERR) to be returned.</t>
+       </list></t>
+       <t>If "MAC size" field equals HMAC output length:<list>
+         <t>Operation is as described in [RFC2845], and the entire output
+         HMAC output is present.</t>
+       </list></t>
+       <t>"MAC size" field is less than HMAC output length but greater than
+       that specified in case 4, below:<list>
+         <t>This is sent when the signer has truncated the HMAC output to
+         an allowable length, as described in <xref target="RFC2104"/>,
+         taking initial
+         octets and discarding trailing octets.  TSIG truncation can only
+         be to an integral number of octets.  On receipt of a packet with
+         truncation thus indicated, the locally calculated MAC is similarly
+         truncated and only the truncated values are compared for
+         authentication.  The request MAC used when calculating the TSIG
+         MAC for a reply is the truncated request MAC.</t>
+       </list></t>
+       <t>"MAC size" field is less than the larger of 10 (octets) and half
+       the length of the hash function in use:<list> 
+         <t>With the exception of certain TSIG error messages described in
+         RFC 2845, Section 3.2, where it is permitted that the MAC size be
+         zero, this case MUST NOT be generated and, if received, MUST cause
+         the packet to be dropped and RCODE 1 (FORMERR) to be returned.
+         The size limit for this case can also, for the hash functions
+         mentioned in this document, be stated as less than half the hash
+         function length for hash functions other than MD5 and less than 10
+         octets for MD5.</t>
+       </list></t></list></t>
+
+      <!-- Policy and error -->
+
+      <t>Use of TSIG is by mutual agreement between a resolver and server.
+      Implicit in such "agreement" are criterion as to acceptable keys and
+      algorithms and, with the extensions in this document, truncations.
+      Note that it is common for implementations to bind the TSIG secret
+      key or keys that may be in place at a resolver and server to
+      particular algorithms.  Thus, such implementations only permit the
+      use of an algorithm if there is an associated key in place.  Receipt
+      of an unknown, unimplemented, or disabled algorithm typically results
+      in a BADKEY error.</t>
+
+      <t>Local policies MAY require the rejection of TSIGs, even though
+      they use an algorithm for which implementation is mandatory.</t>
+
+      <t>When a local policy permits acceptance of a TSIG with a particular
+      algorithm and a particular non-zero amount of truncation, it SHOULD
+      also permit the use of that algorithm with lesser truncation (a
+      longer MAC) up to the full HMAC output.</t>
+
+      <t>Regardless of a lower acceptable truncated MAC length specified by
+      local policy, a reply SHOULD be sent with a MAC at least as long as
+      that in the corresponding request, unless the request specified a MAC
+      length longer than the HMAC output.</t>
+
+      <t>Implementations permitting multiple acceptable algorithms and/or
+      truncations SHOULD permit this list to be ordered by presumed
+      strength and SHOULD allow different truncations for the same
+      algorithm to be treated as separate entities in this list.  When so
+      implemented, policies SHOULD accept a presumed stronger algorithm and
+      truncation than the minimum strength required by the policy.</t>
+
+      <t>If a TSIG is received with truncation that is permitted under
+      <xref target="trunc"/> above but the MAC is too short for
+      the local policy in
+      force, an RCODE of 22 (BADTRUNC) MUST be returned.</t>
+    </section>
+
     <section title="Shared Secrets">
       <t>Secret keys are very sensitive information and all available
       steps should be taken to protect them on every host on which they
@@ -704,6 +841,33 @@
       of this issue.  The secret should be at least as long as the keyed
       message digest, i.e., 16 bytes for HMAC-MD5 or 20 bytes for
       HMAC-SHA1.</t>
+    </section>
+
+    <section title="IANA Considerations">
+      <t>IANA maintains a registry of algorithm names to be used as
+       "Algorithm Names" as defined in <xref target="format"/>. Algorithm
+      names are text strings encoded using the syntax of a domain name.
+      There is no structure required other than names for different
+      algorithms must be unique when compared as DNS names, i.e.,
+      comparison is case insensitive. Previous specifications
+      <xref target="RFC2845"/> and <xref target="RFC4635"/> defined
+      values for HMAC MD5 and SHA. IANA has also registered "gss-tsig"
+      as an identifier for TSIG authentication where the cryptographic
+      operations are delegated to the Generic Security Service (GSS)
+      <xref target="RFC3645"/>.</t>
+
+      <t>New algorithms are assigned using
+      the IETF Consensus policy defined in <xref target="RFC2434"/>.
+      The algorithm name
+      HMAC-MD5.SIG-ALG.REG.INT looks like a FQDN for historical reasons;
+      other algorithm names are simple (i.e., single-component) names.</t>
+
+      <t>IANA maintains a registry of "TSIG Error values" to be used
+      for "Error" values as defined in <xref target="format"/>.
+      Initial values should be those defined in <xref target="numbers"/>.
+      New TSIG
+      error codes for the TSIG error field are assigned using the IETF
+      Consensus policy defined in <xref target="RFC2434"/>.</t>
     </section>
 
     <section title="Security Considerations">
@@ -734,46 +898,75 @@
       failures if machines are not time synchronized or there are unexpected
       network delays.  The recommended value in most situation is 300
       seconds.</t>
+
+<!-- to merge -->
+      <t>For all of the message authentication code algorithms listed herein,
+      those producing longer values are believed to be stronger; however,
+      while there have been some arguments that mild truncation can
+      strengthen a MAC by reducing the information available to an
+      attacker, excessive truncation clearly weakens authentication by
+      reducing the number of bits an attacker has to try to break the
+      authentication by brute force <xref target="RFC2104"/>.</t>
+
+      <t>Significant progress has been made recently in cryptanalysis of hash
+      function of the types used herein, all of which ultimately derive
+      from the design of MD4.  While the results so far should not effect
+      HMAC, the stronger SHA-1 and SHA-256 algorithms are being made
+      mandatory due to caution.</t>
+
+      <t>See also the Security Considerations section of <xref
+      target="RFC2104"/> from which the limits on truncation in this
+      RFC were taken.</t>
+
     </section>
 
-    <section title="IANA Considerations">
-      <t>IANA maintains a registry of algorithm names to be used as
-       "Algorithm Names" as defined in <xref target="format"/>. Algorithm
-      names are text strings encoded using the syntax of a domain name.
-      There is no structure required other than names for different
-      algorithms must be unique when compared as DNS names, i.e.,
-      comparison is case insensitive.  Note that the initial value
-      mentioned above is not a domain name, and therefore need not be a
-      registered name within the DNS.  New algorithms are assigned using
-      the IETF Consensus policy defined in RFC 2434. The algorithm name
-      HMAC-MD5.SIG-ALG.REG.INT looks like a FQDN for historical reasons;
-      other algorithm names are simple (i.e., single-component) names.</t>
-
-      <t>IANA maintains a registry of "TSIG Error values" to be used
-      for "Error" values as defined in <xref target="format"/>.
-      Initial values should be those defined in <xref target="numbers"/>.
-      New TSIG
-      error codes for the TSIG error field are assigned using the IETF
-      Consensus policy defined in RFC 2434.</t>
-    </section>
   </middle>
 
   <back>
-    <references title="References">
+    <references title="Normative References">
+      <reference anchor="FIPS180-2" target="">
+         <front>
+            <title>"Secure Hash Standard", (SHA-1/224/256/384/512) US
+            Federal Information Processing Standard, with Change
+            Notice 1</title>
+            <author/>
+            <date month="February" year="2004"/>
+         </front>
+      </reference>
       <?rfc include="reference.RFC.1034.xml"?>
       <?rfc include="reference.RFC.1035.xml"?>
       <?rfc include="reference.RFC.1321.xml"?>
-      <?rfc include="reference.RFC.1750.xml"?>
       <?rfc include="reference.RFC.2104.xml"?>
       <?rfc include="reference.RFC.2119.xml"?>
-      <?rfc include="reference.RFC.2136.xml"?>
-      <?rfc include="reference.RFC.2137.xml"?>
-      <?rfc include="reference.RFC.2535.xml"?>
-      <?rfc include="reference.RFC.2673.xml"?>
       <?rfc include="reference.RFC.2845.xml"?>
+      <?rfc include="reference.RFC.3174.xml"?>
+      <?rfc include="reference.RFC.3874.xml"?>
+      <?rfc include="reference.RFC.4634.xml"?>
       <?rfc include="reference.RFC.4635.xml"?>
       <?rfc include="reference.RFC.8174.xml"?>
     </references>
+    <references title="Informative References">
+      <?rfc include="reference.RFC.1750.xml"?>
+      <?rfc include="reference.RFC.2136.xml"?>
+      <?rfc include="reference.RFC.2137.xml"?>
+      <?rfc include="reference.RFC.2434.xml"?>
+      <?rfc include="reference.RFC.2535.xml"?>
+      <?rfc include="reference.RFC.2673.xml"?>
+      <?rfc include="reference.RFC.2930.xml"?>
+      <?rfc include="reference.RFC.2931.xml"?>
+      <?rfc include="reference.RFC.3645.xml"?>
+    </references>
+
+    <section title="Acknowledgments">
+      <t>Authors of specifications consolidated and fixed in this document
+      are Paul Vixie, Olafur Gudmundsson, Donald E. Eastlake 3rd and
+      Brian Wellington.</t>
+    </section>
+
+    <section title="Changes from previous specifications">
+<!-- to be filled! -->
+    </section>
+
   </back>
 
 </rfc>
