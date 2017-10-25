@@ -78,10 +78,7 @@
       responses as coming from an approved recursive name server.</t>
 
       <t>No provision has been made here for distributing the shared
-      secrets; it is expected that a network administrator will
-      statically configure name servers and clients using some out
-      of band mechanism such as sneaker-net until a secure automated
-      mechanism for key distribution is available.</t>
+      secrets</t>
     </abstract>
   </front>
 
@@ -158,12 +155,12 @@
       <t>Note that use of TSIG presumes prior agreement, between the resolver
       and server involved, as to the algorithm and key to be used.</t>
 
-<!-- to add -->
-      <t>Asymmetric signatures can be provided using the SIG RR
-      <xref target="RFC2931"/>.</t>
-      <t>Used with a strong hash function, HMAC <xref target="RFC2104"/>
-      provides a way to calculate such symmetric authentication codes.</t>
-
+      <t>Since the publication of first version of this document
+      (<xref target="RFC2845"/>) a mechanism based on
+      asymmetric signatures using the SIG RR was specified
+      <xref target="RFC2931"/> when this document uses
+      symmetric authentication codes calculated by HMAC <xref
+      target="RFC2104"/> using strong hash functions.</t>
     </section>
 
     <section title="New Assigned Numbers" anchor="numbers">
@@ -175,7 +172,7 @@
       ERROR = 22 (BADTRUC)</t>
     </section>
 
-    <section title="Key words">
+    <section title="Key words" anchor="keywords">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
       NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
       "MAY", and "OPTIONAL" in this document are to be interpreted as
@@ -256,7 +253,8 @@
 
           <c>MAC Size</c>
           <c>u_int16_t</c>
-          <c>Number of octets in MAC.</c>
+          <c>Number of octets in MAC. Truncation is indicated by a
+          MAC size less than the HMAC size.</c>
 
           <c>MAC</c>
           <c>octet stream</c>
@@ -613,6 +611,54 @@
           The server SHOULD log the error.</t>
         </section>
 
+        <section title="Specifying Truncation" anchor="trunc">
+          <t>When space is at a premium and the strength of the full
+          length of an HMAC is not needed, it is reasonable to truncate
+          the HMAC output and use the truncated value for
+          authentication.  HMAC SHA-1 truncated to 96 bits is an option
+          available in several IETF protocols, including IPsec and TLS.</t>
+
+          <t>Processing of truncated MAC follows these rules
+          <list style="numbers">
+            <t>If "MAC size" field is greater than HMAC output length:
+            <vspace/>
+              This case MUST NOT be generated and, if received,
+              MUST cause the packet to be dropped and RCODE 1
+              (FORMERR) to be returned.
+            </t>
+            <t>If "MAC size" field equals HMAC output length:
+            <vspace/>
+              The entire output HMAC output is present and used.
+            </t>
+            <t>"MAC size" field is less than HMAC output length but
+            greater than that specified in case 4, below:
+            <vspace/>
+              This is sent when the signer has truncated the HMAC
+              output to an allowable length, as described in
+              <xref target="RFC2104"/>, taking initial octets and
+              discarding trailing octets.  TSIG truncation can only be
+              to an integral number of octets.  On receipt of a packet
+              with truncation thus indicated, the locally calculated
+              MAC is similarly truncated and only the truncated values
+              are compared for authentication.  The request MAC used
+              when calculating the TSIG MAC for a reply is the
+              truncated request MAC.
+            </t>
+            <t>"MAC size" field is less than the larger of 10 (octets) and half
+            the length of the hash function in use:
+            <vspace/>
+              With the exception of certain TSIG error messages
+              described in <xref target="on_error"/>, where it is
+              permitted that the MAC size be zero, this case MUST NOT
+              be generated and, if received, MUST cause the packet to
+              be dropped and RCODE 1 (FORMERR) to be returned.  The
+              size limit for this case can also, for the hash
+              functions mentioned in this document, be stated as less
+              than half the hash function length for hash functions
+              other than MD5 and less than 10 octets for MD5.
+            </t></list></t>
+        </section>
+
         <section title="MAC check and error handling">
           <t>If a TSIG fails to verify, the server MUST generate
           an error response as specified in <xref target="on_error"/>
@@ -629,7 +675,9 @@
         present in the response.  Otherwise, the response is treated
         as having a format error and discarded.  The client then
         extracts the TSIG, adjusts the ARCOUNT, and calculates the
-        keyed digest in the same way as the server.  If the TSIG
+        keyed digest in the same way as the server, applying the
+        sam rules to decide if truncated MAC is valid.
+        If the TSIG
         does not validate, that response MUST be discarded, unless
         the RCODE is 9 (NOTAUTH), in which case the client SHOULD
         attempt to verify the response as if it were a TSIG Error
@@ -716,8 +764,9 @@
         support TSIG MUST also implement HMAC SHA1 and HMAC SHA256 and MAY
         implement gss-tsig and the other algorithms listed below.</t>
 
-        <texttable style="none">
-          <ttcol align='left'/><ttcol align='left'/>
+        <texttable style="headers">
+          <ttcol>Requirement</ttcol>
+          <ttcol>Name</ttcol>
           <c>Mandatory</c> <c>HMAC-MD5.SIG-ALG.REG.INT</c>
           <c>Optional</c>  <c>gss-tsig</c>
           <c>Mandatory</c> <c>hmac-sha1</c>
@@ -730,58 +779,7 @@
         <t>SHA-1 truncated to 96 bits (12 octets) SHOULD be implemented.</t>
     </section>
 
-    <section title="Specifying Truncation" anchor="trunc">
-     <t>When space is at a premium and the strength of the full length of an
-     HMAC is not needed, it is reasonable to truncate the HMAC output and
-     use the truncated value for authentication.  HMAC SHA-1 truncated to
-     96 bits is an option available in several IETF protocols, including
-     IPsec and TLS.</t>
-
-<!-- to merge -->
-     <t>The TSIG RR [RFC2845] includes a "MAC size" field, which gives the
-     size of the MAC field in octets.  However, [RFC2845] does not specify
-     what to do if this MAC size differs from the length of the output of
-     HMAC for a particular hash function.  Truncation is indicated by a
-     MAC size less than the HMAC size, as specified below.</t>
-
-     <!-- Processing -->
-
-     <t>The specification for TSIG handling is changed as follows:
-      <list style="numbers">
-       <t>If "MAC size" field is greater than HMAC output length:<list>
-         <t>This case MUST NOT be generated and, if received, MUST cause
-         the packet to be dropped and RCODE 1 (FORMERR) to be returned.</t>
-       </list></t>
-       <t>If "MAC size" field equals HMAC output length:<list>
-         <t>Operation is as described in [RFC2845], and the entire output
-         HMAC output is present.</t>
-       </list></t>
-       <t>"MAC size" field is less than HMAC output length but greater than
-       that specified in case 4, below:<list>
-         <t>This is sent when the signer has truncated the HMAC output to
-         an allowable length, as described in <xref target="RFC2104"/>,
-         taking initial
-         octets and discarding trailing octets.  TSIG truncation can only
-         be to an integral number of octets.  On receipt of a packet with
-         truncation thus indicated, the locally calculated MAC is similarly
-         truncated and only the truncated values are compared for
-         authentication.  The request MAC used when calculating the TSIG
-         MAC for a reply is the truncated request MAC.</t>
-       </list></t>
-       <t>"MAC size" field is less than the larger of 10 (octets) and half
-       the length of the hash function in use:<list> 
-         <t>With the exception of certain TSIG error messages described in
-         RFC 2845, Section 3.2, where it is permitted that the MAC size be
-         zero, this case MUST NOT be generated and, if received, MUST cause
-         the packet to be dropped and RCODE 1 (FORMERR) to be returned.
-         The size limit for this case can also, for the hash functions
-         mentioned in this document, be stated as less than half the hash
-         function length for hash functions other than MD5 and less than 10
-         octets for MD5.</t>
-       </list></t></list></t>
-
-      <!-- Policy and error -->
-
+    <section title="TSIG Truncation Policy and Error Provisions">
       <t>Use of TSIG is by mutual agreement between a resolver and server.
       Implicit in such "agreement" are criterion as to acceptable keys and
       algorithms and, with the extensions in this document, truncations.
@@ -899,7 +897,6 @@
       network delays.  The recommended value in most situation is 300
       seconds.</t>
 
-<!-- to merge -->
       <t>For all of the message authentication code algorithms listed herein,
       those producing longer values are believed to be stronger; however,
       while there have been some arguments that mild truncation can
@@ -957,14 +954,23 @@
       <?rfc include="reference.RFC.3645.xml"?>
     </references>
 
-    <section title="Acknowledgments">
+    <section title="Acknowledgments" anchor="acks">
       <t>Authors of specifications consolidated and fixed in this document
       are Paul Vixie, Olafur Gudmundsson, Donald E. Eastlake 3rd and
       Brian Wellington.</t>
+      <t>Peter van Dijk, Benno Overeinder, Willem Toroop, Ondrej Sury,
+      Michal Kepien and Ralph Dolmans participated to the fix of
+      the bug, i.e., the reason of this document.</t>
     </section>
 
     <section title="Changes from previous specifications">
-<!-- to be filled! -->
+     <t><list>
+       <t><xref target="RFC4635"/> was merged.</t>
+       <t>Authors of original documents were moved to
+       Acknowledgments (<xref target="acks"/>).</t>
+       <t><xref target="keywords"/> was updated to
+       <xref target="RFC8174"/> style.</t>
+      </list></t>
     </section>
 
   </back>
