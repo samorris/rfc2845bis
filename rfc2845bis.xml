@@ -513,7 +513,9 @@
       <section title="TSIG generation on requests">
         <t>Client performs the message digest operation and appends a TSIG
         record to the additional data section and transmits the request to
-        the server. The digest components for a request are:</t>
+        the server.  The client MUST store the message digest from the
+        request while awaiting an answer.  The digest components for a
+        request are:</t>
 
         <t><list style="empty">
           <t>DNS Message (request)<vspace/>
@@ -934,6 +936,8 @@
       target="RFC2104"/> from which the limits on truncation in this
       RFC were taken.</t>
 
+<!-- Add something about the security bug? -->
+
     </section>
 
   </middle>
@@ -978,8 +982,8 @@
       are Paul Vixie, Olafur Gudmundsson, Donald E. Eastlake 3rd and
       Brian Wellington.</t>
       <t>Peter van Dijk, Benno Overeinder, Willem Toroop, Ondrej Sury,
-      Michal Kepien and Ralph Dolmans participated to the fix of
-      the bug, i.e., the reason of this document.</t>
+      Mukund Sivaraman and Ralph Dolmans participated to the fix of
+      the bug, i.e., the incentive of this document.</t>
     </section>
 
     <section title="Changes from previous specifications">
@@ -1002,12 +1006,6 @@
 
          <t>A not successfully validated request MAC MUST NOT be
          included into a response.</t>
-
-         <t>Removed the storage of the request MAC by the client as
-         it is not used further in the specifications. Note if it was
-         required to use it in response validation the specifications
-         were secure but at the expense of extra complexity and cost
-         for clients compared to the solution proposed by this document.</t>
 
          <t>Added "not validated" to the MUST NOT generate signed response.</t>
 
