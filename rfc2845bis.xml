@@ -31,7 +31,7 @@
 <?rfc comments="no" ?>
 <?rfc inline="yes" ?>
 
-<rfc category="std" docName="draft-morris-dnsop-rfc2845-bis"
+<rfc category="std" docName="draft-morris-dnsop-rfc2845bis-00"
      ipr="trust200902" obsoletes="2845, 4635" >
 
   <front>
@@ -78,18 +78,21 @@
       responses as coming from an approved recursive name server.</t>
 
       <t>No provision has been made here for distributing the shared
-      secrets</t>
+      secrets: it is expected that a network administrator will
+      statically configure name servers and clients using some out
+      of band mechanism such as sneaker-net until a secure automated
+      mechanism for key distribution is available.</t>
     </abstract>
   </front>
 
   <middle>
     <section title="Introduction">
-      <t>A security problem in implementations strictly following
+      <t>In 2017, security problems in two nameservers strictly following
       <xref target="RFC2845"/> and <xref target="RFC4635"/>
-      (i.e., TSIG and HMAC-SHA extension) specifications was
-      discovered. Its solution required to update them so
-      the two documents were merged and the problem solved
-      producing these updated specifications for TSIG</t>
+      (i.e., TSIG and HMAC-SHA extension) specifications were
+      discovered. The implementations were fixed but, to avoid
+      similar problems in the future, the two documents were updated
+      and merged, producing these revised specifications for TSIG.</t>
 
       <t>The Domain Name System (DNS) <xref target="RFC1034"/>, <xref
       target="RFC1035"/> is a replicated hierarchical distributed
@@ -116,7 +119,7 @@
       computationally to generate.  In general, these require the same
       complex public key logic that is impractical for stubs.  This
       document specifies use of a message authentication code (MAC),
-      specifically HMAC-MD5 and HMAC-SHA (keyed hash functions), to provide an
+      either HMAC-MD5 or HMAC-SHA (keyed hash functions), to provide an
       efficient means of point-to-point authentication and integrity
       checking for transactions.</t>
 
@@ -159,8 +162,8 @@
       systems for automatic secret key distribution may be proposed in
       separate future documents.</t>
 
-      <t>Note that use of TSIG presumes prior agreement, between the resolver
-      and server involved, as to the algorithm and key to be used.</t>
+      <t>Note that use of TSIG presumes prior agreement between the resolver
+      and server involved as to the algorithm and key to be used.</t>
 
       <t>Since the publication of first version of this document
       (<xref target="RFC2845"/>) a mechanism based on
@@ -359,9 +362,9 @@
         a message with a correctly placed TSIG RR, the TSIG RR is
         copied to a safe location, removed from the DNS Message,
         and decremented out of the DNS message header's ARCOUNT.
-        At this point the keyed message digest operation is performed
-        and until this operation concludes the signature is valid
-        the signature MUST be considered as invalid.
+        At this point the keyed message digest operation is performed:
+        until this operation concludes that the signature is valid,
+        the signature MUST be considered to be invalid.
         If the algorithm name or key name is unknown to the recipient,
         or if the message digests do not match, the whole DNS message
         MUST be discarded.  If the message is a query, a response
@@ -481,9 +484,11 @@
 
         <section title="Request MAC">
           <t>When generating the MAC to be included in a response, the
-          request MAC must be included in the digest.  It is REQUIRED
-          that the included request MAC was successfully
-          validated. The request's MAC is digested in wire format,
+          validated request MAC MUST be included in the digest.  If the
+          request MAC failed to validate, an unsigned error message MUST
+          be returned instead.  (<xref target="on_error"/>).</t>
+
+          <t>The request's MAC is digested in wire format,
           including the following fields:</t>
 
           <texttable style="headers">
@@ -532,8 +537,8 @@
       <section title="TSIG on Answers" anchor="answers">
         <t>When a server has generated a response to a signed request, it
         signs the response using the same algorithm and key.  The server
-        MUST NOT generate a signed response to an unsigned or
-        not validated request. The digest components are:</t>
+        MUST NOT generate a signed response to an unsigned request or
+        a request that fails validation. The digest components are:</t>
 
         <t><list style="empty">
           <t>Request MAC<vspace/>
@@ -546,7 +551,7 @@
         <t>When a server detects an error relating to the key or MAC, the
         server SHOULD send back an unsigned error message (MAC size == 0
         and empty MAC).  If an error is detected relating to the TSIG
-        validity period or MAC short for the local policy,
+        validity period or the MAC is too short for the local policy,
         the server SHOULD send back a signed error message.
         The digest components are:</t>
 
@@ -593,7 +598,7 @@
         <t>Upon receipt of a message, server will check if there is a TSIG
         RR.  If one exists, the server is REQUIRED to return a TSIG RR in
         the response.  The server MUST perform the following checks in the
-        following order, check KEY, check MAC, TIME values.</t>
+        following order, check KEY, check MAC, check TIME values.</t>
 
         <section title="KEY check and error handling">
           <t>If a non-forwarding server does not recognize the key
@@ -606,11 +611,11 @@
         <section title="Specifying Truncation" anchor="trunc">
           <t>When space is at a premium and the strength of the full
           length of an HMAC is not needed, it is reasonable to truncate
-          the HMAC output and use the truncated value for
+          the HMAC and use the truncated value for
           authentication.  HMAC SHA-1 truncated to 96 bits is an option
           available in several IETF protocols, including IPsec and TLS.</t>
 
-          <t>Processing of truncated MAC follows these rules
+          <t>Processing of a truncated MAC follows these rules
           <list style="numbers">
             <t>If "MAC size" field is greater than HMAC output length:
             <vspace/><vspace/>
@@ -717,7 +722,7 @@
           <t>If the response RCODE is 9 (NOTAUTH) and TSIG ERROR
           is 16 (BADSIG), this is a MAC error, and client MAY retry
           the request with a new request ID but it would be better
-          to try a different shared key if one is available.  Client
+          to try a different shared key if one is available.  Clients
           SHOULD keep track of how many MAC errors are associated
           with each key.  Clients SHOULD log this event.</t>
         </section>
@@ -738,7 +743,7 @@
           is 22 (BADTRUNC) the this is a Truncation error. The client
           MAY retry with lesser truncation up to the full HMAC output
           (no truncation), using the truncation used in the response
-          has a hint for what the server policy allowed
+          as a hint for what the server policy allowed.
           <xref target="trunc_pol"/>. Clients SHOULD log this event.</t>
         </section>
       </section>
@@ -767,8 +772,8 @@
         implement for interoperability.</t>
 
         <t>The use of SHA-1 <xref target="FIPS180-2"/>,
-        <xref target="RFC3174"/>, which is a 160-bit hash, as
-        compared with the 128 bits for MD5, and additional hash algorithms in
+        <xref target="RFC3174"/>, (which is a 160-bit hash as compared to
+        the 128 bits for MD5), and additional hash algorithms in
         the SHA family <xref target="FIPS180-2"/>, <xref target="RFC3874"/>,
         <xref target="RFC4634"/> with 224, 256, 384, and
         512 bits may be preferred in some cases.  This is because
@@ -805,7 +810,7 @@
 
     <section title="TSIG Truncation Policy" anchor="trunc_pol">
       <t>Use of TSIG is by mutual agreement between a resolver and server.
-      Implicit in such "agreement" are criterion as to acceptable keys and
+      Implicit in such an "agreement" are criteria as to acceptable keys and
       algorithms and, with the extensions in this document, truncations.
       Note that it is common for implementations to bind the TSIG secret
       key or keys that may be in place at a resolver and server to
@@ -878,7 +883,8 @@
       <t>New algorithms are assigned using
       the IETF Consensus policy defined in <xref target="RFC2434"/>.
       The algorithm name
-      HMAC-MD5.SIG-ALG.REG.INT looks like a FQDN for historical reasons;
+      HMAC-MD5.SIG-ALG.REG.INT looks like a fully-qualified domain
+      name for historical reasons;
       other algorithm names are simple (i.e., single-component) names.</t>
 
       <t>IANA maintains a registry of "TSIG Error values" to be used
@@ -918,7 +924,8 @@
       network delays.  The recommended value in most situation is 300
       seconds.</t>
 
-      <t>For all of the message authentication code algorithms listed herein,
+      <t>For all of the message authentication code algorithms listed in
+      this document,
       those producing longer values are believed to be stronger; however,
       while there have been some arguments that mild truncation can
       strengthen a MAC by reducing the information available to an
@@ -927,7 +934,7 @@
       authentication by brute force <xref target="RFC2104"/>.</t>
 
       <t>Significant progress has been made recently in cryptanalysis of hash
-      function of the types used herein, all of which ultimately derive
+      functions of the types used here, all of which ultimately derive
       from the design of MD4.  While the results so far should not effect
       HMAC, the stronger SHA-1 and SHA-256 algorithms are being made
       mandatory due to caution.</t>
@@ -978,15 +985,19 @@
     </references>
 
     <section title="Acknowledgments" anchor="acks">
-      <t>Authors of specifications consolidated and fixed in this document
-      are Paul Vixie, Olafur Gudmundsson, Donald E. Eastlake 3rd and
-      Brian Wellington.</t>
+      <t>This document just consolidates and updates the earlier documents
+      by the authors of <xref target="RFC2845"/> (Paul Vixie,
+      Olafur Gudmundsson, Donald E. Eastlake 3rd and Brian Wellington)
+      and <xref target="RFC4635"/> (Donald E. Eastlake 3rd). It would
+      not be possible without their original work.</t>
       <t>Peter van Dijk, Benno Overeinder, Willem Toroop, Ondrej Sury,
-      Mukund Sivaraman and Ralph Dolmans participated to the fix of
-      the bug, i.e., the incentive of this document.</t>
+      Mukund Sivaraman and Ralph Dolmans participated in the discussions
+      that prompted this document.</t>
     </section>
 
-    <section title="Changes from previous specifications">
+    <section title="Change History">
+
+     <t>draft-morris-dnsop-rfc2845bis-00</t>
      <t><list>
        <t><xref target="RFC4635"/> was merged.</t>
 
@@ -996,44 +1007,46 @@
        <t><xref target="keywords"/> was updated to
        <xref target="RFC8174"/> style.</t>
 
-       <t>The security bug was fixed:
-        <list style="numbers">
-         <t>Added a text explaining why this document was written
-         at the beginning of the introduction.</t>
-<!-- Same for the Abstract? -->
+       <t>Added a text explaining why this document was written
+       at the beginning of the introduction.</t>
 
-         <t>MAC is invalid until it is successfully validated.</t>
+       <t>Added the security clarifications:
+         <list style="numbers">
 
-         <t>A not successfully validated request MAC MUST NOT be
-         included into a response.</t>
-
-         <t>Added "not validated" to the MUST NOT generate signed response.</t>
-
-	 <t>Added the MAC too short for the local policy to the
-         <xref target="on_error"/> section.</t>
-
-	 <t>Changed the order of server checks and swapped corresponding
-         sections.</t>
-
-         <t>Removed the truncation size limit "also case" as it does not
-         apply and added confusion.</t>
-
-         <t>Moved the error provision for TSIG Truncation to a new
-         section <xref target="trunc_check"/> and moved from RCODE 22
-         to RCODE 9 and TSIG ERROR 22, i.e., aligned with other TSIG
-         error cases.</t>
-
-         <t>Added a section about Truncation error handling <xref
-         target="trunc_err"/> by clients.</t>
-
-         <t>Removed the limit to HMAC output in replies as a request
-         which specified a MAC length longer than the HMAC output
-         is invalid according the the first processing rule <xref
-         target="trunc"/>.</t>
-
-         <t>Promoted the secret length should be at least as long as
-         the keyed message digest to a <xref target="keywords"/>
-         SHOULD.</t>
+           <t>Emphasised that MAC is invalid until it is successfully
+           validated.</t>
+  
+           <t>Added note that a request MAC that has not been successfully
+           validated MUST NOT be included into a response.</t>
+  
+           <t>Added note that a request that has not been validated to the
+           MUST NOT generate a signed response.</t>
+  
+           <t>Added note about MAC too short for the local policy to the
+           <xref target="on_error"/> section.</t>
+  
+           <t>Changed the order of server checks and swapped corresponding
+           sections.</t>
+  
+           <t>Removed the truncation size limit "also case" as it does not
+           apply and added confusion.</t>
+  
+           <t>Moved the error provision for TSIG truncation to a new
+           section <xref target="trunc_check"/> and moved from RCODE 22
+           to RCODE 9 and TSIG ERROR 22, i.e., aligned with other TSIG
+           error cases.</t>
+  
+           <t>Added a section about truncation error handling <xref
+           target="trunc_err"/> by clients.</t>
+  
+           <t>Removed the limit to HMAC output in replies as a request
+           which specified a MAC length longer than the HMAC output
+           is invalid according the the first processing rule <xref
+           target="trunc"/>.</t>
+  
+           <t>Promoted the requirement that a secret length should be at
+           least as long as the keyed message digest to a
+           <xref target="keywords"/> SHOULD.</t>
 
         </list></t>
       </list></t>
