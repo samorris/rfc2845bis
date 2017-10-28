@@ -32,14 +32,28 @@
 <?rfc inline="yes" ?>
 
 <!-- includes pre RFC 5378 (2008) material -->
-<rfc category="std" docName="draft-morris-dnsop-rfc2845bis-00"
+<rfc category="std" docName="draft-dupont-dnsop-rfc2845bis-00"
      ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
     <title abbrev="DNS TSIG">Secret Key Transaction Authentication for DNS (TSIG)</title>
 
-    <author fullname="Stephen Morris" initials="S." surname="Morris"
+    <author fullname="Francis Dupont" initials="F." surname="Dupont"
             role="editor">
+      <organization abbrev="ISC">Internet Software Consortium</organization>
+      <address>
+        <postal>
+          <street>950 Charter Street</street>
+          <city>Redwood City</city>
+          <region>CA</region>
+          <code>94063</code>
+          <country>United States</country>
+        </postal>
+        <email>Francis.Dupont@fdupont.fr</email>
+      </address>
+    </author>
+
+    <author fullname="Stephen Morris" initials="S." surname="Morris">
       <organization abbrev="ISC">Internet Software Consortium</organization>
       <address>
         <postal>
@@ -51,20 +65,6 @@
         </postal>
         <email>stephen@isc.org</email>
         <uri>http://www.isc.org</uri>
-      </address>
-    </author>
-
-    <author fullname="Francis Dupont" initials="F." surname="Dupont">
-      <organization abbrev="ISC">Internet Software Consortium</organization>
-      <address>
-        <postal>
-          <street>950 Charter Street</street>
-          <city>Redwood City</city>
-          <region>CA</region>
-          <code>94063</code>
-          <country>United States</country>
-        </postal>
-        <email>Francis.Dupont@fdupont.fr</email>
       </address>
     </author>
 
@@ -1028,7 +1028,7 @@
 
     <section title="Change History">
 
-     <t>draft-morris-dnsop-rfc2845bis-00</t>
+     <t>draft-dupont-dnsop-rfc2845bis-00</t>
      <t><list>
        <t><xref target="RFC4635"/> was merged.</t>
 
