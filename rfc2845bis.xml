@@ -1010,17 +1010,20 @@
        <t>Added a text explaining why this document was written
        at the beginning of the introduction.</t>
 
+<!-- Same for the Abstract? -->
+
        <t>Added the security clarifications:
          <list style="numbers">
 
            <t>Emphasised that MAC is invalid until it is successfully
            validated.</t>
   
-           <t>Added note that a request MAC that has not been successfully
-           validated MUST NOT be included into a response.</t>
+           <t>Added requirement that a request MAC that has not been
+           successfully validated MUST NOT be included into a
+           response.</t>
   
-           <t>Added note that a request that has not been validated to the
-           MUST NOT generate a signed response.</t>
+           <t>Added requirement that a request that has not been
+           validated to the MUST NOT generate a signed response.</t>
   
            <t>Added note about MAC too short for the local policy to the
            <xref target="on_error"/> section.</t>
