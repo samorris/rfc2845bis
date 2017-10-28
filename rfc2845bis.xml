@@ -31,8 +31,9 @@
 <?rfc comments="no" ?>
 <?rfc inline="yes" ?>
 
+<!-- includes pre RFC 5378 (2008) material -->
 <rfc category="std" docName="draft-morris-dnsop-rfc2845bis-00"
-     ipr="trust200902" obsoletes="2845, 4635" >
+     ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
     <title abbrev="DNS TSIG">Secret Key Transaction Authentication for DNS (TSIG)</title>
@@ -82,6 +83,9 @@
       statically configure name servers and clients using some out
       of band mechanism such as sneaker-net until a secure automated
       mechanism for key distribution is available.</t>
+
+<!-- Should explain the revision, cf idnits -->
+
     </abstract>
   </front>
 
@@ -90,31 +94,36 @@
       <t>In 2017, security problems in two nameservers strictly following
       <xref target="RFC2845"/> and <xref target="RFC4635"/>
       (i.e., TSIG and HMAC-SHA extension) specifications were
-      discovered. The implementations were fixed but, to avoid
-      similar problems in the future, the two documents were updated
-      and merged, producing these revised specifications for TSIG.</t>
+      discovered.
+
+<!-- Add a reference here? -->
+
+      The implementations were fixed but, to avoid similar problems
+      in the future, the two documents were updated and merged,
+      producing these revised specifications for TSIG.</t>
 
       <t>The Domain Name System (DNS) <xref target="RFC1034"/>, <xref
       target="RFC1035"/> is a replicated hierarchical distributed
       database system that provides information fundamental to Internet
       operations, such as name &lt;=&gt; address translation and mail
-      handling information.  DNS has recently been extended <xref
-      target="RFC2535"/> to provide for data origin authentication, and
+      handling information.  DNS has recently been extended by DNSSEC
+      (<xref target="RFC4033"/>, <xref target="RFC4034"/> and <xref
+      target="RFC4035"/>) to provide for data origin authentication, and
       public key distribution, all based on public key cryptography and
       public key based digital signatures.  To be practical, this form
       of security generally requires extensive local caching of keys and
       tracing of authentication through multiple keys and signatures to
       a pre-trusted locally configured key.</t>
 
-      <t>One difficulty with the <xref target="RFC2535"/> scheme is that
+      <t>One difficulty with the DNSSEC scheme is that
       common DNS implementations include simple "stub" resolvers which
       do not have caches.  Such resolvers typically rely on a caching
       DNS server on another host.  It is impractical for these stub
-      resolvers to perform general <xref target="RFC2535"/>
+      resolvers to perform general DNSSEC
       authentication and they would naturally depend on their caching
       DNS server to perform such services for them.  To do so securely
-      requires secure communication of queries and responses.  <xref
-      target="RFC2535"/> provides public key transaction signatures to
+      requires secure communication of queries and responses.  DNSSEC
+      provides public key transaction signatures to
       support this, but such signatures are very expensive
       computationally to generate.  In general, these require the same
       complex public key logic that is impractical for stubs.  This
@@ -123,23 +132,23 @@
       efficient means of point-to-point authentication and integrity
       checking for transactions.</t>
 
-      <t>A second area where use of straight <xref target="RFC2535"/>
+      <t>A second area where use of straight DNSSEC
       public key based mechanisms may be impractical is authenticating
-      dynamic update <xref target="RFC2136"/> requests.  <xref
-      target="RFC2535"/> provides for request signatures but with <xref
-      target="RFC2535"/> they, like transaction signatures, require
+      dynamic update <xref target="RFC2136"/> requests. DNSSEC
+      provides for request signatures but with DNSSEC
+      they, like transaction signatures, require
       computationally expensive public key cryptography and complex
       authentication logic.  Secure Domain Name System Dynamic Update
-      (<xref target="RFC2137"/>) describes how different keys are used
+      (<xref target="RFC3007"/>) describes how different keys are used
       in dynamically updated zones.  This document's secret key based
       MACs can be used to authenticate DNS update requests as well as
       transaction responses, providing a lightweight alternative to the
-      protocol described by <xref target="RFC2137"/>.</t>
+      protocol described by <xref target="RFC3007"/>.</t>
 
       <t>A further use of this mechanism is to protect zone transfers.
       In this case the data covered would be the whole zone transfer
-      including any glue records sent.  The protocol described by <xref
-      target="RFC2535"/> does not protect glue records and unsigned
+      including any glue records sent.  The protocol described by DNSSEC
+      does not protect glue records and unsigned
       records unless SIG(0) (transaction signature) is used.</t>
 
       <t>The authentication mechanism proposed in this document uses
@@ -167,8 +176,8 @@
 
       <t>Since the publication of first version of this document
       (<xref target="RFC2845"/>) a mechanism based on
-      asymmetric signatures using the SIG RR was specified
-      <xref target="RFC2931"/> when this document uses
+      asymmetric signatures using the SIG RR was specified (SIG(0)
+      <xref target="RFC2931"/>) when this document uses
       symmetric authentication codes calculated by HMAC <xref
       target="RFC2104"/> using strong hash functions.</t>
     </section>
@@ -407,6 +416,8 @@
         </texttable>
       </section>
 
+<!-- Move the truncation policy here? -->
+
       <section title="TSIG Variables and Coverage">
         <t>When generating or verifying the contents of a TSIG
         record, the following data are digested, in network byte
@@ -477,8 +488,8 @@
           <t>For each label type, there must be a defined "Canonical
           wire format" that specifies how to express a label in an
           unambiguous way.  For label type 00, this is defined in <xref
-          target="RFC2535"/>, for label type 01, this is defined in
-          <xref target="RFC2673"/>.  The use of label types other than
+          target="RFC4034"/>, for label type 01, this is defined in
+          <xref target="RFC6891"/>.  The use of label types other than
           00 and 01 is not defined for this specification.</t>
         </section>
 
@@ -598,7 +609,8 @@
         <t>Upon receipt of a message, server will check if there is a TSIG
         RR.  If one exists, the server is REQUIRED to return a TSIG RR in
         the response.  The server MUST perform the following checks in the
-        following order, check KEY, check MAC, check TIME values.</t>
+        following order, check KEY, check MAC, check TIME values,
+        check Truncation policy.</t>
 
         <section title="KEY check and error handling">
           <t>If a non-forwarding server does not recognize the key
@@ -685,7 +697,9 @@
           <t>If a TSIG is received with truncation that is permitted
           under <xref target="trunc"/> above but the MAC is too short
           for the local policy in force, an RCODE 9 (NOTAUTH) and TSIG
-          ERROR 22 (BADTRUNC) MUST be returned.</t>
+          ERROR 22 (BADTRUNC) MUST be returned. The server SHOULD
+          log the error.</t>
+          
         </section>
       </section>
 
@@ -743,8 +757,8 @@
           is 22 (BADTRUNC) the this is a Truncation error. The client
           MAY retry with lesser truncation up to the full HMAC output
           (no truncation), using the truncation used in the response
-          as a hint for what the server policy allowed.
-          <xref target="trunc_pol"/>. Clients SHOULD log this event.</t>
+          as a hint for what the server policy allowed
+          (<xref target="trunc_pol"/>). Clients SHOULD log this event.</t>
         </section>
       </section>
 
@@ -759,7 +773,7 @@
         possible, include a TSIG of his own, to the destination or the
         next forwarder.  If no transaction security is available to the
         destination and the response has the AD flag (see <xref
-        target="RFC2535"/>), the forwarder MUST unset the AD flag before
+        target="RFC4035"/>), the forwarder MUST unset the AD flag before
         adding the TSIG to the answer.</t>
       </section>
     </section>
@@ -771,11 +785,11 @@
         target="RFC2104"/>).  The "HMAC-MD5" algorithm is mandatory to
         implement for interoperability.</t>
 
-        <t>The use of SHA-1 <xref target="FIPS180-2"/>,
+        <t>The use of SHA-1 <xref target="FIPS180-4"/>,
         <xref target="RFC3174"/>, (which is a 160-bit hash as compared to
         the 128 bits for MD5), and additional hash algorithms in
-        the SHA family <xref target="FIPS180-2"/>, <xref target="RFC3874"/>,
-        <xref target="RFC4634"/> with 224, 256, 384, and
+        the SHA family <xref target="FIPS180-4"/>, <xref target="RFC3874"/>,
+        <xref target="RFC6234"/> with 224, 256, 384, and
         512 bits may be preferred in some cases.  This is because
         increasingly successful cryptanalytic attacks are being made on the
         shorter hashes.</t>
@@ -784,7 +798,7 @@
         agreement.  That agreement can include the support of additional
         algorithms and criteria as to which algorithms and truncations are
         acceptable, subject to the restriction and guidelines in
-        <xref target="trunc"/> below.
+        <xref target="trunc"/> above.
         Key agreement can be by the TKEY mechanism <xref target="RFC2930"/>
         or some other mutually agreeable method.</t>
 
@@ -861,7 +875,7 @@
       authoritative name servers.</t>
 
       <t>Use of strong random shared secrets is essential to the
-      security of TSIG.  See <xref target="RFC1750"/> for a discussion
+      security of TSIG.  See <xref target="RFC4086"/> for a discussion
       of this issue.  The secret SHOULD be at least as long as the keyed
       message digest, i.e., 16 bytes for HMAC-MD5 or 20 bytes for
       HMAC-SHA1.</t>
@@ -881,7 +895,7 @@
       <xref target="RFC3645"/>.</t>
 
       <t>New algorithms are assigned using
-      the IETF Consensus policy defined in <xref target="RFC2434"/>.
+      the IETF Consensus policy defined in <xref target="RFC8126"/>.
       The algorithm name
       HMAC-MD5.SIG-ALG.REG.INT looks like a fully-qualified domain
       name for historical reasons;
@@ -892,13 +906,13 @@
       Initial values should be those defined in <xref target="numbers"/>.
       New TSIG
       error codes for the TSIG error field are assigned using the IETF
-      Consensus policy defined in <xref target="RFC2434"/>.</t>
+      Consensus policy defined in <xref target="RFC8126"/>.</t>
     </section>
 
     <section title="Security Considerations">
       <t>The approach specified here is computationally much less
-      expensive than the signatures specified in <xref
-      target="RFC2535"/>.  As long as the shared secret key is not
+      expensive than the signatures specified in DNSSEC.
+      As long as the shared secret key is not
       compromised, strong authentication is provided for the last hop
       from a local name server to the user resolver.</t>
 
@@ -915,7 +929,7 @@
       original source data can come from a compromised zone master or
       can be corrupted during transit from an authentic zone master to
       some "caching forwarder."  However, if the server is faithfully
-      performing the full <xref target="RFC2535"/> security checks, then
+      performing the full DNSSEC security checks, then
       only security checked data will be available to the client.</t>
 
       <t>A fudge value that is too large may leave the server open
@@ -937,7 +951,9 @@
       functions of the types used here, all of which ultimately derive
       from the design of MD4.  While the results so far should not effect
       HMAC, the stronger SHA-1 and SHA-256 algorithms are being made
-      mandatory due to caution.</t>
+      mandatory due to caution. Note that today SHA-3
+      <xref target="FIPS202"/> is available as an alternative to SHA-2
+      using a very different design.</t>
 
       <t>See also the Security Considerations section of <xref
       target="RFC2104"/> from which the limits on truncation in this
@@ -951,37 +967,52 @@
 
   <back>
     <references title="Normative References">
-      <reference anchor="FIPS180-2" target="">
+      <reference anchor="FIPS180-4" target="">
          <front>
-            <title>"Secure Hash Standard", (SHA-1/224/256/384/512) US
-            Federal Information Processing Standard, with Change
-            Notice 1</title>
-            <author/>
-            <date month="February" year="2004"/>
+            <title>Secure Hash Standard (SHS)</title>
+            <author>
+              <organization>National Institute of Standards and
+              Technology</organization>
+            </author>
+            <date month="August" year="2015"/>
          </front>
+         <seriesInfo name="FIPS" value="PUB 180-4"/>
       </reference>
       <?rfc include="reference.RFC.1034.xml"?>
       <?rfc include="reference.RFC.1035.xml"?>
-      <?rfc include="reference.RFC.1321.xml"?>
-      <?rfc include="reference.RFC.2104.xml"?>
       <?rfc include="reference.RFC.2119.xml"?>
       <?rfc include="reference.RFC.2845.xml"?>
-      <?rfc include="reference.RFC.3174.xml"?>
-      <?rfc include="reference.RFC.3874.xml"?>
-      <?rfc include="reference.RFC.4634.xml"?>
       <?rfc include="reference.RFC.4635.xml"?>
       <?rfc include="reference.RFC.8174.xml"?>
     </references>
     <references title="Informative References">
-      <?rfc include="reference.RFC.1750.xml"?>
+      <reference anchor="FIPS202" target="">
+         <front>
+            <title>SHA-3 Standard</title>
+            <author>
+               <organization>National Institute of Standards and
+               Technology</organization>
+            </author>
+            <date month="August" year="2015"/>
+         </front>
+         <seriesInfo name="FIPS" value="PUB 202"/>
+      </reference>
+      <?rfc include="reference.RFC.1321.xml"?>
+      <?rfc include="reference.RFC.2104.xml"?>
       <?rfc include="reference.RFC.2136.xml"?>
-      <?rfc include="reference.RFC.2137.xml"?>
-      <?rfc include="reference.RFC.2434.xml"?>
-      <?rfc include="reference.RFC.2535.xml"?>
-      <?rfc include="reference.RFC.2673.xml"?>
       <?rfc include="reference.RFC.2930.xml"?>
       <?rfc include="reference.RFC.2931.xml"?>
+      <?rfc include="reference.RFC.3007.xml"?>
+      <?rfc include="reference.RFC.3174.xml"?>
       <?rfc include="reference.RFC.3645.xml"?>
+      <?rfc include="reference.RFC.3874.xml"?>
+      <?rfc include="reference.RFC.4033.xml"?>
+      <?rfc include="reference.RFC.4034.xml"?>
+      <?rfc include="reference.RFC.4035.xml"?>
+      <?rfc include="reference.RFC.4086.xml"?>
+      <?rfc include="reference.RFC.6234.xml"?>
+      <?rfc include="reference.RFC.6891.xml"?>
+      <?rfc include="reference.RFC.8126.xml"?>
     </references>
 
     <section title="Acknowledgments" anchor="acks">
@@ -1007,6 +1038,9 @@
        <t><xref target="keywords"/> was updated to
        <xref target="RFC8174"/> style.</t>
 
+       <t>Spit references into normative and informative references
+       and updated them.</t>
+
        <t>Added a text explaining why this document was written
        at the beginning of the introduction.</t>
 
@@ -1015,7 +1049,7 @@
        <t>Added the security clarifications:
          <list style="numbers">
 
-           <t>Emphasised that MAC is invalid until it is successfully
+           <t>Emphasized that MAC is invalid until it is successfully
            validated.</t>
   
            <t>Added requirement that a request MAC that has not been
@@ -1026,7 +1060,7 @@
            validated to the MUST NOT generate a signed response.</t>
   
            <t>Added note about MAC too short for the local policy to the
-           <xref target="on_error"/> section.</t>
+           <xref target="on_error"/>.</t>
   
            <t>Changed the order of server checks and swapped corresponding
            sections.</t>
@@ -1034,22 +1068,22 @@
            <t>Removed the truncation size limit "also case" as it does not
            apply and added confusion.</t>
   
-           <t>Moved the error provision for TSIG truncation to a new
-           section <xref target="trunc_check"/> and moved from RCODE 22
+           <t>Relocated the error provision for TSIG truncation to the new
+           <xref target="trunc_check"/>. Moved from RCODE 22
            to RCODE 9 and TSIG ERROR 22, i.e., aligned with other TSIG
            error cases.</t>
   
-           <t>Added a section about truncation error handling <xref
-           target="trunc_err"/> by clients.</t>
+           <t>Added <xref target="trunc_err"/> about truncation error
+           handling by clients.</t>
   
            <t>Removed the limit to HMAC output in replies as a request
            which specified a MAC length longer than the HMAC output
-           is invalid according the the first processing rule <xref
+           is invalid according the the first processing rule in <xref
            target="trunc"/>.</t>
   
            <t>Promoted the requirement that a secret length should be at
            least as long as the keyed message digest to a
-           <xref target="keywords"/> SHOULD.</t>
+           SHOULD <xref target="RFC2119"/> key word.</t>
 
         </list></t>
       </list></t>
