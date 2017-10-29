@@ -84,8 +84,10 @@
       of band mechanism such as sneaker-net until a secure automated
       mechanism for key distribution is available.</t>
 
-<!-- Should explain the revision, cf idnits -->
+<!-- Do not put [reference] in the Abstract -->
 
+      <t>This document includes revised original TSIG specifications
+      (RFC2845) and the extension for HMAC-SHA (RFC4635).</t>
     </abstract>
   </front>
 
@@ -96,7 +98,7 @@
       (i.e., TSIG and HMAC-SHA extension) specifications were
       discovered.
 
-<!-- Add a reference here? -->
+<!-- Add a reference here? None given by the reporter -->
 
       The implementations were fixed but, to avoid similar problems
       in the future, the two documents were updated and merged,
@@ -182,6 +184,14 @@
       target="RFC2104"/> using strong hash functions.</t>
     </section>
 
+    <section title="Key words" anchor="keywords">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
+      "MAY", and "OPTIONAL" in this document are to be interpreted as
+      described in BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/>
+      when, and only when, they appear in all capitals, as shown here.</t>
+    </section>
+
     <section title="New Assigned Numbers" anchor="numbers">
       <t>RRTYPE = TSIG (250)<vspace/>
       ERROR = 0..15 (a DNS RCODE)<vspace/>
@@ -189,14 +199,6 @@
       ERROR = 17 (BADKEY)<vspace/>
       ERROR = 18 (BADTIME)<vspace/>
       ERROR = 22 (BADTRUNC)</t>
-    </section>
-
-    <section title="Key words" anchor="keywords">
-      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
-      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
-      "MAY", and "OPTIONAL" in this document are to be interpreted as
-      described in BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/>
-      when, and only when, they appear in all capitals, as shown here.</t>
     </section>
 
     <section title="TSIG RR Format">
@@ -959,7 +961,19 @@
       target="RFC2104"/> from which the limits on truncation in this
       RFC were taken.</t>
 
-<!-- Add something about the security bug? -->
+      <section title="Issue fixed in this document">
+         <t>To bind an answer with its corresponding request the MAC
+         of the answer is computed using the MAC request. Unfortunately
+         original specifications <xref target="RFC2845"/> failed to
+         clearly require the MAC request to be successfully validated.</t>
+
+         <t>This document proposes the principle that the MAC must be
+         considered to be invalid until it was validated. This leads
+         to the requirement that only a validated request MAC is
+         included in a signed answer. Or with other words when the
+         request MAC was not validated the answer must be unsigned
+         with a BADKEY or BADSIG TSIG error.</t>
+      </section>
 
     </section>
 
@@ -1021,9 +1035,24 @@
       Olafur Gudmundsson, Donald E. Eastlake 3rd and Brian Wellington)
       and <xref target="RFC4635"/> (Donald E. Eastlake 3rd). It would
       not be possible without their original work.</t>
+
+      <t>The security problem addressed by this document was reported
+      by Clement Berthaux from Synacktiv.</t>
+
+      <t>Note for the RFC Editor (to be removed before publication):
+      the first 'e' in Clement is a fact a small 'e' with acute,
+      unicode code U+00E9. I do not know if xml2rfc supports non ASCII
+      characters so I prefer to not experiment with it. BTW I am French too
+      too so I can help if you have questions like correct spelling...</t>
+
       <t>Peter van Dijk, Benno Overeinder, Willem Toroop, Ondrej Sury,
       Mukund Sivaraman and Ralph Dolmans participated in the discussions
       that prompted this document.</t>
+
+<!-- If we get the reporter correctly spelled we can try to fix some
+     others here: I can't believe unicode is not required for at least
+     another name! -->
+
     </section>
 
     <section title="Change History">
@@ -1042,9 +1071,7 @@
        and updated them.</t>
 
        <t>Added a text explaining why this document was written
-       at the beginning of the introduction.</t>
-
-<!-- Same for the Abstract? -->
+       in the Abstract and at the beginning of the introduction.</t>
 
        <t>Added the security clarifications:
          <list style="numbers">
@@ -1085,6 +1112,7 @@
            least as long as the keyed message digest to a
            SHOULD <xref target="RFC2119"/> key word.</t>
 
+           <t>Added a short text to explain the security issue.</t>
         </list></t>
       </list></t>
     </section>
