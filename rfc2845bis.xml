@@ -500,11 +500,11 @@
 
           <texttable style="headers">
             <ttcol>Field</ttcol>
-            <ttcol>Type</ttcol>
+            <ttcol>Length</ttcol>
             <ttcol>Description</ttcol>
 
             <c>MAC Length</c>
-            <c>u_int16_t</c>
+            <c>2 octets</c>
             <c>in network byte order</c>
 
             <c>MAC Data</c>
@@ -605,10 +605,10 @@
         <t>Upon receipt of a message, server will check if there is a TSIG
         RR.  If one exists, the server is REQUIRED to return a TSIG RR in
         the response.  The server MUST perform the following checks in the
-        following order, check KEY, check MAC, check TIME values,
+        following order, check Key, check MAC, check Time values,
         check Truncation policy.</t>
 
-        <section title="KEY check and error handling">
+        <section title="Key check and error handling">
           <t>If a non-forwarding server does not recognize the key
           used by the client, the server MUST generate an error
           response with RCODE 9 (NOTAUTH) and TSIG ERROR 17 (BADKEY).
@@ -669,7 +669,7 @@
           The server SHOULD log the error.</t>
         </section>
 
-        <section title="TIME check and error handling">
+        <section title="Time check and error handling">
           <t>If the server time is outside the time interval specified
           by the request (which is: Time Signed, plus/minus Fudge),
           the server MUST generate an error response with RCODE 9
@@ -721,7 +721,7 @@
         <section title="Key error handling">
           <t>If an RCODE on a response is 9 (NOTAUTH), and the
           response TSIG validates, and the TSIG key is different
-          from the key used on the request, then this is a KEY
+          from the key used on the request, then this is a Key
           error.  The client MAY retry the request using the key
           specified by the server.  This should never occur, as a
           server MUST NOT sign a response with a different key than
@@ -740,7 +740,7 @@
         <section title="Time error handling">
           <t>If the response RCODE is 9 (NOTAUTH) and the TSIG ERROR
           is 18 (BADTIME), or the current time does not fall in the
-          range specified in the TSIG record, then this is a TIME
+          range specified in the TSIG record, then this is a Time
           error.  This is an indication that the client and server
           clocks are not synchronized.  In this case the client
           SHOULD log the event.  DNS resolvers MUST NOT adjust any
