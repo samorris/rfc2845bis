@@ -259,10 +259,10 @@
 
 	<section title="TSIG RDATA Wire Format">
 	  <t>The RDATA for a TSIG RR consists of an octet stream
-	  Algorithm Name field, a u_int48_t Time Signed field, a
-	  u_int16_t Fudge field, a u_int16_t MAC Size field, a octet
-	  stream MAC field, a u_int16_t Original ID, a u_int16_t Error
-	  field, a u_int16_t Other Len field and an octet stream of
+	  Algorithm Name field, a uint48_t Time Signed field, a
+	  uint16_t Fudge field, a uint16_t MAC Size field, a octet
+	  stream MAC field, a uint16_t Original ID, a uint16_t Error
+	  field, a uint16_t Other Len field and an octet stream of
 	  Other Data.</t>
 	  
 	  <figure><artwork>
@@ -533,7 +533,7 @@
             <ttcol>Description</ttcol>
 
             <c>MAC Length</c>
-            <c>u_int16_t</c>
+            <c>uint16_t</c>
             <c>in network byte order</c>
 
             <c>MAC Data</c>
@@ -709,7 +709,7 @@
           response indicating a BADTIME error MUST be signed by the
           same key as the request.  It MUST include the client's
           current time in the time signed field, the server's current
-          time (a u_int48_t) in the other data field, and 6 in the
+          time (a uint48_t) in the other data field, and 6 in the
           other data length field.  This is done so that the client
           can verify a message with a BADTIME error without the
           verification failing due to another BADTIME error.  The
@@ -1095,6 +1095,8 @@
 
        <t>Added a text explaining why this document was written
        in the Abstract and at the beginning of the introduction.</t>
+
+       <t>Clarified the layout of TSIG RDATA.</t>
 
        <t>Added the security clarifications:
          <list style="numbers">
