@@ -106,50 +106,22 @@
       in the future, the two documents were updated and merged,
       producing these revised specifications for TSIG.</t>
 
-<!-- Proposal to move the DNSSEC text to Security Considerations -->
-
       <t>The Domain Name System (DNS) <xref target="RFC1034"/>, <xref
       target="RFC1035"/> is a replicated hierarchical distributed
       database system that provides information fundamental to Internet
       operations, such as name &lt;=&gt; address translation and mail
-      handling information.  DNS has recently been extended by DNSSEC
-      (<xref target="RFC4033"/>, <xref target="RFC4034"/> and <xref
-      target="RFC4035"/>) to provide for data origin authentication, and
-      public key distribution, all based on public key cryptography and
-      public key based digital signatures.  To be practical, this form
-      of security generally requires extensive local caching of keys and
-      tracing of authentication through multiple keys and signatures to
-      a pre-trusted locally configured key.</t>
+      handling information.</t>
 
-      <t>One difficulty with the DNSSEC scheme is that
-      common DNS implementations include simple "stub" resolvers which
-      do not have caches.  Such resolvers typically rely on a caching
-      DNS server on another host.  It is impractical for these stub
-      resolvers to perform general DNSSEC
-      authentication and they would naturally depend on their caching
-      DNS server to perform such services for them.  To do so securely
-      requires secure communication of queries and responses.  DNSSEC
-      provides public key transaction signatures to
-      support this, but such signatures are very expensive
-      computationally to generate.  In general, these require the same
-      complex public key logic that is impractical for stubs.  This
-      document specifies use of a message authentication code (MAC),
-      either HMAC-MD5 or HMAC-SHA (keyed hash functions), to provide an
-      efficient means of point-to-point authentication and integrity
-      checking for transactions.</t>
+      <t>This document specifies use of a message authentication code
+      (MAC), either HMAC-MD5 or HMAC-SHA (keyed hash functions), to
+      provide an efficient means of point-to-point authentication and
+      integrity checking for transactions.</t>
 
-      <t>A second area where use of straight DNSSEC
-      public key based mechanisms may be impractical is authenticating
-      dynamic update <xref target="RFC2136"/> requests. DNSSEC
-      provides for request signatures but with DNSSEC
-      they, like transaction signatures, require
-      computationally expensive public key cryptography and complex
-      authentication logic.  Secure Domain Name System Dynamic Update
-      (<xref target="RFC3007"/>) describes how different keys are used
-      in dynamically updated zones.  This document's secret key based
-      MACs can be used to authenticate DNS update requests as well as
-      transaction responses, providing a lightweight alternative to the
-      protocol described by <xref target="RFC3007"/>.</t>
+      <t>The second area where the secret key based MACs specified in
+      this document can be used is to authenticate DNS update requests
+      as well as transaction responses, providing a lightweight
+      alternative to the protocol described by <xref
+      target="RFC3007"/>.</t>
 
       <t>A further use of this mechanism is to protect zone transfers.
       In this case the data covered would be the whole zone transfer
@@ -938,12 +910,12 @@
 
     <section title="Security Considerations">
       <t>The approach specified here is computationally much less
-      expensive than the signatures specified in DNSSEC.
-      As long as the shared secret key is not
-      compromised, strong authentication is provided for the last hop
-      from a local name server to the user resolver.</t>
+      expensive than the signatures specified in DNSSEC.  As long as
+      the shared secret key is not compromised, strong authentication
+      is provided for the last hop from a local name server to the
+      user resolver.</t>
 
-      <t>Secret keys should be changed periodically.  If the client host
+       <t>Secret keys should be changed periodically.  If the client host
       has been compromised, the server should suspend the use of all
       secrets known to that client.  If possible, secrets should be stored
       in encrypted form.  Secrets should never be transmitted in the clear
@@ -998,6 +970,44 @@
          included in a signed answer. Or with other words when the
          request MAC was not validated the answer must be unsigned
          with a BADKEY or BADSIG TSIG error.</t>
+      </section>
+
+      <section title="Why not DNSSEC?">
+         <t>This section from the original document <xref target="RFC2845"/>
+         analyzes DNSSEC in order to justify the introduction of TSIG.</t>
+
+         <t>DNS has recently been extended by DNSSEC
+         (<xref target="RFC4033"/>, <xref target="RFC4034"/> and
+         <xref target="RFC4035"/>) to provide for data origin
+         authentication, and public key distribution, all based on
+         public key cryptography and public key based digital
+         signatures.  To be practical, this form of security
+         generally requires extensive local caching of keys and
+         tracing of authentication through multiple keys and
+         signatures to a pre-trusted locally configured key.</t>
+
+         <t>One difficulty with the DNSSEC scheme is that common DNS
+         implementations include simple "stub" resolvers which do not
+         have caches.  Such resolvers typically rely on a caching DNS
+         server on another host.  It is impractical for these stub
+         resolvers to perform general DNSSEC authentication and they
+         would naturally depend on their caching DNS server to
+         perform such services for them.  To do so securely requires
+         secure communication of queries and responses.  DNSSEC
+         provides public key transaction signatures to support this,
+         but such signatures are very expensive computationally to
+         generate.  In general, these require the same complex public
+         key logic that is impractical for stubs.</t>
+
+         <t>A second area where use of straight DNSSEC public key
+         based mechanisms may be impractical is authenticating
+         dynamic update <xref target="RFC2136"/> requests. DNSSEC
+         provides for request signatures but with DNSSEC they, like
+         transaction signatures, require computationally expensive
+         public key cryptography and complex authentication logic.
+         Secure Domain Name System Dynamic Update
+         (<xref target="RFC3007"/>) describes how different keys are
+         used in dynamically updated zones.</t>
       </section>
 
     </section>
@@ -1099,6 +1109,9 @@
        in the Abstract and at the beginning of the introduction.</t>
 
        <t>Clarified the layout of TSIG RDATA.</t>
+
+       <t>Moved the text about using DNSSEC from the Introduction
+       to the end of Security Considerations.</t>
 
        <t>Added the security clarifications:
          <list style="numbers">
