@@ -99,6 +99,8 @@
       discovered.
 
 <!-- Add a reference here? None given by the reporter -->
+<!-- Concern from Benno's: improve the wording to not imply
+     that no security problem means not compliant (even when it is true) -->
 
       The implementations were fixed but, to avoid similar problems
       in the future, the two documents were updated and merged,
