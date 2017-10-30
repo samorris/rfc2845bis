@@ -108,44 +108,18 @@
       target="RFC1035"/> is a replicated hierarchical distributed
       database system that provides information fundamental to Internet
       operations, such as name &lt;=&gt; address translation and mail
-      handling information.  DNS has recently been extended by DNSSEC
-      (<xref target="RFC4033"/>, <xref target="RFC4034"/> and <xref
-      target="RFC4035"/>) to provide for data origin authentication, and
-      public key distribution, all based on public key cryptography and
-      public key based digital signatures.  To be practical, this form
-      of security generally requires extensive local caching of keys and
-      tracing of authentication through multiple keys and signatures to
-      a pre-trusted locally configured key.</t>
+      handling information.</t>
 
-      <t>One difficulty with the DNSSEC scheme is that
-      common DNS implementations include simple "stub" resolvers which
-      do not have caches.  Such resolvers typically rely on a caching
-      DNS server on another host.  It is impractical for these stub
-      resolvers to perform general DNSSEC
-      authentication and they would naturally depend on their caching
-      DNS server to perform such services for them.  To do so securely
-      requires secure communication of queries and responses.  DNSSEC
-      provides public key transaction signatures to
-      support this, but such signatures are very expensive
-      computationally to generate.  In general, these require the same
-      complex public key logic that is impractical for stubs.  This
-      document specifies use of a message authentication code (MAC),
-      either HMAC-MD5 or HMAC-SHA (keyed hash functions), to provide an
-      efficient means of point-to-point authentication and integrity
-      checking for transactions.</t>
+      <t>This document specifies use of a message authentication code
+      (MAC), either HMAC-MD5 or HMAC-SHA (keyed hash functions), to
+      provide an efficient means of point-to-point authentication and
+      integrity checking for transactions.</t>
 
-      <t>A second area where use of straight DNSSEC
-      public key based mechanisms may be impractical is authenticating
-      dynamic update <xref target="RFC2136"/> requests. DNSSEC
-      provides for request signatures but with DNSSEC
-      they, like transaction signatures, require
-      computationally expensive public key cryptography and complex
-      authentication logic.  Secure Domain Name System Dynamic Update
-      (<xref target="RFC3007"/>) describes how different keys are used
-      in dynamically updated zones.  This document's secret key based
-      MACs can be used to authenticate DNS update requests as well as
-      transaction responses, providing a lightweight alternative to the
-      protocol described by <xref target="RFC3007"/>.</t>
+      <t>The second area where the secret key based MACs specified in
+      this document can be used is to authenticate DNS update requests
+      as well as transaction responses, providing a lightweight
+      alternative to the protocol described by <xref
+      target="RFC3007"/>.</t>
 
       <t>A further use of this mechanism is to protect zone transfers.
       In this case the data covered would be the whole zone transfer
@@ -221,7 +195,7 @@
         <xref target="RFC1035"/> 2.3.2).</t>
       </section>
 
-      <section title="Record Format" anchor="format">
+      <section title="TSIG Record Format" anchor="format">
         <t><list style="hanging" hangIndent="6">
 
           <t hangText="NAME">The name of the key used in domain
@@ -255,48 +229,68 @@
           <t hangText="RDATA"></t>
         </list></t>
 
-        <texttable style="headers">
-          <ttcol>Field Name</ttcol>
-          <ttcol>Data Type</ttcol>
-          <ttcol>Notes</ttcol>
+	<section title="TSIG RDATA Wire Format">
+	  <t>The RDATA for a TSIG RR consists of an octet stream
+	  Algorithm Name field, a 6 octet Time Signed field, a 2 octet
+	  Fudge field, a 2 octet MAC Size field, a octet stream MAC
+	  field, a 2 octet Original ID, a 2 octet Error field, a 2
+	  octet Other Len field and an octet stream of Other Data.</t>
+	  
+	  <figure><artwork>
 
-          <c>Algorithm Name</c>
-          <c>domain-name</c>
-          <c>Name of the algorithm in domain name syntax.</c>
-
-          <c>Time Signed</c>
-          <c>u_int48_t</c>
-          <c>Seconds since 1-Jan-70 UTC.</c>
-
-          <c>Fudge</c>
-          <c>u_int16_t</c>
-          <c>Seconds of error permitted in Time Signed.</c>
-
-          <c>MAC Size</c>
-          <c>u_int16_t</c>
-          <c>Number of octets in MAC. Truncation is indicated by a
-          MAC size less than the HMAC size.</c>
-
-          <c>MAC</c>
-          <c>octet stream</c>
-          <c>Defined by Algorithm Name.</c>
-
-          <c>Original ID</c>
-          <c>u_int16_t</c>
-          <c>Original message ID</c>
-
-          <c>Error</c>
-          <c>u_int16_t</c>
-          <c>Expanded RCODE covering TSIG processing.</c>
-
-          <c>Other Len</c>
-          <c>u_int16_t</c>
-          <c>Length, in octets, of Other Data.</c>
-
-          <c>Other Data</c>
-          <c>octet stream</c>
-          <c>Empty unless Error == BADTIME</c>
-        </texttable>
+                         1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    /                         Algorithm Name                        /
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    |          Time Signed          +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                               |            Fudge              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |          MAC Size             |                               /
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+             MAC               /
+    /                                                               /
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |          Original ID          |            Error              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |          Other Len            |                               /
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+           Other Data          /
+    /                                                               /
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	  </artwork></figure>
+	  <section title="The Algorithm Name Field">
+	    <t>The Algorithm Name field identifies the TSIG algorithm
+	    name in the domain name syntax.</t>
+	  </section>
+	  <section title="The Time Signed Field">
+	    <t>The Time Signed field specifies seconds since
+	    1970-01-01 UTC.</t>
+	  </section>
+	  <section title="The Fudge Field">
+	    <t>The Fudge field specifies allowed time difference in
+	    seconds permitted in the Time Signed Field.</t>
+	  </section>
+	  <section title="The MAC Size Field">
+	    <t>The MAC Size field specifies the length of MAC field in
+	    octets.  Truncation is indicated by a MAC size less than
+	    the HMAC size.</t>
+	  </section>
+	  <section title="The MAC Field">
+	    <t>The MAC field contents are defined by the used Algorithm.</t>
+	  </section>
+	  <section title="The Error field">
+	    <t>The Error filed contains the Expanded RCODE covering
+	    TSIG processing.</t>
+	  </section>
+	  <section title="The Other Len Field">
+	    <t>The Other Len field specifies the length of Other Data
+	    in octets.</t>
+	  </section>
+	  <section title="The Other Data Field">
+	    <t>The Other Data field is empty unless Error == BADTIME.</t>
+	  </section>
+	</section>
+	
       </section>
 
       <section title="Example">
@@ -506,11 +500,11 @@
 
           <texttable style="headers">
             <ttcol>Field</ttcol>
-            <ttcol>Type</ttcol>
+            <ttcol>Length</ttcol>
             <ttcol>Description</ttcol>
 
             <c>MAC Length</c>
-            <c>u_int16_t</c>
+            <c>2 octets</c>
             <c>in network byte order</c>
 
             <c>MAC Data</c>
@@ -611,10 +605,10 @@
         <t>Upon receipt of a message, server will check if there is a TSIG
         RR.  If one exists, the server is REQUIRED to return a TSIG RR in
         the response.  The server MUST perform the following checks in the
-        following order, check KEY, check MAC, check TIME values,
+        following order, check Key, check MAC, check Time values,
         check Truncation policy.</t>
 
-        <section title="KEY check and error handling">
+        <section title="Key check and error handling">
           <t>If a non-forwarding server does not recognize the key
           used by the client, the server MUST generate an error
           response with RCODE 9 (NOTAUTH) and TSIG ERROR 17 (BADKEY).
@@ -675,7 +669,7 @@
           The server SHOULD log the error.</t>
         </section>
 
-        <section title="TIME check and error handling">
+        <section title="Time check and error handling">
           <t>If the server time is outside the time interval specified
           by the request (which is: Time Signed, plus/minus Fudge),
           the server MUST generate an error response with RCODE 9
@@ -727,7 +721,7 @@
         <section title="Key error handling">
           <t>If an RCODE on a response is 9 (NOTAUTH), and the
           response TSIG validates, and the TSIG key is different
-          from the key used on the request, then this is a KEY
+          from the key used on the request, then this is a Key
           error.  The client MAY retry the request using the key
           specified by the server.  This should never occur, as a
           server MUST NOT sign a response with a different key than
@@ -746,7 +740,7 @@
         <section title="Time error handling">
           <t>If the response RCODE is 9 (NOTAUTH) and the TSIG ERROR
           is 18 (BADTIME), or the current time does not fall in the
-          range specified in the TSIG record, then this is a TIME
+          range specified in the TSIG record, then this is a Time
           error.  This is an indication that the client and server
           clocks are not synchronized.  In this case the client
           SHOULD log the event.  DNS resolvers MUST NOT adjust any
