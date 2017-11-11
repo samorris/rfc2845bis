@@ -76,18 +76,17 @@
       <t>This protocol allows for transaction level authentication using
       shared secrets and one way hashing.  It can be used to authenticate
       dynamic updates as coming from an approved client, or to authenticate
-      responses as coming from an approved recursive name server.</t>
+      responses as coming from an approved name server.</t>
 
       <t>No provision has been made here for distributing the shared
       secrets: it is expected that a network administrator will
       statically configure name servers and clients using some out
-      of band mechanism such as sneaker-net until a secure automated
-      mechanism for key distribution is available.</t>
+      of band mechanism.</t>
 
 <!-- Do not put [reference] in the Abstract -->
 
       <t>This document includes revised original TSIG specifications
-      (RFC2845) and the extension for HMAC-SHA (RFC4635).</t>
+      (RFC2845) and its extension for HMAC-SHA (RFC4635).</t>
     </abstract>
   </front>
 
@@ -95,7 +94,7 @@
     <section title="Introduction">
       <t>In 2017, security problems in two nameservers strictly following
       <xref target="RFC2845"/> and <xref target="RFC4635"/>
-      (i.e., TSIG and HMAC-SHA extension) specifications were
+      (i.e., TSIG and its HMAC-SHA extension) specifications were
       discovered.
 
 <!-- Add a reference here? None given by the reporter -->
@@ -155,7 +154,7 @@
       <t>Since the publication of first version of this document
       (<xref target="RFC2845"/>) a mechanism based on
       asymmetric signatures using the SIG RR was specified (SIG(0)
-      <xref target="RFC2931"/>) when this document uses
+      <xref target="RFC2931"/>) whereas this document uses
       symmetric authentication codes calculated by HMAC <xref
       target="RFC2104"/> using strong hash functions.</t>
     </section>
@@ -231,15 +230,15 @@
           <t hangText="RDATA"></t>
         </list></t>
 
-	<section title="TSIG RDATA Wire Format">
-	  <t>The RDATA for a TSIG RR consists of an octet stream
-	  Algorithm Name field, a uint48_t Time Signed field, a
-	  uint16_t Fudge field, a uint16_t MAC Size field, a octet
-	  stream MAC field, a uint16_t Original ID, a uint16_t Error
-	  field, a uint16_t Other Len field and an octet stream of
-	  Other Data.</t>
-	  
-	  <figure><artwork>
+        <section title="TSIG RDATA Wire Format">
+          <t>The RDATA for a TSIG RR consists of an octet stream
+          Algorithm Name field, a uint48_t Time Signed field, a
+          uint16_t Fudge field, a uint16_t MAC Size field, a octet
+          stream MAC field, a uint16_t Original ID, a uint16_t Error
+          field, a uint16_t Other Len field and an octet stream of
+          Other Data.</t>
+          
+          <figure><artwork>
 
                          1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -260,40 +259,40 @@
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+           Other Data          /
     /                                                               /
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	  </artwork></figure>
-	  <section title="The Algorithm Name Field">
-	    <t>The Algorithm Name field identifies the TSIG algorithm
-	    name in the domain name syntax.</t>
-	  </section>
-	  <section title="The Time Signed Field">
-	    <t>The Time Signed field specifies seconds since
-	    1970-01-01 UTC.</t>
-	  </section>
-	  <section title="The Fudge Field">
-	    <t>The Fudge field specifies allowed time difference in
-	    seconds permitted in the Time Signed field.</t>
-	  </section>
-	  <section title="The MAC Size Field">
-	    <t>The MAC Size field specifies the length of MAC field in
-	    octets.  Truncation is indicated by a MAC size less than
-	    the HMAC size.</t>
-	  </section>
-	  <section title="The MAC Field">
-	    <t>The MAC field contents are defined by the used Algorithm.</t>
-	  </section>
-	  <section title="The Error field">
-	    <t>The Error field contains the Expanded RCODE covering
-	    TSIG processing.</t>
-	  </section>
-	  <section title="The Other Len Field">
-	    <t>The Other Len field specifies the length of Other Data
-	    in octets.</t>
-	  </section>
-	  <section title="The Other Data Field">
-	    <t>The Other Data field is empty unless Error == BADTIME.</t>
-	  </section>
-	</section>
-	
+          </artwork></figure>
+          <section title="The Algorithm Name Field">
+            <t>The Algorithm Name field identifies the TSIG algorithm
+            name in the domain name syntax.</t>
+          </section>
+          <section title="The Time Signed Field">
+            <t>The Time Signed field specifies seconds since
+            1970-01-01 UTC.</t>
+          </section>
+          <section title="The Fudge Field">
+            <t>The Fudge field specifies allowed time difference in
+            seconds permitted in the Time Signed field.</t>
+          </section>
+          <section title="The MAC Size Field">
+            <t>The MAC Size field specifies the length of MAC field in
+            octets.  Truncation is indicated by a MAC size less than
+            the HMAC size.</t>
+          </section>
+          <section title="The MAC Field">
+            <t>The MAC field contents are defined by the used Algorithm.</t>
+          </section>
+          <section title="The Error field">
+            <t>The Error field contains the Expanded RCODE covering
+            TSIG processing.</t>
+          </section>
+          <section title="The Other Len Field">
+            <t>The Other Len field specifies the length of Other Data
+            in octets.</t>
+          </section>
+          <section title="The Other Data Field">
+            <t>The Other Data field is empty unless Error == BADTIME.</t>
+          </section>
+        </section>
+        
       </section>
 
       <section title="Example">
@@ -348,9 +347,9 @@
     <section title="Protocol Operation">
 
       <section title="Effects of adding TSIG to outgoing message">
-        <t>Once the outgoing message has been constructed, the keyed
-        message digest operation can be performed.  The resulting
-        message digest will then be stored in a TSIG which is
+        <t>Once the outgoing message has been constructed, the HMAC
+        computation can be performed.  The resulting
+        MAC will then be stored in a TSIG which is
         appended to the additional data section (the ARCOUNT is
         incremented to reflect this).  If the TSIG record cannot
         be added without causing the message to be truncated, the
@@ -365,16 +364,17 @@
         <t>If an incoming message contains a TSIG record, it MUST
         be the last record in the additional section.  Multiple
         TSIG records are not allowed.  If a TSIG record is present
-        in any other position, the packet is dropped and a response
+        in any other position, the DNS message is dropped and a response
         with RCODE 1 (FORMERR) MUST be returned.  Upon receipt of
         a message with a correctly placed TSIG RR, the TSIG RR is
         copied to a safe location, removed from the DNS Message,
         and decremented out of the DNS message header's ARCOUNT.
-        At this point the keyed message digest operation is performed:
+        At this point the HMAC computation is performed:
         until this operation concludes that the signature is valid,
-        the signature MUST be considered to be invalid.
-        If the algorithm name or key name is unknown to the recipient,
-        or if the message digests do not match, the whole DNS message
+        the signature MUST be considered to be invalid.</t>
+          
+        <t>If the algorithm name or key name is unknown to the recipient,
+        or if the MACs do not match, the whole DNS message
         MUST be discarded.  If the message is a query, a response
         with RCODE 9 (NOTAUTH) MUST be sent back to the originator
         with TSIG ERROR 17 (BADKEY) or TSIG ERROR 16 (BADSIG).  If
@@ -393,7 +393,7 @@
         this were not done, an attacker could replay old messages
         but update the "Time Signed" and "Fudge" fields to make the
         message look new.  This data is named "TSIG Timers", and
-        for the purpose of digest calculation they are invoked in
+        for the purpose of MAC calculation they are invoked in
         their "on the wire" format, in the following order: first
         Time Signed, then Fudge.  For example:</t>
 
@@ -418,9 +418,9 @@
 <!-- Move the truncation policy here? -->
 
       <section title="TSIG Variables and Coverage">
-        <t>When generating or verifying the contents of a TSIG
-        record, the following data are digested, in network byte
-        order or wire format, as appropriate:</t>
+        <t>When generating or verifying the contents of a TSIG record,
+        the following data are passed as input to MAC computation, in
+        network byte order or wire format, as appropriate:</t>
 
         <section title="DNS Message">
           <t>A whole and complete DNS message in wire format, before
@@ -476,9 +476,9 @@
             <c>exactly as transmitted</c>
           </texttable>
 
-          <t>The RR RDLEN and RDATA MAC Length are not included in the hash
-          since they are not guaranteed to be knowable before the MAC is
-          generated.</t>
+          <t>The RR RDLEN and RDATA MAC Length are not included in the
+          input to MAC computation since they are not guaranteed to be
+          knowable before the MAC is generated.</t>
 
           <t>The Original ID field is not included in this section,
           as it has already been substituted for the message ID in
@@ -494,9 +494,10 @@
 
         <section title="Request MAC">
           <t>When generating the MAC to be included in a response, the
-          validated request MAC MUST be included in the digest.  If the
-          request MAC failed to validate, an unsigned error message MUST
-          be returned instead.  (<xref target="on_error"/>).</t>
+          validated request MAC MUST be included in the MAC
+          computation.  If the request MAC failed to validate, an
+          unsigned error message MUST be returned instead.
+          (<xref target="on_error"/>).</t>
 
           <t>The request's MAC is digested in wire format,
           including the following fields:</t>
@@ -518,17 +519,18 @@
       </section>
 
       <section title="Padding">
-        <t>Digested components are fed into the hashing function as a
-        continuous octet stream with no interfield padding.</t>
+        <t>Digested components (i.e., inputs to HMAC computation) are
+        fed into the hashing function as a continuous octet stream
+        with no interfield padding.</t>
       </section>
     </section>
 
     <section title="Protocol Details">
 
       <section title="TSIG generation on requests">
-        <t>Client performs the message digest operation and appends a TSIG
+        <t>Client performs the HMAC computation and appends a TSIG
         record to the additional data section and transmits the request to
-        the server.  The client MUST store the message digest from the
+        the server.  The client MUST store the MAC from the
         request while awaiting an answer.  The digest components for a
         request are:</t>
 
@@ -571,7 +573,7 @@
              TSIG Variables (response)</t>
         </list></t>
 
-        <t>The reason that the request is not included in this digest in
+        <t>The reason that the request is not included in this MAC in
         some cases is to make it possible for the client to verify the
         error.  If the error is not a TSIG error the response MUST be
         generated as specified in <xref target="answers"/>.</t>
@@ -588,8 +590,10 @@
         envelope is processed as a standard answer, and subsequent messages
         have the following digest components:</t>
 
+<!-- Applies only to zone transfer -->
+
         <t><list style="empty">
-          <t>Prior Digest (running)<vspace/>
+          <t>Prior MAC (running)<vspace/>
              DNS Messages (any unsigned messages since the last TSIG)<vspace/>
              TSIG Timers (current message)</t>
         </list></t>
@@ -631,7 +635,7 @@
             <t>If "MAC size" field is greater than HMAC output length:
             <vspace/><vspace/>
               This case MUST NOT be generated and, if received,
-              MUST cause the packet to be dropped and RCODE 1
+              MUST cause the DNS message to be dropped and RCODE 1
               (FORMERR) to be returned.
             </t>
             <t>If "MAC size" field equals HMAC output length:
@@ -645,7 +649,7 @@
               output to an allowable length, as described in
               <xref target="RFC2104"/>, taking initial octets and
               discarding trailing octets.  TSIG truncation can only be
-              to an integral number of octets.  On receipt of a packet
+              to an integral number of octets.  On receipt of a DNS message
               with truncation thus indicated, the locally calculated
               MAC is similarly truncated and only the truncated values
               are compared for authentication.  The request MAC used
@@ -658,7 +662,7 @@
               With the exception of certain TSIG error messages
               described in <xref target="on_error"/>, where it is
               permitted that the MAC size be zero, this case MUST NOT
-              be generated and, if received, MUST cause the packet to
+              be generated and, if received, MUST cause the DNS message to
               be dropped and RCODE 1 (FORMERR) to be returned.
             </t></list></t>
         </section>
@@ -708,7 +712,7 @@
         present in the response.  Otherwise, the response is treated
         as having a format error and discarded.  The client then
         extracts the TSIG, adjusts the ARCOUNT, and calculates the
-        keyed digest in the same way as the server, applying the
+        MAC in the same way as the server, applying the
         same rules to decide if truncated MAC is valid.
         If the TSIG
         does not validate, that response MUST be discarded, unless
@@ -875,8 +879,8 @@
 
       <t>Use of strong random shared secrets is essential to the
       security of TSIG.  See <xref target="RFC4086"/> for a discussion
-      of this issue.  The secret SHOULD be at least as long as the keyed
-      message digest, i.e., 16 bytes for HMAC-MD5 or 20 bytes for
+      of this issue.  The secret SHOULD be at least as long as the HMAC
+      output, i.e., 16 bytes for HMAC-MD5 or 20 bytes for
       HMAC-SHA1.</t>
     </section>
 
@@ -959,10 +963,12 @@
       RFC were taken.</t>
 
       <section title="Issue fixed in this document">
-         <t>To bind an answer with its corresponding request the MAC
-         of the answer is computed using the MAC request. Unfortunately
-         original specifications <xref target="RFC2845"/> failed to
-         clearly require the MAC request to be successfully validated.</t>
+         <t>When signing a DNS reply message using TSIG, its MAC
+         computation uses the request message's MAC as an input to
+         cryptographically relate the reply to the request.
+         Unfortunately, the original TSIG specification
+         <xref target="RFC2845"/> failed to clearly require the request
+         MAC to be successfully validated before using it.</t>
 
          <t>This document proposes the principle that the MAC must be
          considered to be invalid until it was validated. This leads
@@ -1148,9 +1154,9 @@
            is invalid according the the first processing rule in <xref
            target="trunc"/>.</t>
   
-           <t>Promoted the requirement that a secret length should be at
-           least as long as the keyed message digest to a
-           SHOULD <xref target="RFC2119"/> key word.</t>
+           <t>Promoted the requirement that a secret length should be
+           at least as long as the HMAC output to a SHOULD
+           <xref target="RFC2119"/> key word.</t>
 
            <t>Added a short text to explain the security issue.</t>
         </list></t>
