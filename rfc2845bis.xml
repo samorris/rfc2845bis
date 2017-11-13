@@ -215,7 +215,7 @@
           <vspace/><vspace/> The name may be used as a local index
           to the key involved and it is recommended that it be
           globally unique.  Where a key is just shared between two
-          hosts, its name actually only need only be meaningful to
+          hosts, its name actually need only be meaningful to
           them but it is recommended that the key name be mnemonic
           and incorporate the resolver and server host names in
           that order.</t>
