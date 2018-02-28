@@ -32,7 +32,7 @@
 <?rfc inline="yes" ?>
 
 <!-- includes pre RFC 5378 (2008) material -->
-<rfc category="std" docName="draft-dupont-dnsop-rfc2845bis-00"
+<rfc category="std" docName="draft-dupont-dnsop-rfc2845bis-01"
      ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
@@ -580,18 +580,18 @@
         generated as specified in <xref target="answers"/>.</t>
       </section>
 
-      <section title="TSIG on TCP connection">
-        <t>A DNS TCP session can include multiple DNS envelopes.  This is,
-        for example, commonly used by zone transfer.  Using TSIG on such a
-        connection can protect the connection from hijacking and provide
-        data integrity.  The TSIG MUST be included on the first and last
-        DNS envelopes.  It can be optionally placed on any intermediary
-        envelopes.  It is expensive to include it on every envelopes, but
-        it MUST be placed on at least every 100'th envelope.  The first
-        envelope is processed as a standard answer, and subsequent messages
-        have the following digest components:</t>
-
-<!-- Applies only to zone transfer -->
+      <section title="TSIG on zone tranfer over a TCP connection"
+              anchor="tcp">
+        <t>A zone transfer over a DNS TCP session can include multiple
+        DNS messages. Using TSIG on such a connection can protect the
+        connection from hijacking and provide data integrity.  The
+        TSIG MUST be included on the first and last DNS messages, and
+        for new implementations SHOULD be placed on all intermediary
+        messages. For backward compatibility the client which
+        receives DNS messages and verifies TSIG MUST accept up to 99
+        intermediary messages without a TSIG. The first envelope is
+        processed as a standard answer, and subsequent messages have
+        the following digest components:</t>
 
         <t><list style="empty">
           <t>Prior MAC (running)<vspace/>
@@ -1162,7 +1162,21 @@
 
            <t>Added a short text to explain the security issue.</t>
         </list></t>
-      </list></t>
+     </list></t>
+
+     <t>draft-dupont-dnsop-rfc2845bis-01</t>
+     <t><list>
+       <t>Improved wording (post-publication comments).</t>
+
+       <t>Specialized and renamed the "TSIG on TCP connection"
+       (<xref target="tcp"/>) to "TSIG on zone tranfer over a TCP
+       connection". Added a SHOULD for a TSIG in each message
+       (was envelope) for new implementations.</t>
+
+<!-- No other usage than zone tranfer -->
+<!-- Is a current implementation not adding a TSIG to each message -->
+
+     </list></t>
     </section>
 
   </back>
