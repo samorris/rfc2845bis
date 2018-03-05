@@ -132,12 +132,12 @@
       shared secret keys to establish a trust relationship between two
       entities.  Such keys must be protected in a fashion similar to
       private keys, lest a third party masquerade as one of the intended
-      parties (forge MACs).  There is an urgent need to provide simple and
+      parties (by forging the MAC).  There is an urgent need to provide simple and
       efficient authentication between clients and local servers and this
-      proposal addresses that need.  This proposal is unsuitable for
+      proposal addresses that need.  The proposal is unsuitable for
       general server to server authentication for servers which speak with
       many other servers, since key management would become unwieldy with
-      the number of shared keys going up quadratically.  But it is suitable
+      the number of shared keys going up quadratically. But it is suitable
       for many resolvers on hosts that only talk to a few recursive
       servers.</t>
 
@@ -149,7 +149,7 @@
       separate future documents.</t>
 
       <t>Note that use of TSIG presumes prior agreement between the
-      two parties (e.g., resolver and server) involved as to the
+      two parties involved (e.g., resolver and server) as to the
       algorithm and key to be used.</t>
 
       <t>Since the publication of first version of this document
@@ -192,7 +192,8 @@
         <t>As the TSIG RRs are related to one DNS request/response,
         there is no value in storing or retransmitting them, thus the
         TSIG RR is discarded once it has been used to authenticate a DNS
-        message. All multi-octet
+        message. Recommendations concerning the message digest agorithm
+        can be found in <xref target="algorithm_id"/>. All multi-octet
         integers in the TSIG record are sent in network byte order (see
         <xref target="RFC1035"/> 2.3.2).</t>
       </section>
@@ -228,19 +229,15 @@
 
           <t hangText="RdLen">(variable)</t>
 
-          <t hangText="RDATA"></t>
-        </list></t>
-
-        <section title="TSIG RDATA Wire Format">
-          <t>The RDATA for a TSIG RR consists of an octet stream
+          <t hangText="RDATA">The RDATA for a TSIG RR consists of an octet stream
           Algorithm Name field, a uint48_t Time Signed field, a
           uint16_t Fudge field, a uint16_t MAC Size field, a octet
           stream MAC field, a uint16_t Original ID, a uint16_t Error
           field, a uint16_t Other Len field and an octet stream of
           Other Data.</t>
+        </list></t>
           
-          <figure><artwork>
-
+        <figure><artwork>
                          1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -260,39 +257,40 @@
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+           Other Data          /
     /                                                               /
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-          </artwork></figure>
-          <section title="The Algorithm Name Field">
-            <t>The Algorithm Name field identifies the TSIG algorithm
-            name in the domain name syntax.</t>
-          </section>
-          <section title="The Time Signed Field">
-            <t>The Time Signed field specifies seconds since
-            1970-01-01 UTC.</t>
-          </section>
-          <section title="The Fudge Field">
-            <t>The Fudge field specifies allowed time difference in
-            seconds permitted in the Time Signed field.</t>
-          </section>
-          <section title="The MAC Size Field">
-            <t>The MAC Size field specifies the length of MAC field in
-            octets.  Truncation is indicated by a MAC size less than
-            the HMAC size.</t>
-          </section>
-          <section title="The MAC Field">
-            <t>The MAC field contents are defined by the used Algorithm.</t>
-          </section>
-          <section title="The Error field">
-            <t>The Error field contains the Expanded RCODE covering
-            TSIG processing.</t>
-          </section>
-          <section title="The Other Len Field">
-            <t>The Other Len field specifies the length of Other Data
-            in octets.</t>
-          </section>
-          <section title="The Other Data Field">
-            <t>The Other Data field is empty unless Error == BADTIME.</t>
-          </section>
-        </section>
+        </artwork></figure>
+
+        <t><list style="hanging" hangIndent="6">
+          <t>The contents of the RDATA fields are:
+            <list style="symbols">
+  
+              <t>Algorithm Name - identifies the TSIG algorithm name in
+              the domain name syntax.</t>
+  
+              <t>Time Signed - the The Time Signed field specifies seconds
+              since 00:00 on 1970-01-01 UTC.</t>
+  
+               <t>Fudge - specifies allowed time difference in
+              seconds permitted in the Time Signed field.</t>
+  
+              <t>MAC Size - the MAC Size field specifies the length of MAC
+              field in octets.  Truncation is indicated by a MAC size less
+              than the HMAC size.</t>
+  
+              <t>MAC  - the contents of the MAC field are defined by the
+              TSIG algorithm used.</t>
+  
+              <t>Error - contains the expanded RCODE covering TSIG
+              processing.</t>
+  
+              <t>Other Len - specifies the length of the "Other Data" field
+              in octets.</t>
+  
+               <t>Other Data - this field will be empty unless the content
+              of the Error field is BADTIME, in which case it will contain the
+              server's current time (see <xref target="time_check"/>).</t>
+             </list>
+           </t>
+        </list></t>
         
       </section>
 
@@ -677,7 +675,7 @@
           The server SHOULD log the error.</t>
         </section>
 
-        <section title="Time check and error handling">
+        <section title="Time check and error handling" anchor="time_check">
           <t>If the server time is outside the time interval specified
           by the request (which is: Time Signed, plus/minus Fudge),
           the server MUST generate an error response with RCODE 9
@@ -782,7 +780,7 @@
       </section>
     </section>
 
-    <section title="Algorithms and Identifiers">
+    <section title="Algorithms and Identifiers" anchor="algorithm_id">
         <t>The only message digest algorithm specified in the first
         version of these specifications <xref target="RFC2845"/> was
        "HMAC-MD5" (see <xref target="RFC1321"/>, <xref
