@@ -32,7 +32,7 @@
 <?rfc inline="yes" ?>
 
 <!-- includes pre RFC 5378 (2008) material -->
-<rfc category="std" docName="draft-dupont-dnsop-rfc2845bis-01"
+<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-00"
      ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
@@ -1174,6 +1174,12 @@
 <!-- No other usage than zone tranfer -->
 <!-- Is a current implementation not adding a TSIG to each message -->
 
+     </list></t>
+
+     <t>draft-ietf-dnsop-rfc2845bis-00</t>
+     <t><list>
+       <t>Adopted by the IETF DNSOP working group: title updated
+       and version counter reseted to 00.</t>
      </list></t>
     </section>
 
