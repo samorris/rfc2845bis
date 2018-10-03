@@ -32,7 +32,7 @@
 <?rfc inline="yes" ?>
 
 <!-- includes pre RFC 5378 (2008) material -->
-<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-00"
+<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-01"
      ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
@@ -175,6 +175,8 @@
       ERROR = 17 (BADKEY)<vspace/>
       ERROR = 18 (BADTIME)<vspace/>
       ERROR = 22 (BADTRUNC)</t>
+      <t>(See <xref targe="RFC6895"/> Section 2.3 concerning the assignment
+      of the value 16 to BADSIG.)</t>
     </section>
 
     <section title="TSIG RR Format">
@@ -1078,6 +1080,7 @@
       <?rfc include="reference.RFC.4086.xml"?>
       <?rfc include="reference.RFC.6234.xml"?>
       <?rfc include="reference.RFC.6891.xml"?>
+      <?rfc include="reference.RFC.6895.xml"?>
       <?rfc include="reference.RFC.8126.xml"?>
     </references>
 
@@ -1197,6 +1200,7 @@
        <t>Added text from <xref target="RFC3645"/> concerning the
        signing behavior if a secret key is added during a multi-message
        exchange.</t>
+       <t>Added reference to <xref target="RFC6895"/>.</t>
      </list></t>
 
      <t>draft-ietf-dnsop-rfc2845bis-00</t>
