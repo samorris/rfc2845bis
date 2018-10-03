@@ -842,7 +842,7 @@
     </section>
 
     <section title="TSIG Truncation Policy" anchor="trunc_pol">
-      <t>As noted above, two DNS agents (e.g. resolver and server) must
+      <t>As noted above, two DNS agents (e.g., resolver and server) must
       mutually agree to use TSIG.
       Implicit in such an "agreement" are criteria as to acceptable keys and
       algorithms and, with the extensions in this document, truncations.
@@ -933,8 +933,9 @@
       <t>The approach specified here is computationally much less
       expensive than the signatures specified in DNSSEC.  As long as
       the shared secret key is not compromised, strong authentication
-      is provided for the last hop from a local name server to the
-      user resolver.</t>
+      is provided between two DNS systems, e.g., for the last hop from
+      a local name server to the user resolver, or between primary and
+      secondary nameservers..</t>
 
        <t>Secret keys should be changed periodically.  If the client host
       has been compromised, the server should suspend the use of all
