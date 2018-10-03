@@ -1195,7 +1195,7 @@
        <t>Cross reference to considerations for forwarding servers
        added. (Bob Harold)</t>
        <t>Added text from <xref target="RFC3645"/> concerning the
-       signing behavior of a secret key is added during a multi-message
+       signing behavior if a secret key is added during a multi-message
        exchange.</t>
      </list></t>
 
