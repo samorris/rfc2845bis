@@ -635,7 +635,9 @@
           <xref target="forwarding"/>.)</t>
         </section>
 
-        <section title="Specifying Truncation" anchor="trunc">
+        <section title="MAC check and error handling">
+
+          <section title="Specifying Truncation" anchor="trunc">
           <t>When space is at a premium and the strength of the full
           length of an HMAC is not needed, it is reasonable to truncate
           the HMAC and use the truncated value for
@@ -677,9 +679,8 @@
               be generated and, if received, MUST cause the DNS message to
               be dropped and RCODE 1 (FORMERR) to be returned.
             </t></list></t>
-        </section>
+          </section>
 
-        <section title="MAC check and error handling">
           <t>If a TSIG fails to verify, the server MUST generate
           an error response as specified in <xref target="on_error"/>
           with RCODE 9
