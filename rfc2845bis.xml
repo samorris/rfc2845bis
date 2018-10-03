@@ -572,7 +572,9 @@
       <section title="TSIG on TSIG Error returns" anchor="on_error">
         <t>When a server detects an error relating to the key or MAC, the
         server SHOULD send back an unsigned error message (MAC size == 0
-        and empty MAC).  If an error is detected relating to the TSIG
+        and empty MAC). It MUST NOT send back a signed error message.</t>
+
+        <t>If an error is detected relating to the TSIG
         validity period or the MAC is too short for the local policy,
         the server SHOULD send back a signed error message.
         The digest components are:</t>
