@@ -268,17 +268,17 @@
               <t>Algorithm Name - identifies the TSIG algorithm name in
               the domain name syntax.</t>
   
-              <t>Time Signed - the Time Signed field specifies seconds
-              since 00:00 on 1970-01-01 UTC.</t>
+              <t>Time Signed - time signed as seconds since
+              00:00 on 1970-01-01 UTC.</t>
   
-               <t>Fudge - specifies allowed time difference in
+               <t>Fudge - specifies the allowed time difference in
               seconds permitted in the Time Signed field.</t>
   
-              <t>MAC Size - the MAC Size field specifies the length of MAC
+              <t>MAC Size - the length of MAC
               field in octets.  Truncation is indicated by a MAC size less
               than the HMAC size.</t>
   
-              <t>MAC  - the contents of the MAC field are defined by the
+              <t>MAC  - the contents of this field are defined by the
               TSIG algorithm used.</t>
   
               <t>Error - contains the expanded RCODE covering TSIG
