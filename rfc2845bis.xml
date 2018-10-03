@@ -1183,7 +1183,7 @@
      <t><list>
        <t>Relationship between protocol change and principle of
        assuming the request MAC is invalid until validated clarified.
-       (Jinmei Tatuya).</t>
+       (Jinmei Tatuya)</t>
        <t>Cross reference to considerations for forwarding servers
        added. (Bob Harold)</t>
      </list></t>
