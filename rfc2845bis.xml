@@ -611,7 +611,7 @@
         <t>Upon receipt of a message, server will check if there is a TSIG
         RR.  If one exists, the server is REQUIRED to return a TSIG RR in
         the response.  The server MUST perform the following checks in the
-        following order, check Key, check MAC, check Time values,
+        following order, check KEY, check MAC, check TIME values,
         check Truncation policy.</t>
 
         <section title="Key check and error handling">
