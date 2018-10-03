@@ -619,7 +619,9 @@
           used by the client, the server MUST generate an error
           response with RCODE 9 (NOTAUTH) and TSIG ERROR 17 (BADKEY).
           This response MUST be unsigned as specified in <xref target=
-          "on_error"/>. The server SHOULD log the error.</t>
+          "on_error"/>. The server SHOULD log the error. (Special
+          considerations apply to forwarding servers, see
+          <xref target="forwarding"/>.)</t>
         </section>
 
         <section title="Specifying Truncation" anchor="trunc">
@@ -764,7 +766,8 @@
         </section>
       </section>
 
-      <section title="Special considerations for forwarding servers">
+      <section title="Special considerations for forwarding servers"
+       anchor="forwarding">
         <t>A server acting as a forwarding server of a DNS message
         SHOULD check for the existence of a TSIG record.  If the name on
         the TSIG is not of a secret that the server shares with the
@@ -1096,7 +1099,7 @@
 
     </section>
 
-    <section title="Change History">
+    <section title="Change History (to be removed before publication)">
 
      <t>draft-dupont-dnsop-rfc2845bis-00</t>
      <t><list>
@@ -1181,6 +1184,8 @@
        <t>Relationship between protocol change and principle of
        assuming the request MAC is invalid until validated clarified.
        (Jinmei Tatuya).</t>
+       <t>Cross reference to considerations for forwarding servers
+       added. (Bob Harold)</t>
      </list></t>
 
      <t>draft-ietf-dnsop-rfc2845bis-00</t>
