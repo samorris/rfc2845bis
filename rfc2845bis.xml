@@ -546,10 +546,18 @@
       </section>
 
       <section title="TSIG on Answers" anchor="answers">
-        <t>When a server has generated a response to a signed request, it
-        signs the response using the same algorithm and key.  The server
-        MUST NOT generate a signed response to an unsigned request or
-        a request that fails validation. The digest components are:</t>
+        <t>When a server has generated a response to a signed request,
+        it signs the response using the same algorithm and key.  The
+        server MUST NOT generate a signed response to a request that
+        fails validation. It also MUST NOT not generate a signed
+        response to an unsigned request, except in the case of a
+        response to a client's unsigned TKEY request if the secret key
+        is established on the server side after the server processed the
+        client's request.  Signing responses to unsigned TKEY requests
+        MUST be explicitly specified in the description of an individual
+        secret key establishment algorithm <xref target="RFC3645"/>.</t>
+
+        <t>The digest components are:</t>
 
         <t><list style="empty">
           <t>Request MAC<vspace/>
@@ -1186,6 +1194,9 @@
        (Jinmei Tatuya)</t>
        <t>Cross reference to considerations for forwarding servers
        added. (Bob Harold)</t>
+       <t>Added text from <xref target="RFC3645"/> concerning the
+       signing behavior of a secret key is added during a multi-message
+       exchange.</t>
      </list></t>
 
      <t>draft-ietf-dnsop-rfc2845bis-00</t>
