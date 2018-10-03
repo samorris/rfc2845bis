@@ -175,7 +175,7 @@
       ERROR = 17 (BADKEY)<vspace/>
       ERROR = 18 (BADTIME)<vspace/>
       ERROR = 22 (BADTRUNC)</t>
-      <t>(See <xref targe="RFC6895"/> Section 2.3 concerning the assignment
+      <t>(See <xref target="RFC6895"/> Section 2.3 concerning the assignment
       of the value 16 to BADSIG.)</t>
     </section>
 
