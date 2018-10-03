@@ -550,8 +550,9 @@
       <section title="TSIG on Answers" anchor="answers">
         <t>When a server has generated a response to a signed request,
         it signs the response using the same algorithm and key.  The
-        server MUST NOT generate a signed response to a request that
-        fails validation. It also MUST NOT not generate a signed
+        server MUST NOT generate a signed response to a request if
+        either the KEY is invalid or the MAC fails validation.
+        It also MUST NOT not generate a signed
         response to an unsigned request, except in the case of a
         response to a client's unsigned TKEY request if the secret key
         is established on the server side after the server processed the
