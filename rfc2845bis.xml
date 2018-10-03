@@ -842,8 +842,8 @@
     </section>
 
     <section title="TSIG Truncation Policy" anchor="trunc_pol">
-      <t>Use of TSIG is by mutual agreement between two DNS agents,
-      e.g., a resolver and server.
+      <t>As noted above, two DNS agents (e.g. resolver and server) must
+      mutually agree to use TSIG.
       Implicit in such an "agreement" are criteria as to acceptable keys and
       algorithms and, with the extensions in this document, truncations.
       Note that it is common for implementations to bind the TSIG secret
