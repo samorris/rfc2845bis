@@ -266,7 +266,7 @@
               <t>Algorithm Name - identifies the TSIG algorithm name in
               the domain name syntax.</t>
   
-              <t>Time Signed - the The Time Signed field specifies seconds
+              <t>Time Signed - the Time Signed field specifies seconds
               since 00:00 on 1970-01-01 UTC.</t>
   
                <t>Fudge - specifies allowed time difference in
