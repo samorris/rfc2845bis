@@ -963,19 +963,19 @@
       RFC were taken.</t>
 
       <section title="Issue fixed in this document">
-         <t>When signing a DNS reply message using TSIG, its MAC
+         <t>When signing a DNS reply message using TSIG, the MAC
          computation uses the request message's MAC as an input to
-         cryptographically relate the reply to the request.
-         Unfortunately, the original TSIG specification
-         <xref target="RFC2845"/> failed to clearly require the request
-         MAC to be successfully validated before using it.</t>
+         cryptographically relate the reply to the request.  The
+         original TSIG specification <xref target="RFC2845"/> required
+         that the TIME values be checked before the request's MAC.  If
+         the TIME was invalid, some implementations failed to carry out
+         further checks and could use an invalid request MAC in the
+         signed reply.</t>
 
-         <t>This document proposes the principle that the MAC must be
-         considered to be invalid until it was validated. This leads
-         to the requirement that only a validated request MAC is
-         included in a signed answer. Or with other words when the
-         request MAC was not validated the answer must be unsigned
-         with a BADKEY or BADSIG TSIG error.</t>
+         <t>This document proposes the principle that the request MAC
+         must be considered to be invalid until it has been validated:
+         until then, any answer must be unsigned.  For this reason, the
+         request MAC is now checked before the TIME value.</t>
       </section>
 
       <section title="Why not DNSSEC?">
@@ -1176,10 +1176,17 @@
 
      </list></t>
 
+     <t>draft-ietf-dnsop-rfc2845bis-01</t>
+     <t><list>
+       <t>Relationship between protocol change and principle of
+       assuming the request MAC is invalid until validated clarified.
+       (Jinmei Tatuya).</t>
+     </list></t>
+
      <t>draft-ietf-dnsop-rfc2845bis-00</t>
      <t><list>
        <t>Adopted by the IETF DNSOP working group: title updated
-       and version counter reseted to 00.</t>
+       and version counter reset to 00.</t>
      </list></t>
     </section>
 
