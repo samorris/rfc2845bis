@@ -81,6 +81,21 @@
         <email>paul@redbarn.org</email>
       </address>
     </author>
+
+    <author fullname="Donald E. Eastlake 3rd" initials="D." surname="Eastlake">
+      <organization abbrev="Huawei">Huawei Technologies</organization>
+      <address>
+        <postal>
+          <street>155 Beaver Street</street>
+          <city>Milford</city>
+          <region>MA</region>
+          <code>01753</code>
+          <country>United States</country>
+        </postal>
+        <email>d3e3e3@gmail.com</email>
+      </address>
+    </author>
+
     <date/>
     <area>Operations and Management Area</area>
     <workgroup>Internet Engineering Task Force</workgroup>
