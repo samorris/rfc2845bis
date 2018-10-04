@@ -1148,9 +1148,9 @@
            response.</t>
   
            <t>Added requirement that a request that has not been
-           validated to the MUST NOT generate a signed response.</t>
+           validated MUST NOT generate a signed response.</t>
   
-           <t>Added note about MAC too short for the local policy to the
+           <t>Added note about MAC too short for the local policy to
            <xref target="on_error"/>.</t>
   
            <t>Changed the order of server checks and swapped corresponding
@@ -1194,6 +1194,12 @@
 
      </list></t>
 
+     <t>draft-ietf-dnsop-rfc2845bis-00</t>
+     <t><list>
+       <t>Adopted by the IETF DNSOP working group: title updated
+       and version counter reset to 00.</t>
+     </list></t>
+
      <t>draft-ietf-dnsop-rfc2845bis-01</t>
      <t><list>
        <t>Relationship between protocol change and principle of
@@ -1205,12 +1211,6 @@
        signing behavior if a secret key is added during a multi-message
        exchange.</t>
        <t>Added reference to <xref target="RFC6895"/>.</t>
-     </list></t>
-
-     <t>draft-ietf-dnsop-rfc2845bis-00</t>
-     <t><list>
-       <t>Adopted by the IETF DNSOP working group: title updated
-       and version counter reset to 00.</t>
      </list></t>
     </section>
 
