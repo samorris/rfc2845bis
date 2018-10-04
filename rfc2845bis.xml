@@ -1211,6 +1211,7 @@
        signing behavior if a secret key is added during a multi-message
        exchange.</t>
        <t>Added reference to <xref target="RFC6895"/>.</t>
+       <t>Many little improvements in the wording.</t>
      </list></t>
     </section>
 
