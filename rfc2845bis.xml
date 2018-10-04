@@ -638,6 +638,11 @@
         </section>
 
         <section title="MAC check and error handling">
+          <t>If a TSIG fails to verify, the server MUST generate an
+          error response as specified in <xref target="on_error"/> with
+          RCODE 9 (NOTAUTH) and TSIG ERROR 16 (BADSIG).  This response
+          MUST be unsigned as specified in <xref target="on_error"/>.
+          The server SHOULD log the error.</t>
 
           <section title="Specifying Truncation" anchor="trunc">
           <t>When space is at a premium and the strength of the full
@@ -683,12 +688,6 @@
             </t></list></t>
           </section>
 
-          <t>If a TSIG fails to verify, the server MUST generate
-          an error response as specified in <xref target="on_error"/>
-          with RCODE 9
-          (NOTAUTH) and TSIG ERROR 16 (BADSIG).  This response MUST
-          be unsigned as specified in <xref target="on_error"/>.
-          The server SHOULD log the error.</t>
         </section>
 
         <section title="Time check and error handling" anchor="time_check">
