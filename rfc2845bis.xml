@@ -47,7 +47,7 @@
           <city>Redwood City</city>
           <region>CA</region>
           <code>94063</code>
-          <country>United States</country>
+          <country>United States of America</country>
         </postal>
         <email>Francis.Dupont@fdupont.fr</email>
       </address>
@@ -62,13 +62,13 @@
           <city>Redwood City</city>
           <region>CA</region>
           <code>94063</code>
-          <country>United States</country>
+          <country>United States of America</country>
         </postal>
         <email>stephen@isc.org</email>
       </address>
     </author>
 
-    <author fullname="Paul Vixie" initials="P." surname="Vixie">
+    <author fullname="Paul Vixie" initials="P" surname="Vixie">
       <organization abbrev="Farsight">Farsight Security Inc</organization>
       <address>
         <postal>
@@ -76,13 +76,13 @@
           <city>San Mateo</city>
           <region>CA</region>
           <code>94402</code>
-          <country>United States</country>
+          <country>United States of America</country>
         </postal>
         <email>paul@redbarn.org</email>
       </address>
     </author>
 
-    <author fullname="Donald E. Eastlake 3rd" initials="D." surname="Eastlake">
+    <author fullname="Donald E. Eastlake 3rd" initials="D" surname="Eastlake 3rd">
       <organization abbrev="Huawei">Huawei Technologies</organization>
       <address>
         <postal>
@@ -90,9 +90,23 @@
           <city>Milford</city>
           <region>MA</region>
           <code>01753</code>
-          <country>United States</country>
+          <country>United States of America</country>
         </postal>
         <email>d3e3e3@gmail.com</email>
+      </address>
+    </author>
+
+    <author fullname="Olafur Gudmundsson" initials="O" surname="Gudmundsson">
+      <organization abbrev="CloudFlare">CloudFlare</organization>
+      <address>
+        <postal>
+          <street/>
+          <city>San Francisco</city>
+          <region>CA</region>
+          <code>94107</code>
+          <country>United States of America</country>
+        </postal>
+        <email>olafur+ietf@cloudflare.com</email>
       </address>
     </author>
 
