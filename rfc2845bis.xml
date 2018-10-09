@@ -38,8 +38,7 @@
   <front>
     <title abbrev="DNS TSIG">Secret Key Transaction Authentication for DNS (TSIG)</title>
 
-    <author fullname="Francis Dupont" initials="F." surname="Dupont"
-            role="editor">
+    <author fullname="Francis Dupont" initials="F." surname="Dupont">
       <organization abbrev="ISC">Internet Software Consortium</organization>
       <address>
         <postal>
@@ -53,8 +52,7 @@
       </address>
     </author>
 
-    <author fullname="Stephen Morris" initials="S." surname="Morris"
-            role="editor">
+    <author fullname="Stephen Morris" initials="S." surname="Morris">
       <organization abbrev="ISC">Internet Software Consortium</organization>
       <address>
         <postal>
@@ -121,9 +119,7 @@
       responses as coming from an approved name server.</t>
 
       <t>No provision has been made here for distributing the shared
-      secrets: it is expected that a network administrator will
-      statically configure name servers and clients using some out
-      of band mechanism.</t>
+      secrets.</t>
 
 <!-- Do not put [reference] in the Abstract -->
 
@@ -134,6 +130,13 @@
 
   <middle>
     <section title="Introduction">
+
+      <t>The Domain Name System (DNS) <xref target="RFC1034"/>, <xref
+      target="RFC1035"/> is a replicated hierarchical distributed
+      database system that provides information fundamental to Internet
+      operations, such as name &lt;=&gt; address translation and mail
+      handling information.</t>
+
       <t>In 2017, security problems in two nameservers strictly following
       <xref target="RFC2845"/> and <xref target="RFC4635"/>
       (i.e., TSIG and its HMAC-SHA extension) specifications were
@@ -145,18 +148,12 @@
 
       The implementations were fixed but, to avoid similar problems
       in the future, the two documents were updated and merged,
-      producing these revised specifications for TSIG.</t>
-
-      <t>The Domain Name System (DNS) <xref target="RFC1034"/>, <xref
-      target="RFC1035"/> is a replicated hierarchical distributed
-      database system that provides information fundamental to Internet
-      operations, such as name &lt;=&gt; address translation and mail
-      handling information.</t>
+      producing this revised specification for TSIG.</t>
 
       <t>This document specifies use of a message authentication code
       (MAC), either HMAC-MD5 or HMAC-SHA (keyed hash functions), to
       provide an efficient means of point-to-point authentication and
-      integrity checking for transactions.</t>
+      integrity checking for DNS transactions.</t>
 
       <t>The second area where the secret key based MACs specified in
       this document can be used is to authenticate DNS update requests
@@ -191,7 +188,7 @@
       separate future documents.</t>
 
       <t>Note that use of TSIG presumes prior agreement between the
-      two parties involved (e.g., resolver and server) as to the
+      two parties involved (e.g., resolver and server) as to any
       algorithm and key to be used.</t>
 
       <t>Since the publication of first version of this document
@@ -236,7 +233,7 @@
         <t>As the TSIG RRs are related to one DNS request/response,
         there is no value in storing or retransmitting them, thus the
         TSIG RR is discarded once it has been used to authenticate a DNS
-        message. Recommendations concerning the message digest agorithm
+        message. Recommendations concerning the message digest algorithm
         can be found in <xref target="algorithm_id"/>. All multi-octet
         integers in the TSIG record are sent in network byte order (see
         <xref target="RFC1035"/> 2.3.2).</t>
@@ -311,17 +308,19 @@
               the domain name syntax.</t>
   
               <t>Time Signed - time signed as seconds since
-              00:00 on 1970-01-01 UTC.</t>
+              00:00 on 1970-01-01 UTC ignoring leap seconds.</t>
   
                <t>Fudge - specifies the allowed time difference in
               seconds permitted in the Time Signed field.</t>
   
               <t>MAC Size - the length of MAC
               field in octets.  Truncation is indicated by a MAC size less
-              than the HMAC size.</t>
+              than the size of the keyed hash produced by the algorithm
+              specified by the Algorithm Name.</t>
   
               <t>MAC  - the contents of this field are defined by the
-              TSIG algorithm used.</t>
+              TSIG algorithm used, possibly truncated as specified by
+              MAC Size.</t>
   
               <t>Error - contains the expanded RCODE covering TSIG
               processing.</t>
@@ -409,12 +408,10 @@
         TSIG records are not allowed.  If a TSIG record is present
         in any other position, the DNS message is dropped and a response
         with RCODE 1 (FORMERR) MUST be returned.  Upon receipt of
-        a message with a correctly placed TSIG RR, the TSIG RR is
+        a message with exactly one correctly placed TSIG RR, the TSIG RR is
         copied to a safe location, removed from the DNS Message,
         and decremented out of the DNS message header's ARCOUNT.
-        At this point the HMAC computation is performed:
-        until this operation concludes that the signature is valid,
-        the signature MUST be considered to be invalid.</t>
+        At this point the keyed hash (HMAC) computation is performed.</t>
           
         <t>If the algorithm name or key name is unknown to the recipient,
         or if the MACs do not match, the whole DNS message
@@ -428,6 +425,10 @@
         Care should be taken to ensure that logging of this type
         of event does not open the system to a denial of service
         attack.</t>
+
+        <t>Until these error checks are successfully passed, concluding
+        that the signature is valid, the signature MUST be considered to
+        be invalid.</t>
       </section>
 
       <section title="Time values used in TSIG calculations">
@@ -436,7 +437,7 @@
         this were not done, an attacker could replay old messages
         but update the "Time Signed" and "Fudge" fields to make the
         message look new.  This data is named "TSIG Timers", and
-        for the purpose of MAC calculation they are invoked in
+        for the purpose of MAC calculation they are hashed in
         their "on the wire" format, in the following order: first
         Time Signed, then Fudge.  For example:</t>
 
@@ -561,17 +562,17 @@
         </section>
       </section>
 
-      <section title="Padding">
-        <t>Digested components (i.e., inputs to HMAC computation) are
+      <section title="Component Padding">
+        <t>Digested components (i.e., inputs to keyed hash computation) are
         fed into the hashing function as a continuous octet stream
-        with no interfield padding.</t>
+        with no interfield separator or padding.</t>
       </section>
     </section>
 
     <section title="Protocol Details">
 
       <section title="TSIG generation on requests">
-        <t>Client performs the HMAC computation and appends a TSIG
+        <t>Client performs the keyed hash (HMAC) computation and appends a TSIG
         record to the additional data section and transmits the request to
         the server.  The client MUST store the MAC from the
         request while awaiting an answer.  The digest components for a
@@ -585,7 +586,7 @@
         <t>Note that some older name servers will not accept requests with
         a nonempty additional data section.  Clients SHOULD only attempt
         signed transactions with servers who are known to support TSIG and
-        share some secret key with the client -- so, this is not a problem
+        share some algorithm and secret key with the client -- so, this is not a problem
         in practice.</t>
       </section>
 
@@ -633,18 +634,17 @@
         generated as specified in <xref target="answers"/>.</t>
       </section>
 
-      <section title="TSIG on zone tranfer over a TCP connection"
+      <section title="TSIG on zone transfer over a TCP connection"
               anchor="tcp">
         <t>A zone transfer over a DNS TCP session can include multiple
         DNS messages. Using TSIG on such a connection can protect the
-        connection from hijacking and provide data integrity.  The
-        TSIG MUST be included on the first and last DNS messages, and
-        for new implementations SHOULD be placed on all intermediary
-        messages. For backward compatibility the client which
-        receives DNS messages and verifies TSIG MUST accept up to 99
-        intermediary messages without a TSIG. The first envelope is
-        processed as a standard answer, and subsequent messages have
-        the following digest components:</t>
+        connection from hijacking and provide data integrity.  The TSIG
+        MUST be included on the first and last DNS messages, and SHOULD
+        be placed on all intermediary messages. For backward
+        compatibility, a client which receives DNS messages and verifies
+        TSIG MUST accept up to 99 intermediary messages without a TSIG.
+        The first envelope is processed as a standard answer, and
+        subsequent messages have the following digest components:</t>
 
         <t><list style="empty">
           <t>Prior MAC (running)<vspace/>
@@ -688,27 +688,27 @@
 
           <section title="Specifying Truncation" anchor="trunc">
           <t>When space is at a premium and the strength of the full
-          length of an HMAC is not needed, it is reasonable to truncate
-          the HMAC and use the truncated value for
+          length of a MAC is not needed, it is reasonable to truncate
+          the keyed hash and use the truncated value for
           authentication.  HMAC SHA-1 truncated to 96 bits is an option
           available in several IETF protocols, including IPsec and TLS.</t>
 
           <t>Processing of a truncated MAC follows these rules
           <list style="numbers">
-            <t>If "MAC size" field is greater than HMAC output length:
+            <t>If "MAC size" field is greater than keyed hash output length:
             <vspace/><vspace/>
               This case MUST NOT be generated and, if received,
               MUST cause the DNS message to be dropped and RCODE 1
               (FORMERR) to be returned.
             </t>
-            <t>If "MAC size" field equals HMAC output length:
+            <t>If "MAC size" field equals keyed hash output length:
             <vspace/><vspace/>
-              The entire output HMAC output is present and used.
+              The entire output keyed hash output is present and used.
             </t>
-            <t>"MAC size" field is less than HMAC output length but
+            <t>"MAC size" field is less than keyed hash output length but
             greater than that specified in case 4, below:
             <vspace/><vspace/>
-              This is sent when the signer has truncated the HMAC
+              This is sent when the signer has truncated the keyed hash
               output to an allowable length, as described in
               <xref target="RFC2104"/>, taking initial octets and
               discarding trailing octets.  TSIG truncation can only be
@@ -813,8 +813,8 @@
 
         <section title="Truncation error handling" anchor="trunc_err">
           <t>If the response RCODE is 9 (NOTAUTH) and the TSIG ERROR
-          is 22 (BADTRUNC) the this is a Truncation error. The client
-          MAY retry with lesser truncation up to the full HMAC output
+          is 22 (BADTRUNC) then this is a Truncation error. The client
+          MAY retry with a lesser truncation up to the full HMAC output
           (no truncation), using the truncation used in the response
           as a hint for what the server policy allowed
           (<xref target="trunc_pol"/>). Clients SHOULD log this event.</t>
@@ -862,7 +862,7 @@
         Key agreement can be by the TKEY mechanism <xref target="RFC2930"/>
         or some other mutually agreeable method.</t>
 
-        <t>The current HMAC-MD5.SIG-ALG.REG.INT and gss-tsig identifiers are
+        <t>The current HMAC-MD5.SIG-ALG.REG.INT and gss-tsig <xref target="RFC3645"/> identifiers are
         included in the table below for convenience.  Implementations that
         support TSIG MUST also implement HMAC SHA1 and HMAC SHA256 and MAY
         implement gss-tsig and the other algorithms listed below.</t>
@@ -900,12 +900,12 @@
       <t>When a local policy permits acceptance of a TSIG with a particular
       algorithm and a particular non-zero amount of truncation, it SHOULD
       also permit the use of that algorithm with lesser truncation (a
-      longer MAC) up to the full HMAC output.</t>
+      longer MAC) up to the full keyed hash output.</t>
 
       <t>Regardless of a lower acceptable truncated MAC length specified by
       local policy, a reply SHOULD be sent with a MAC at least as long as
       that in the corresponding request. Note if the request specified a MAC
-      length longer than the HMAC output it will be rejected by
+      length longer than the keyed hash output it will be rejected by
       processing rules <xref target="trunc"/> case 1.</t>
 
       <t>Implementations permitting multiple acceptable algorithms and/or
@@ -937,7 +937,7 @@
 
       <t>Use of strong random shared secrets is essential to the
       security of TSIG.  See <xref target="RFC4086"/> for a discussion
-      of this issue.  The secret SHOULD be at least as long as the HMAC
+      of this issue.  The secret SHOULD be at least as long as the keyed hash
       output, i.e., 16 bytes for HMAC-MD5 or 20 bytes for
       HMAC-SHA1.</t>
     </section>
@@ -962,12 +962,10 @@
       name for historical reasons;
       other algorithm names are simple (i.e., single-component) names.</t>
 
-      <t>IANA maintains a registry of "TSIG Error values" to be used
-      for "Error" values as defined in <xref target="format"/>.
-      Initial values should be those defined in <xref target="numbers"/>.
-      New TSIG
-      error codes for the TSIG error field are assigned using the IETF
-      Consensus policy defined in <xref target="RFC8126"/>.</t>
+      <t>IANA maintains a registry of RCODES (error codes), including
+      "TSIG Error values" to be used for "Error" values as defined in
+      <xref target="format"/>. New error codes are assigned and
+      specified as in <xref target="RFC6895"/>.</t>
     </section>
 
     <section title="Security Considerations">
@@ -983,8 +981,9 @@
       secrets known to that client.  If possible, secrets should be stored
       in encrypted form.  Secrets should never be transmitted in the clear
       over any network.  This document does not address the issue on how
-      to distribute secrets. Secrets should never be shared by more than
-      two entities.</t>
+      to distribute secrets except that it mentions the possibilities
+      of manual configuration and the use of TKEY <xref target="RFC2030"/>.
+      Secrets SHOULD NOT be shared by more than two entities.</t>
 
       <t>This mechanism does not authenticate source data, only its
       transmission between two parties who share some secret.  The
@@ -997,7 +996,7 @@
       <t>A fudge value that is too large may leave the server open
       to replay attacks.  A fudge value that is too small may cause
       failures if machines are not time synchronized or there are unexpected
-      network delays.  The recommended value in most situation is 300
+      network delays.  The recommended value in most situations is 300
       seconds.</t>
 
       <t>For all of the message authentication code algorithms listed in
@@ -1112,6 +1111,7 @@
          <seriesInfo name="FIPS" value="PUB 202"/>
       </reference>
       <?rfc include="reference.RFC.1321.xml"?>
+      <?rfc include="reference.RFC.2030.xml"?>
       <?rfc include="reference.RFC.2104.xml"?>
       <?rfc include="reference.RFC.2136.xml"?>
       <?rfc include="reference.RFC.2930.xml"?>
@@ -1131,7 +1131,7 @@
     </references>
 
     <section title="Acknowledgments" anchor="acks">
-      <t>This document just consolidates and updates the earlier documents
+      <t>This document consolidates and updates the earlier documents
       by the authors of <xref target="RFC2845"/> (Paul Vixie,
       Olafur Gudmundsson, Donald E. Eastlake 3rd and Brian Wellington)
       and <xref target="RFC4635"/> (Donald E. Eastlake 3rd). It would
@@ -1211,7 +1211,7 @@
   
            <t>Removed the limit to HMAC output in replies as a request
            which specified a MAC length longer than the HMAC output
-           is invalid according the the first processing rule in <xref
+           is invalid according to the first processing rule in <xref
            target="trunc"/>.</t>
   
            <t>Promoted the requirement that a secret length should be
@@ -1253,7 +1253,7 @@
        signing behavior if a secret key is added during a multi-message
        exchange.</t>
        <t>Added reference to <xref target="RFC6895"/>.</t>
-       <t>Many little improvements in the wording.</t>
+       <t>Many improvements in the wording.</t>
      </list></t>
     </section>
 
