@@ -108,6 +108,17 @@
       </address>
     </author>
 
+    <author fullname="Brian Wellington" initials="B" surname="Wellington">
+      <organization abbrev="Akamai">Akamai</organization>
+      <address>
+        <postal>
+          <street/>
+          <country>United States of America</country>
+        </postal>
+        <email>bwelling@akamai.com</email>
+      </address>
+    </author>
+
     <date/>
     <area>Operations and Management Area</area>
     <workgroup>Internet Engineering Task Force</workgroup>
