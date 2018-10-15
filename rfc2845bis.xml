@@ -1239,11 +1239,11 @@
        <t>Improved wording (post-publication comments).</t>
 
        <t>Specialized and renamed the "TSIG on TCP connection"
-       (<xref target="tcp"/>) to "TSIG on zone tranfer over a TCP
+       (<xref target="tcp"/>) to "TSIG on zone transfer over a TCP
        connection". Added a SHOULD for a TSIG in each message
        (was envelope) for new implementations.</t>
 
-<!-- No other usage than zone tranfer -->
+<!-- No other usage than zone transfer -->
 <!-- Is a current implementation not adding a TSIG to each message -->
 
      </list></t>
