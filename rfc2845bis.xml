@@ -994,7 +994,7 @@
       in encrypted form.  Secrets should never be transmitted in the clear
       over any network.  This document does not address the issue on how
       to distribute secrets except that it mentions the possibilities
-      of manual configuration and the use of TKEY <xref target="RFC2030"/>.
+      of manual configuration and the use of TKEY <xref target="RFC2930"/>.
       Secrets SHOULD NOT be shared by more than two entities.</t>
 
       <t>This mechanism does not authenticate source data, only its
@@ -1123,7 +1123,6 @@
          <seriesInfo name="FIPS" value="PUB 202"/>
       </reference>
       <?rfc include="reference.RFC.1321.xml"?>
-      <?rfc include="reference.RFC.2030.xml"?>
       <?rfc include="reference.RFC.2104.xml"?>
       <?rfc include="reference.RFC.2136.xml"?>
       <?rfc include="reference.RFC.2930.xml"?>
