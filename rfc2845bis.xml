@@ -873,10 +873,11 @@
         Key agreement can be by the TKEY mechanism <xref target="RFC2930"/>
         or some other mutually agreeable method.</t>
 
-        <t>The current HMAC-MD5.SIG-ALG.REG.INT and gss-tsig <xref target="RFC3645"/> identifiers are
-        included in the table below for convenience.  Implementations that
-        support TSIG MUST also implement HMAC SHA1 and HMAC SHA256 and MAY
-        implement gss-tsig and the other algorithms listed below.</t>
+        <t>The current HMAC-MD5.SIG-ALG.REG.INT and gss-tsig
+        <xref target="RFC3645"/> identifiers are included in the table
+        below for convenience.  Implementations that support TSIG MUST
+        also implement HMAC SHA1 and HMAC SHA256 and MAY implement
+        gss-tsig and the other algorithms listed below.</t>
 
         <texttable style="headers">
           <ttcol>Requirement</ttcol>
