@@ -32,7 +32,7 @@
 <?rfc inline="yes" ?>
 
 <!-- includes pre RFC 5378 (2008) material -->
-<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-02"
+<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-03"
      ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
@@ -124,18 +124,14 @@
     <workgroup>Internet Engineering Task Force</workgroup>
 
     <abstract>
-      <t>This protocol allows for transaction level authentication using
-      shared secrets and one way hashing.  It can be used to authenticate
+      <t>This document describes a protocol for transaction level authentication
+      using shared secrets and one way hashing.  It can be used to authenticate
       dynamic updates as coming from an approved client, or to authenticate
       responses as coming from an approved name server.</t>
 
-      <t>No provision has been made here for distributing the shared
-      secrets.</t>
-
-<!-- Do not put [reference] in the Abstract -->
-
-      <t>This document includes revised original TSIG specifications
-      (RFC2845) and its extension for HMAC-SHA (RFC4635).</t>
+      <t>No recommendation is made here for distributing the shared secrets:
+      it is expected that a network administrator will statically configure
+      name servers and clients using some out of band mechanism.</t>
     </abstract>
   </front>
 
@@ -148,10 +144,10 @@
       operations, such as name &lt;=&gt; address translation and mail
       handling information.</t>
 
-      <t>In 2017, security problems in two nameservers strictly following
+      <t>In 2017, two nameservers strictly following
       <xref target="RFC2845"/> and <xref target="RFC4635"/>
       (i.e., TSIG and its HMAC-SHA extension) specifications were
-      discovered.
+      discovered to have security problems related to this feature.
 
 <!-- Add a reference here? None given by the reporter -->
 <!-- Concern from Benno's: improve the wording to not imply
@@ -162,13 +158,10 @@
       producing this revised specification for TSIG.</t>
 
       <t>This document specifies use of a message authentication code
-      (MAC), either HMAC-MD5 or HMAC-SHA (keyed hash functions), to
+      (MAC), generated using certain keyed hash functions to
       provide an efficient means of point-to-point authentication and
-      integrity checking for DNS transactions.</t>
-
-      <t>The second area where the secret key based MACs specified in
-      this document can be used is to authenticate DNS update requests
-      as well as transaction responses, providing a lightweight
+      integrity checking for DNS transactions. Such transactions include
+      DNS update requests and responses for which this can provide a lightweight
       alternative to the protocol described by <xref
       target="RFC3007"/>.</t>
 
@@ -180,7 +173,7 @@
 
       <t>The authentication mechanism proposed in this document uses
       shared secret keys to establish a trust relationship between two
-      entities.  Such keys must be protected in a fashion similar to
+      entities.  Such keys must be protected in a manner similar to
       private keys, lest a third party masquerade as one of the intended
       parties (by forging the MAC).  There is an urgent need to provide simple and
       efficient authentication between clients and local servers and this
@@ -202,6 +195,7 @@
       two parties involved (e.g., resolver and server) as to any
       algorithm and key to be used.</t>
 
+      <!-- The next section seems not relevant to the rest of the text -->
       <t>Since the publication of first version of this document
       (<xref target="RFC2845"/>) a mechanism based on
       asymmetric signatures using the SIG RR was specified (SIG(0)
@@ -210,7 +204,7 @@
       target="RFC2104"/> using strong hash functions.</t>
     </section>
 
-    <section title="Key words" anchor="keywords">
+    <section title="Key Words" anchor="keywords">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
       NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
       "MAY", and "OPTIONAL" in this document are to be interpreted as
@@ -236,7 +230,7 @@
         TSIG is a meta-RR and MUST NOT be cached.  TSIG RRs are
         used for authentication between DNS entities that have
         established a shared secret key.  TSIG RRs are dynamically
-        computed to cover a particular DNS transaction and are not
+        computed to cover DNS transactions and are not
         DNS RRs in the usual sense.</t>
       </section>
 
@@ -273,11 +267,11 @@
           and incorporate the resolver and server host names in
           that order.</t>
 
-          <t hangText="TYPE">TSIG (250: Transaction SIGnature)</t>
+          <t hangText="TYPE">This MUST be TSIG (250: Transaction SIGnature)</t>
 
-          <t hangText="CLASS">ANY</t>
+          <t hangText="CLASS">This MUST be ANY</t>
 
-          <t hangText="TTL">0</t>
+          <t hangText="TTL">This MUST be 0</t>
 
           <t hangText="RdLen">(variable)</t>
 
@@ -316,7 +310,9 @@
             <list style="symbols">
   
               <t>Algorithm Name - identifies the TSIG algorithm name in
-              the domain name syntax.</t>
+              the domain name syntax. (Allowed names are listed in
+              <xref target="allowed_algs"/>.) The name is stored in the
+              DNS name wire format as described in <xref target="RFC1034"/>.</t>
   
               <t>Time Signed - time signed as seconds since
               00:00 on 1970-01-01 UTC ignoring leap seconds.</t>
@@ -350,7 +346,7 @@
 
       <section title="Example">
         <t><list style="hanging" hangIndent="6">
-          <t hangText="NAME">HOST.EXAMPLE.</t>
+          <t hangText="NAME">HOST1.EXAMPLE.</t>
 
           <t hangText="TYPE">TSIG</t>
 
@@ -368,7 +364,7 @@
           <ttcol>Contents</ttcol>
 
           <c>Algorithm Name</c>
-          <c>SAMPLE-ALG.EXAMPLE.</c>
+          <c>HMAC-MD5.SIG-ALG.REG.INT</c>
 
           <c>Time Signed</c>
           <c>853804800</c>
@@ -399,12 +395,12 @@
 
     <section title="Protocol Operation">
 
-      <section title="Effects of adding TSIG to outgoing message">
+      <section title="Effects of Adding TSIG to Outgoing Messages">
         <t>Once the outgoing message has been constructed, the HMAC
         computation can be performed.  The resulting
         MAC will then be stored in a TSIG which is
         appended to the additional data section (the ARCOUNT is
-        incremented to reflect this).  If the TSIG record cannot
+        incremented to reflect the extra RR).  If the TSIG record cannot
         be added without causing the message to be truncated, the
         server MUST alter the response so that a TSIG can be included.
         This response consists of only the question and a TSIG
@@ -413,7 +409,7 @@
         (per <xref target="RFC1035"/> 4.2.2).</t>
       </section>
 
-      <section title="TSIG processing on incoming messages">
+      <section title="TSIG Processing on Incoming Messages">
         <t>If an incoming message contains a TSIG record, it MUST
         be the last record in the additional section.  Multiple
         TSIG records are not allowed.  If a TSIG record is present
@@ -430,8 +426,8 @@
         with RCODE 9 (NOTAUTH) MUST be sent back to the originator
         with TSIG ERROR 17 (BADKEY) or TSIG ERROR 16 (BADSIG).  If
         no key is available to sign this message it MUST be sent
-        unsigned (MAC size == 0 and empty MAC). Algorithm name and
-        time signed and fudge fields SHOULD be copied to the response
+        unsigned (MAC size == 0 and empty MAC). The algorithm name, 
+        time signed, and fudge fields SHOULD be copied to the response
         to provide off path spoof protection. A message to the
         system operations log SHOULD be generated, to warn the
         operations staff of a possible security incident in progress.
@@ -444,13 +440,13 @@
         be invalid.</t>
       </section>
 
-      <section title="Time values used in TSIG calculations">
+      <section title="Time Values Used in TSIG Calculations">
         <t>The data digested includes the two timer values in the
         TSIG header in order to defend against replay attacks.  If
         this were not done, an attacker could replay old messages
         but update the "Time Signed" and "Fudge" fields to make the
         message look new.  This data is named "TSIG Timers", and
-        for the purpose of MAC calculation they are hashed in
+        for the purpose of MAC calculation, they are hashed in
         their "on the wire" format, in the following order: first
         Time Signed, then Fudge.  For example:</t>
 
@@ -576,7 +572,7 @@
       </section>
 
       <section title="Component Padding">
-        <t>Digested components (i.e., inputs to keyed hash computation) are
+        <t>Digested components (i.e., inputs to the keyed hash computation) are
         fed into the hashing function as a continuous octet stream
         with no interfield separator or padding.</t>
       </section>
@@ -584,8 +580,8 @@
 
     <section title="Protocol Details">
 
-      <section title="TSIG generation on requests">
-        <t>Client performs the keyed hash (HMAC) computation and appends a TSIG
+      <section title="TSIG Generation on Requests">
+        <t>The client performs the keyed hash (HMAC) computation and appends a TSIG
         record to the additional data section and transmits the request to
         the server.  The client MUST store the MAC from the
         request while awaiting an answer.  The digest components for a
@@ -625,7 +621,7 @@
         </list></t>
       </section>
 
-      <section title="TSIG on TSIG Error returns" anchor="on_error">
+      <section title="TSIG on TSIG Error Returns" anchor="on_error">
         <t>When a server detects an error relating to the key or MAC, the
         server SHOULD send back an unsigned error message (MAC size == 0
         and empty MAC). It MUST NOT send back a signed error message.</t>
@@ -647,7 +643,7 @@
         generated as specified in <xref target="answers"/>.</t>
       </section>
 
-      <section title="TSIG on zone transfer over a TCP connection"
+      <section title="TSIG on Zone Transfer Over a TCP Connection"
               anchor="tcp">
         <t>A zone transfer over a DNS TCP session can include multiple
         DNS messages. Using TSIG on such a connection can protect the
@@ -656,7 +652,7 @@
         be placed on all intermediary messages. For backward
         compatibility, a client which receives DNS messages and verifies
         TSIG MUST accept up to 99 intermediary messages without a TSIG.
-        The first envelope is processed as a standard answer, and
+        The first message is processed as a standard answer, and
         subsequent messages have the following digest components:</t>
 
         <t><list style="empty">
@@ -672,7 +668,7 @@
         enough (as specified above) it SHOULD assume the connection has
         been hijacked and it SHOULD close the connection.  The client SHOULD
         treat this the same way as they would any other interrupted transfer
-        (although the exact behavior is not specified).</t>
+        (although the exact behavior is not specified here).</t>
       </section>
 
       <section title="Server TSIG checks">
@@ -682,7 +678,7 @@
         following order, check KEY, check MAC, check TIME values,
         check Truncation policy.</t>
 
-        <section title="Key check and error handling">
+        <section title="Key Check and Error Handling">
           <t>If a non-forwarding server does not recognize the key
           used by the client, the server MUST generate an error
           response with RCODE 9 (NOTAUTH) and TSIG ERROR 17 (BADKEY).
@@ -692,7 +688,7 @@
           <xref target="forwarding"/>.)</t>
         </section>
 
-        <section title="MAC check and error handling">
+        <section title="MAC Check and Error Handling">
           <t>If a TSIG fails to verify, the server MUST generate an
           error response as specified in <xref target="on_error"/> with
           RCODE 9 (NOTAUTH) and TSIG ERROR 16 (BADSIG).  This response
@@ -745,7 +741,7 @@
 
         </section>
 
-        <section title="Time check and error handling" anchor="time_check">
+        <section title="Time Check and Error Handling" anchor="time_check">
           <t>If the server time is outside the time interval specified
           by the request (which is: Time Signed, plus/minus Fudge),
           the server MUST generate an error response with RCODE 9
@@ -764,7 +760,7 @@
           The server SHOULD log the error.</t>
         </section>
 
-        <section title="Truncation check and error handling"
+        <section title="Truncation Check and Error Handling"
                  anchor="trunc_check">
           <t>If a TSIG is received with truncation that is permitted
           under <xref target="trunc"/> above but the MAC is too short
@@ -775,7 +771,7 @@
         </section>
       </section>
 
-      <section title="Client processing of answer">
+      <section title="Client Processing of Answer">
         <t>When a client receives a response from a server and
         expects to see a TSIG, it first checks if the TSIG RR is
         present in the response.  Otherwise, the response is treated
@@ -794,7 +790,7 @@
         SHOULD log an error and continue to wait for a signed
         response until the request times out.</t>
 
-        <section title="Key error handling">
+        <section title="Key Error Handling">
           <t>If an RCODE on a response is 9 (NOTAUTH), and the
           response TSIG validates, and the TSIG key is different
           from the key used on the request, then this is a Key
@@ -804,7 +800,7 @@
           signed the request.</t>
         </section>
 
-        <section title="MAC error handling">
+        <section title="MAC Error Handling">
           <t>If the response RCODE is 9 (NOTAUTH) and TSIG ERROR
           is 16 (BADSIG), this is a MAC error, and client MAY retry
           the request with a new request ID but it would be better
@@ -813,7 +809,7 @@
           with each key.  Clients SHOULD log this event.</t>
         </section>
 
-        <section title="Time error handling">
+        <section title="Time Error Handling">
           <t>If the response RCODE is 9 (NOTAUTH) and the TSIG ERROR
           is 18 (BADTIME), or the current time does not fall in the
           range specified in the TSIG record, then this is a Time
@@ -824,7 +820,7 @@
           server's time in the other data field SHOULD be logged.</t>
         </section>
 
-        <section title="Truncation error handling" anchor="trunc_err">
+        <section title="Truncation Error Handling" anchor="trunc_err">
           <t>If the response RCODE is 9 (NOTAUTH) and the TSIG ERROR
           is 22 (BADTRUNC) then this is a Truncation error. The client
           MAY retry with a lesser truncation up to the full HMAC output
@@ -834,7 +830,7 @@
         </section>
       </section>
 
-      <section title="Special considerations for forwarding servers"
+      <section title="Special Considerations for Forwarding Servers"
        anchor="forwarding">
         <t>A server acting as a forwarding server of a DNS message
         SHOULD check for the existence of a TSIG record.  If the name on
@@ -881,7 +877,7 @@
         also implement HMAC SHA1 and HMAC SHA256 and MAY implement
         gss-tsig and the other algorithms listed below.</t>
 
-        <texttable style="headers">
+        <texttable style="headers" anchor="allowed_algs">
           <ttcol>Requirement</ttcol>
           <ttcol>Name</ttcol>
           <c>Mandatory</c> <c>HMAC-MD5.SIG-ALG.REG.INT</c>
@@ -1023,18 +1019,15 @@
       authentication by brute force <xref target="RFC2104"/>.</t>
 
       <t>Significant progress has been made recently in cryptanalysis of hash
-      functions of the types used here, all of which ultimately derive
-      from the design of MD4.  While the results so far should not effect
+      functions of the types used here.  While the results so far should not affect
       HMAC, the stronger SHA-1 and SHA-256 algorithms are being made
-      mandatory due to caution. Note that today SHA-3
-      <xref target="FIPS202"/> is available as an alternative to SHA-2
-      using a very different design.</t>
+      mandatory as a precaution.</t>
 
       <t>See also the Security Considerations section of <xref
       target="RFC2104"/> from which the limits on truncation in this
       RFC were taken.</t>
 
-      <section title="Issue fixed in this document">
+      <section title="Issue Fixed in this Document" anchor="issuesfixed">
          <t>When signing a DNS reply message using TSIG, the MAC
          computation uses the request message's MAC as an input to
          cryptographically relate the reply to the request.  The
@@ -1044,8 +1037,8 @@
          further checks and could use an invalid request MAC in the
          signed reply.</t>
 
-         <t>This document proposes the principle that the request MAC
-         must be considered to be invalid until it has been validated:
+         <t>This document makes it a madatory that the request MAC
+         is considered to be invalid until it has been validated:
          until then, any answer must be unsigned.  For this reason, the
          request MAC is now checked before the TIME value.</t>
       </section>
@@ -1113,6 +1106,7 @@
       <?rfc include="reference.RFC.8174.xml"?>
     </references>
     <references title="Informative References">
+<!--
       <reference anchor="FIPS202" target="">
          <front>
             <title>SHA-3 Standard</title>
@@ -1124,6 +1118,7 @@
          </front>
          <seriesInfo name="FIPS" value="PUB 202"/>
       </reference>
+-->
       <?rfc include="reference.RFC.1321.xml"?>
       <?rfc include="reference.RFC.2104.xml"?>
       <?rfc include="reference.RFC.2136.xml"?>
@@ -1147,8 +1142,7 @@
       <t>This document consolidates and updates the earlier documents
       by the authors of <xref target="RFC2845"/> (Paul Vixie,
       Olafur Gudmundsson, Donald E. Eastlake 3rd and Brian Wellington)
-      and <xref target="RFC4635"/> (Donald E. Eastlake 3rd). It would
-      not be possible without their original work.</t>
+      and <xref target="RFC4635"/> (Donald E. Eastlake 3rd).</t>
 
       <t>The security problem addressed by this document was reported
       by Clement Berthaux from Synacktiv.</t>
@@ -1274,6 +1268,12 @@
      <t><list>
        <t>Added a recommendation to copy time fields in BADKEY  errors.
        (Mark Andrews)</t>
+     </list></t>
+
+     <t>draft-ietf-dnsop-rfc2845bis-03</t>
+     <t><list>
+       <t>Further changes as a result of comments by Mukund Sivaraman.</t>
+       <t>Miscellaneous changes to wording.</t>
      </list></t>
     </section>
 
