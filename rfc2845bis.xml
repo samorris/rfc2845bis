@@ -264,8 +264,8 @@
           globally unique.  Where a key is just shared between two
           hosts, its name actually need only be meaningful to
           them but it is recommended that the key name be mnemonic
-          and incorporate the resolver and server host names in
-          that order.</t>
+          and incorporates the names of participating agents or
+          resources.</t>
 
           <t hangText="TYPE">This MUST be TSIG (250: Transaction SIGnature)</t>
 
@@ -312,7 +312,9 @@
               <t>Algorithm Name - identifies the TSIG algorithm name in
               the domain name syntax. (Allowed names are listed in
               <xref target="allowed_algs"/>.) The name is stored in the
-              DNS name wire format as described in <xref target="RFC1034"/>.</t>
+              DNS name wire format as described in <xref target="RFC1034"/>.
+              As per <xref target="RFC3597"/>, this name MUST NOT be
+              compressed.</t>
   
               <t>Time Signed - time signed as seconds since
               00:00 on 1970-01-01 UTC ignoring leap seconds.</t>
@@ -839,11 +841,13 @@
         including the TSIG.  If the name of the TSIG is of a key this
         server shares with the originator, it MUST process the TSIG.  If
         the TSIG passes all checks, the forwarding server MUST, if
-        possible, include a TSIG of his own, to the destination or the
-        next forwarder.  If no transaction security is available to the
-        destination and the response has the AD flag (see <xref
-        target="RFC4035"/>), the forwarder MUST unset the AD flag before
-        adding the TSIG to the answer.</t>
+        possible, include a TSIG of its own, to the destination or the
+        next forwarder. If no transaction security is available to the
+        destination and the message is a query then, if the
+        corresponding response has the the AD flag (see <xref
+        target="RFC4035"/>) set, the forwarder MUST clear the AD flag
+        before adding the TSIG to the response and returning the result
+        to the system from which it received the query.</t>
       </section>
     </section>
 
@@ -948,8 +952,7 @@
       <t>Use of strong random shared secrets is essential to the
       security of TSIG.  See <xref target="RFC4086"/> for a discussion
       of this issue.  The secret SHOULD be at least as long as the keyed hash
-      output, i.e., 16 bytes for HMAC-MD5 or 20 bytes for
-      HMAC-SHA1.</t>
+      output <xref target="RFC2104"/>.</t>
     </section>
 
     <section title="IANA Considerations">
@@ -984,9 +987,10 @@
       the shared secret key is not compromised, strong authentication
       is provided between two DNS systems, e.g., for the last hop from
       a local name server to the user resolver, or between primary and
-      secondary nameservers..</t>
+      secondary nameservers.</t>
 
-       <t>Secret keys should be changed periodically.  If the client host
+       <t>Recommendations for choosing and maintaining secret keys
+      can be found in <xref target="RFC2104"/>.  If the client host
       has been compromised, the server should suspend the use of all
       secrets known to that client.  If possible, secrets should be stored
       in encrypted form.  Secrets should never be transmitted in the clear
@@ -1006,7 +1010,7 @@
       <t>A fudge value that is too large may leave the server open
       to replay attacks.  A fudge value that is too small may cause
       failures if machines are not time synchronized or there are unexpected
-      network delays.  The recommended value in most situations is 300
+      network delays.  The RECOMMENDED value in most situations is 300
       seconds.</t>
 
       <t>For all of the message authentication code algorithms listed in
@@ -1102,6 +1106,7 @@
       <?rfc include="reference.RFC.1035.xml"?>
       <?rfc include="reference.RFC.2119.xml"?>
       <?rfc include="reference.RFC.2845.xml"?>
+      <?rfc include="reference.RFC.3597.xml"?>
       <?rfc include="reference.RFC.4635.xml"?>
       <?rfc include="reference.RFC.8174.xml"?>
     </references>
