@@ -132,6 +132,8 @@
       <t>No recommendation is made here for distributing the shared secrets:
       it is expected that a network administrator will statically configure
       name servers and clients using some out of band mechanism.</t>
+
+      <t>This document obsoletes RFC2845 and RFC4635.</t>
     </abstract>
   </front>
 
@@ -654,7 +656,8 @@
         be placed on all intermediary messages. For backward
         compatibility, a client which receives DNS messages and verifies
         TSIG MUST accept up to 99 intermediary messages without a TSIG.
-        The first message is processed as a standard answer, and
+        The first message is processed as a standard answer
+        (see <xref target="answers"/>) and
         subsequent messages have the following digest components:</t>
 
         <t><list style="empty">
