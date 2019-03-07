@@ -160,7 +160,7 @@
       producing this revised specification for TSIG.</t>
 
       <t>This document specifies use of a message authentication code
-      (MAC), generated using certain keyed hash functions to
+      (MAC), generated using certain keyed hash functions, to
       provide an efficient means of point-to-point authentication and
       integrity checking for DNS transactions. Such transactions include
       DNS update requests and responses for which this can provide a lightweight
@@ -350,7 +350,7 @@
 
       <section title="Example">
         <t><list style="hanging" hangIndent="6">
-          <t hangText="NAME">HOST1.EXAMPLE.</t>
+          <t hangText="NAME">HOST.EXAMPLE.</t>
 
           <t hangText="TYPE">TSIG</t>
 
@@ -847,7 +847,7 @@
         possible, include a TSIG of its own, to the destination or the
         next forwarder. If no transaction security is available to the
         destination and the message is a query then, if the
-        corresponding response has the the AD flag (see <xref
+        corresponding response has the AD flag (see <xref
         target="RFC4035"/>) set, the forwarder MUST clear the AD flag
         before adding the TSIG to the response and returning the result
         to the system from which it received the query.</t>
