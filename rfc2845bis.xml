@@ -218,12 +218,20 @@
     </section>
 
     <section title="New Assigned Numbers" anchor="numbers">
-      <t>RRTYPE = TSIG (250)<vspace/>
-      ERROR = 0..15 (a DNS RCODE)<vspace/>
-      ERROR = 16 (BADSIG)<vspace/>
-      ERROR = 17 (BADKEY)<vspace/>
-      ERROR = 18 (BADTIME)<vspace/>
-      ERROR = 22 (BADTRUNC)</t>
+      <t>This document defines the following RR type and associated value:</t>
+      <t><list style="hanging" hangIndent="6">
+        <t>TSIG (250)</t>
+      </list></t>
+
+      <t>In addition, the document also defines the following DNS RCODEs
+      and associated names:</t>
+      <t><list style="hanging" hangIndent="6">
+      <t>16 (BADSIG)<vspace/>
+      17 (BADKEY)<vspace/>
+      18 (BADTIME)<vspace/>
+      22 (BADTRUNC)</t>
+      </list></t>
+
       <t>(See <xref target="RFC6895"/> Section 2.3 concerning the assignment
       of the value 16 to BADSIG.)</t>
     </section>
@@ -568,9 +576,8 @@
           <t>For each label type, there must be a defined "Canonical
           wire format" that specifies how to express a label in an
           unambiguous way.  For label type 00, this is defined in <xref
-          target="RFC4034"/>, for label type 01, this is defined in
-          <xref target="RFC6891"/>.  The use of label types other than
-          00 and 01 is not defined for this specification.</t>
+          target="RFC4034"/> Section 6.1.  The use of label types other than
+          00 is not defined for this specification.</t>
   
           <section title="Time Values Used in TSIG Calculations">
             <t>The data digested includes the two timer values in the
@@ -605,7 +612,7 @@
 
     <section title="Protocol Details" anchor="details">
 
-      <section title="TSIG Generation on Requests">
+      <section title="Generation of TSIG on Requests">
         <t>The client performs the keyed hash (HMAC) computation and appends a TSIG
         record to the additional data section and transmits the request to
         the server.  This TSIG record MUST be the only TSIG RR in the message
@@ -630,13 +637,15 @@
         this is not a problem in practice.</t>
       </section>
 
-      <section title="TSIG Generation on Answers" anchor="answers">
+      <section title="Generation of TSIG on Answers" anchor="answers">
         <t>When a server has generated a response to a signed request,
         it signs the response using the same algorithm and key.  The
         server MUST NOT generate a signed response to a request if
         either the KEY is invalid (e.g. key name or algorithm name are unknown),
-        or the MAC fails validation.
-        It also MUST NOT not generate a signed
+        or the MAC fails validation: see <xref target="on_error"/>for 
+        details of responding in these cares.</t>
+
+        <t>It also MUST NOT not generate a signed
         response to an unsigned request, except in the case of a
         response to a client's unsigned TKEY request if the secret key
         is established on the server side after the server processed the
@@ -653,7 +662,7 @@
         </list></t>
       </section>
 
-      <section title="TSIG on TSIG Error Returns" anchor="on_error">
+      <section title="Generation of TSIG on Error Returns" anchor="on_error">
         <t>When a server detects an error relating to the key or MAC, the
         server SHOULD send back an unsigned error message (MAC size == 0
         and empty MAC). It MUST NOT send back a signed error message.</t>
@@ -1177,7 +1186,6 @@
       <?rfc include="reference.RFC.4035.xml"?>
       <?rfc include="reference.RFC.4086.xml"?>
       <?rfc include="reference.RFC.6234.xml"?>
-      <?rfc include="reference.RFC.6891.xml"?>
       <?rfc include="reference.RFC.6895.xml"?>
       <?rfc include="reference.RFC.8126.xml"?>
     </references>
@@ -1331,6 +1339,7 @@
           <t>Merged what was section 4.2 (TSIG calculation) into other sections.</t>
           <t>Rename "TSIG Variables and Coverage" section to "MAC Computation", and
           restructured to make clearer.</t>
+          <t>Added miscellaneous clarifications.</t>
         </list></t>
       </list></t>
     </section>
