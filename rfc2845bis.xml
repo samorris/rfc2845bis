@@ -38,7 +38,7 @@
   <front>
     <title abbrev="DNS TSIG">Secret Key Transaction Authentication for DNS (TSIG)</title>
 
-    <author fullname="Francis Dupont" initials="F." surname="Dupont">
+    <author fullname="Francis Dupont" initials="F" surname="Dupont">
       <organization abbrev="ISC">Internet Software Consortium</organization>
       <address>
         <postal>
@@ -52,7 +52,7 @@
       </address>
     </author>
 
-    <author fullname="Stephen Morris" initials="S." surname="Morris">
+    <author fullname="Stephen Morris" initials="S" surname="Morris">
       <organization abbrev="ISC">Internet Software Consortium</organization>
       <address>
         <postal>
@@ -331,9 +331,16 @@
               than the size of the keyed hash produced by the algorithm
               specified by the Algorithm Name.</t>
   
-              <t>MAC  - a sequence of octents whose contents are defined by the
+              <t>MAC  - a sequence of octets whose contents are defined by the
               TSIG algorithm used, possibly truncated as specified by
-              MAC Size.  The length of this field is given by the Mac Size.</t>
+              MAC Size.  The length of this field is given by the Mac Size.
+              Calculation of the MAC is detailed in <xref target="mac_computation"/>.</t>
+
+              <t>Original ID - the message ID of the original request message.
+              For a TSIG RR on a request, it is set equal to the DNS message ID.
+              In a TSIG attached to a response - or in a case such as the
+              forwarding of a dynamic update request - the field contains the
+              ID of the original DNS request.</t>
   
               <t>Error - an unsigned 16-bit integer containing the expanded
               RCODE covering TSIG processing.</t>
@@ -403,18 +410,21 @@
 
     <section title="Protocol Operation">
 
-      <section title="Effects of Adding TSIG to Outgoing Messages">
+      <section title="Adding TSIG to Outgoing Messages" anchor="operation_outgoing">
         <t>Once the outgoing message has been constructed, the HMAC
         computation can be performed.  The resulting
         MAC will then be stored in a TSIG which is
         appended to the additional data section (the ARCOUNT is
-        incremented to reflect the extra RR).  If the TSIG record cannot
-        be added without causing the message to be truncated, the
+        incremented to reflect the extra RR).</t>
+
+        <t>If the outgoing message is a response, it is possible that
+        the TSIG record cannot be added without causing the message
+        to be truncated. In that case, the
         server MUST alter the response so that a TSIG can be included.
         This response consists of only the question and a TSIG
         record, and has the TC bit set and RCODE 0 (NOERROR).  The
         client SHOULD at this point retry the request using TCP
-        (per <xref target="RFC1035"/> 4.2.2).</t>
+        (as per <xref target="RFC1035"/> 4.2.2).</t>
       </section>
 
       <section title="TSIG Processing on Incoming Messages">
@@ -428,29 +438,23 @@
         and decremented out of the DNS message header's ARCOUNT.
         At this point the keyed hash (HMAC) computation is performed.</t>
           
-        <t>If the algorithm name or key name is unknown to the recipient,
-        or if the MACs do not match, the whole DNS message
-        MUST be discarded.  If the message is a query, a response
-        with RCODE 9 (NOTAUTH) MUST be sent back to the originator
-        with TSIG ERROR 17 (BADKEY) or TSIG ERROR 16 (BADSIG).  If
-        no key is available to sign this message it MUST be sent
-        unsigned (MAC size == 0 and empty MAC). The algorithm name, 
-        time signed, and fudge fields SHOULD be copied to the response
-        to provide off path spoof protection. A message to the
+        <t>If there is any error in the TSIG validation (algorithm name
+        or key name is unknown to the recipient, or if the MACs do not match)
+        the whole DNS message MUST be discarded and a message sent
+        back to the originator, as described in <xref target="details"/>.
+        Until these error checks are successfully passed, concluding
+        that the signature is valid, the signature MUST be considered to
+        be invalid.</t>
+
+        <t>Should the TSIG validation fail, A message to the
         system operations log SHOULD be generated, to warn the
         operations staff of a possible security incident in progress.
         Care should be taken to ensure that logging of this type
         of event does not open the system to a denial of service
         attack.</t>
-
-        <t>Until these error checks are successfully passed, concluding
-        that the signature is valid, the signature MUST be considered to
-        be invalid.</t>
       </section>
 
-<!-- Move the truncation policy here? -->
-
-      <section title="MAC Computation">
+      <section title="MAC Computation" anchor="mac_computation">
         <t>When generating or verifying the contents of a TSIG record,
         the the data listed in the rest of this section are passed,
         in the order listed below, as input to MAC computation.  The
@@ -490,10 +494,16 @@
         </section>
 
         <section title="DNS Message">
-          <t>A whole and complete DNS message in wire format, before
+          <t>A whole and complete DNS message in wire format. When
+          creating a TSIG, this is the message before
           the TSIG RR has been added to the additional data section
           and before the DNS Message Header's ARCOUNT field has
-          been incremented to contain the TSIG RR.  If the message
+          been incremented to contain the TSIG RR.</t>
+
+          <t>When verifying
+          an incoming message, this is the message after the TSIG RR
+          and been removed and the ARCOUNT field has been decremented.
+          If the message
           ID differs from the original message ID, the original
           message ID is substituted for the message ID.  This could
           happen when forwarding a dynamic update request, for
@@ -501,6 +511,10 @@
         </section>
 
         <section title="TSIG Variables">
+          <t>Also included in the digest is certain information present
+          in the TSIG RR.  Doing this provides protection against an
+          attempt to corrupt the metadata associated with the message.</t>
+
           <texttable style="headers">
             <ttcol>Source</ttcol>
             <ttcol>Field Name</ttcol>
@@ -587,22 +601,22 @@
           </section>
         </section>
       </section>
-
-      <section title="Component Padding">
-        <t>Digested components (i.e., inputs to the keyed hash computation) are
-        fed into the hashing function as a continuous octet sequence
-        with no interfield separator or padding.</t>
-      </section>
     </section>
 
-    <section title="Protocol Details">
+    <section title="Protocol Details" anchor="details">
 
       <section title="TSIG Generation on Requests">
         <t>The client performs the keyed hash (HMAC) computation and appends a TSIG
         record to the additional data section and transmits the request to
-        the server.  The client MUST store the MAC from the
-        request while awaiting an answer.  The digest components for a
-        request are:</t>
+        the server.  This TSIG record MUST be the only TSIG RR in the message
+        and MUST last record in the additiona data section.</t>
+
+        <t>Assuming that record can be added without causing truncation
+        of the message, the client MUST store the MAC from the
+        request while awaiting an answer;  <xref target="operation_outgoing"/>
+        describes the action to take should truncation occur.</t>
+
+        <t>The digest components for a request are:</t>
 
         <t><list style="empty">
           <t>DNS Message (request)<vspace/>
@@ -616,11 +630,12 @@
         this is not a problem in practice.</t>
       </section>
 
-      <section title="TSIG on Answers" anchor="answers">
+      <section title="TSIG Generation on Answers" anchor="answers">
         <t>When a server has generated a response to a signed request,
         it signs the response using the same algorithm and key.  The
         server MUST NOT generate a signed response to a request if
-        either the KEY is invalid or the MAC fails validation.
+        either the KEY is invalid (e.g. key name or algorithm name are unknown),
+        or the MAC fails validation.
         It also MUST NOT not generate a signed
         response to an unsigned request, except in the case of a
         response to a client's unsigned TKEY request if the secret key
@@ -629,7 +644,7 @@
         MUST be explicitly specified in the description of an individual
         secret key establishment algorithm <xref target="RFC3645"/>.</t>
 
-        <t>The digest components are:</t>
+        <t>The digest components used to generate a TSIG on a response are:</t>
 
         <t><list style="empty">
           <t>Request MAC<vspace/>
