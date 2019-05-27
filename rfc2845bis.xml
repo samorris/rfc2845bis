@@ -237,19 +237,20 @@
         established a shared secret key.  TSIG RRs are dynamically
         computed to cover a particular DNS transaction and are not
         DNS RRs in the usual sense.</t>
-      </section>
 
-      <section title="TSIG Calculation">
         <t>As the TSIG RRs are related to one DNS request/response,
         there is no value in storing or retransmitting them, thus the
         TSIG RR is discarded once it has been used to authenticate a DNS
-        message. Recommendations concerning the message digest algorithm
-        can be found in <xref target="algorithm_id"/>. All multi-octet
-        integers in the TSIG record are sent in network byte order (see
-        <xref target="RFC1035"/> 2.3.2).</t>
+        message.</t>
+        
       </section>
 
       <section title="TSIG Record Format" anchor="format">
+        <t>The fields of the TSIG RR are described below.  As is usual,
+        all multi-octet integers in the record are sent in network byte
+        order (see <xref target="RFC1035"/> 2.3.2).</t>
+
+
         <t><list style="hanging" hangIndent="6">
 
           <t hangText="NAME">The name of the key used in domain
@@ -447,40 +448,46 @@
         be invalid.</t>
       </section>
 
-      <section title="Time Values Used in TSIG Calculations">
-        <t>The data digested includes the two timer values in the
-        TSIG header in order to defend against replay attacks.  If
-        this were not done, an attacker could replay old messages
-        but update the "Time Signed" and "Fudge" fields to make the
-        message look new.  This data is named "TSIG Timers", and
-        for the purpose of MAC calculation, they are hashed in
-        their "on the wire" format, in the following order: first
-        Time Signed, then Fudge.  For example:</t>
-
-        <texttable style="headers">
-          <ttcol>Field Name</ttcol>
-          <ttcol>Value</ttcol>
-          <ttcol>Wire Format</ttcol>
-          <ttcol>Meaning</ttcol>
-
-          <c>Time Signed</c>
-          <c>853804800</c>
-          <c>00 00 32 e4 07 00</c>
-          <c>Tue Jan 21 00:00:00 1997</c>
-
-          <c>Fudge</c>
-          <c>300</c>
-          <c>01 2C</c>
-          <c>5 minutes</c>
-        </texttable>
-      </section>
-
 <!-- Move the truncation policy here? -->
 
-      <section title="TSIG Variables and Coverage">
+      <section title="MAC Computation">
         <t>When generating or verifying the contents of a TSIG record,
-        the following data are passed as input to MAC computation, in
-        network byte order or wire format, as appropriate:</t>
+        the the data listed in the rest of this section are passed,
+        in the order listed below, as input to MAC computation.  The
+        data are passed in network byte order or wire format,
+        as appropriate and are fed into the hashing function
+        as a continuous octet sequence with no interfield separator or
+        padding.</t>
+
+        <t>Special considerations apply to the TSIG calculation for a response
+        that consists of multiple DNS messages (e.g. a zone transfer).
+        These are described in <xref target="tcp"/>.</t>
+
+        <section title="Request MAC">
+          <t>Only included in the computation of a MAC for a response message,
+          the validated request MAC MUST be included in the MAC
+          computation.  If the request MAC failed to validate, an unsigned
+          error message MUST be returned instead.  (<xref
+          target="on_error"/>).</t>
+
+          <t>The request's MAC, comprising the following fields, is digested in
+          wire format:</t>
+
+          <texttable style="headers">
+            <ttcol>Field</ttcol>
+            <ttcol>Type</ttcol>
+            <ttcol>Description</ttcol>
+
+            <c>MAC Length</c>
+            <c>Unsigned 16-bit integer</c>
+            <c>in network byte order</c>
+
+            <c>MAC Data</c>
+            <c>octet sequence</c>
+            <c>exactly as transmitted</c>
+          </texttable>
+
+        </section>
 
         <section title="DNS Message">
           <t>A whole and complete DNS message in wire format, before
@@ -550,31 +557,34 @@
           target="RFC4034"/>, for label type 01, this is defined in
           <xref target="RFC6891"/>.  The use of label types other than
           00 and 01 is not defined for this specification.</t>
-        </section>
-
-        <section title="Request MAC">
-          <t>When generating the MAC to be included in a response, the
-          validated request MAC MUST be included in the MAC
-          computation.  If the request MAC failed to validate, an
-          unsigned error message MUST be returned instead.
-          (<xref target="on_error"/>).</t>
-
-          <t>The request's MAC is digested in wire format,
-          including the following fields:</t>
-
-          <texttable style="headers">
-            <ttcol>Field</ttcol>
-            <ttcol>Type</ttcol>
-            <ttcol>Description</ttcol>
-
-            <c>MAC Length</c>
-            <c>Unsigned 16-bit integer</c>
-            <c>in network byte order</c>
-
-            <c>MAC Data</c>
-            <c>octet sequence</c>
-            <c>exactly as transmitted</c>
-          </texttable>
+  
+          <section title="Time Values Used in TSIG Calculations">
+            <t>The data digested includes the two timer values in the
+            TSIG header in order to defend against replay attacks.  If
+            this were not done, an attacker could replay old messages
+            but update the "Time Signed" and "Fudge" fields to make the
+            message look new.  This data is named "TSIG Timers", and
+            for the purpose of MAC calculation, they are hashed in
+            their "on the wire" format, in the following order: first
+            Time Signed, then Fudge.  For example:</t>
+    
+            <texttable style="headers">
+              <ttcol>Field Name</ttcol>
+              <ttcol>Value</ttcol>
+              <ttcol>Wire Format</ttcol>
+              <ttcol>Meaning</ttcol>
+    
+              <c>Time Signed</c>
+              <c>853804800</c>
+              <c>00 00 32 e4 07 00</c>
+              <c>Tue Jan 21 00:00:00 1997</c>
+    
+              <c>Fudge</c>
+              <c>300</c>
+              <c>01 2C</c>
+              <c>5 minutes</c>
+            </texttable>
+          </section>
         </section>
       </section>
 
@@ -660,7 +670,7 @@
         compatibility, a client which receives DNS messages and verifies
         TSIG MUST accept up to 99 intermediary messages without a TSIG.
         The first message is processed as a standard answer
-        (see <xref target="answers"/>) and
+        (see <xref target="answers"/>) but
         subsequent messages have the following digest components:</t>
 
         <t><list style="empty">
@@ -668,6 +678,15 @@
              DNS Messages (any unsigned messages since the last TSIG)<vspace/>
              TSIG Timers (current message)</t>
         </list></t>
+
+        <t>The "Prior MAC" is the MAC from the TSIG attached to the last
+        message containing a TSIG.  "DNS Messages" comprises the
+        concatenation (in message order) of all messages after the last
+        message that included a TSIG, including the current message.
+        "TSIG timers~" comprises the "Time Signed" and "Fudge" fields
+        pertaining to the message that is for which the TSIG is being created:
+        this means that the successive TSIG records in the stream will have
+        monotonically increasing "Time Signed" fields.</t>
 
         <t>This allows the client to rapidly detect when the session has
         been altered; at which point it can close the connection and retry.
@@ -1165,7 +1184,9 @@
 
       <t>Peter van Dijk, Benno Overeinder, Willem Toroop, Ondrej Sury,
       Mukund Sivaraman and Ralph Dolmans participated in the discussions
-      that prompted this document.</t>
+      that prompted this document.  Mukund Sivaraman and Martin Hoffman
+      made extermely helpful suggestions concerning the structure and
+      wording of the updated document.</t>
 
 <!-- If we get the reporter correctly spelled we can try to fix some
      others here: I can't believe unicode is not required for at least
@@ -1292,6 +1313,9 @@
         <list style="symbols">
           <t>Rewrite of the introduction including the addition of a protocol overview.</t>
           <t>Replacement of uintxx_t "C" types by a fuller description of the type.</t>
+          <t>Merged what was section 4.2 (TSIG calculation) into other sections.</t>
+          <t>Rename "TSIG Variables and Coverage" section to "MAC Computation", and
+          restructured to make clearer.</t>
         </list></t>
       </list></t>
     </section>
