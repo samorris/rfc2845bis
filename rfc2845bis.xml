@@ -619,7 +619,7 @@
         and MUST last record in the additiona data section.</t>
 
         <t>Assuming that record can be added without causing truncation
-        of the message, the client MUST store the MAC from the
+        of the message, the client MUST store the MAC and the key from the
         request while awaiting an answer;  <xref target="operation_outgoing"/>
         describes the action to take should truncation occur.</t>
 
@@ -635,6 +635,117 @@
         signed transactions with servers who are known to support TSIG and
         share some algorithm and secret key with the client -- so,
         this is not a problem in practice.</t>
+      </section>
+
+      <section title="Server Processing of Request">
+        <t>Upon receipt of a message, server will check if there is a TSIG
+        RR.  If one exists but cannot be understood, the server MUST
+        regard the message as corrupt and return a FORMERR to the server.
+        Otherwise the the server is REQUIRED to return a TSIG RR in
+        the response.  The server MUST perform the following checks in the
+        following order:</t>
+
+        <t><list style="hanging">
+        <t>1. Check KEY<vspace/>
+           2. Check MAC<vspace/>
+           3. Check TIME values<vspace/>
+           4. Check Truncation policy</t>
+        </list></t>
+
+        <section title="Key Check and Error Handling">
+          <t>If a non-forwarding server does not recognize the key
+          or algorithm used by the client (or recognises the algorithm but does
+          not implement it), the server MUST generate an error
+          response with RCODE 9 (NOTAUTH) and TSIG ERROR 17 (BADKEY).
+          This response MUST be unsigned as specified in <xref target=
+          "on_error"/>. The server SHOULD log the error. (Special
+          considerations apply to forwarding servers, see
+          <xref target="forwarding"/>.)</t>
+        </section>
+
+        <section title="MAC Check and Error Handling">
+          <t>Using the information in the TSIG, the server should verify
+          the MAC by doing its own calculation and comparing the result with
+          the MAC received. If the MAC fails to
+          verify, the server MUST generate an
+          error response as specified in <xref target="on_error"/> with
+          RCODE 9 (NOTAUTH) and TSIG ERROR 16 (BADSIG).  This response
+          MUST be unsigned as specified in <xref target="on_error"/>.
+          The server SHOULD log the error.</t>
+
+          <section title="Specifying Truncation" anchor="trunc">
+          <t>When space is at a premium and the strength of the full
+          length of a MAC is not needed, it is reasonable to truncate
+          the keyed hash and use the truncated value for
+          authentication.  HMAC SHA-1 truncated to 96 bits is an option
+          available in several IETF protocols, including IPsec and TLS.</t>
+
+          <t>Processing of a truncated MAC follows these rules:</t>
+          <t><list style="numbers">
+            <t>If "MAC size" field is greater than keyed hash output length:
+            <vspace/><vspace/>
+              This case MUST NOT be generated and, if received,
+              MUST cause the DNS message to be dropped and RCODE 1
+              (FORMERR) to be returned.
+            </t>
+            <t>If "MAC size" field equals keyed hash output length:
+            <vspace/><vspace/>
+              The entire output keyed hash output is present and used.
+            </t>
+            <t>"MAC size" field is less than the larger of 10 (octets) and half
+            the length of the hash function in use:
+            <vspace/><vspace/>
+              With the exception of certain TSIG error messages
+              described in <xref target="on_error"/>, where it is
+              permitted that the MAC size be zero, this case MUST NOT
+              be generated and, if received, MUST cause the DNS message to
+              be dropped and RCODE 1 (FORMERR) to be returned.
+            </t>
+            <t>Otherwise:
+            <vspace/><vspace/>
+              This is sent when the signer has truncated the keyed hash
+              output to an allowable length, as described in
+              <xref target="RFC2104"/>, taking initial octets and
+              discarding trailing octets.  TSIG truncation can only be
+              to an integral number of octets.  On receipt of a DNS message
+              with truncation thus indicated, the locally calculated
+              MAC is similarly truncated and only the truncated values
+              are compared for authentication.  The request MAC used
+              when calculating the TSIG MAC for a reply is the
+              truncated request MAC.
+            </t>
+            </list></t>
+          </section>
+        </section>
+
+        <section title="Time Check and Error Handling" anchor="time_check">
+          <t>If the server time is outside the time interval specified
+          by the request (which is: Time Signed, plus/minus Fudge),
+          the server MUST generate an error response with RCODE 9
+          (NOTAUTH) and TSIG ERROR 18 (BADTIME).  The server SHOULD
+          also cache the most recent time signed value in a message
+          generated by a key, and SHOULD return BADTIME if a message
+          received later has an earlier time signed value.  A
+          response indicating a BADTIME error MUST be signed by the
+          same key as the request.  It MUST include the client's
+          current time in the time signed field, the server's current
+          time (an unsigned 48-bit integer) in the other data field, and 6 in the
+          other data length field.  This is done so that the client
+          can verify a message with a BADTIME error without the
+          verification failing due to another BADTIME error.  The
+          data signed is specified in <xref target="on_error"/>.
+          The server SHOULD log the error.</t>
+        </section>
+
+        <section title="Truncation Check and Error Handling"
+                 anchor="trunc_check">
+          <t>If a TSIG is received with truncation that is permitted
+          under <xref target="trunc"/> above but the MAC is too short
+          for the local policy in force, an RCODE 9 (NOTAUTH) and TSIG
+          ERROR 22 (BADTRUNC) MUST be returned. The server SHOULD
+          log the error.</t>
+          
+        </section>
       </section>
 
       <section title="Generation of TSIG on Answers" anchor="answers">
@@ -660,7 +771,6 @@
              DNS Message (response)<vspace/>
              TSIG Variables (response)</t>
         </list></t>
-      </section>
 
       <section title="Generation of TSIG on Error Returns" anchor="on_error">
         <t>When a server detects an error relating to the key or MAC, the
@@ -721,105 +831,6 @@
         treat this the same way as they would any other interrupted transfer
         (although the exact behavior is not specified here).</t>
       </section>
-
-      <section title="Server TSIG checks">
-        <t>Upon receipt of a message, server will check if there is a TSIG
-        RR.  If one exists, the server is REQUIRED to return a TSIG RR in
-        the response.  The server MUST perform the following checks in the
-        following order, check KEY, check MAC, check TIME values,
-        check Truncation policy.</t>
-
-        <section title="Key Check and Error Handling">
-          <t>If a non-forwarding server does not recognize the key
-          used by the client, the server MUST generate an error
-          response with RCODE 9 (NOTAUTH) and TSIG ERROR 17 (BADKEY).
-          This response MUST be unsigned as specified in <xref target=
-          "on_error"/>. The server SHOULD log the error. (Special
-          considerations apply to forwarding servers, see
-          <xref target="forwarding"/>.)</t>
-        </section>
-
-        <section title="MAC Check and Error Handling">
-          <t>If a TSIG fails to verify, the server MUST generate an
-          error response as specified in <xref target="on_error"/> with
-          RCODE 9 (NOTAUTH) and TSIG ERROR 16 (BADSIG).  This response
-          MUST be unsigned as specified in <xref target="on_error"/>.
-          The server SHOULD log the error.</t>
-
-          <section title="Specifying Truncation" anchor="trunc">
-          <t>When space is at a premium and the strength of the full
-          length of a MAC is not needed, it is reasonable to truncate
-          the keyed hash and use the truncated value for
-          authentication.  HMAC SHA-1 truncated to 96 bits is an option
-          available in several IETF protocols, including IPsec and TLS.</t>
-
-          <t>Processing of a truncated MAC follows these rules
-          <list style="numbers">
-            <t>If "MAC size" field is greater than keyed hash output length:
-            <vspace/><vspace/>
-              This case MUST NOT be generated and, if received,
-              MUST cause the DNS message to be dropped and RCODE 1
-              (FORMERR) to be returned.
-            </t>
-            <t>If "MAC size" field equals keyed hash output length:
-            <vspace/><vspace/>
-              The entire output keyed hash output is present and used.
-            </t>
-            <t>"MAC size" field is less than keyed hash output length but
-            greater than that specified in case 4, below:
-            <vspace/><vspace/>
-              This is sent when the signer has truncated the keyed hash
-              output to an allowable length, as described in
-              <xref target="RFC2104"/>, taking initial octets and
-              discarding trailing octets.  TSIG truncation can only be
-              to an integral number of octets.  On receipt of a DNS message
-              with truncation thus indicated, the locally calculated
-              MAC is similarly truncated and only the truncated values
-              are compared for authentication.  The request MAC used
-              when calculating the TSIG MAC for a reply is the
-              truncated request MAC.
-            </t>
-            <t>"MAC size" field is less than the larger of 10 (octets) and half
-            the length of the hash function in use:
-            <vspace/><vspace/>
-              With the exception of certain TSIG error messages
-              described in <xref target="on_error"/>, where it is
-              permitted that the MAC size be zero, this case MUST NOT
-              be generated and, if received, MUST cause the DNS message to
-              be dropped and RCODE 1 (FORMERR) to be returned.
-            </t></list></t>
-          </section>
-
-        </section>
-
-        <section title="Time Check and Error Handling" anchor="time_check">
-          <t>If the server time is outside the time interval specified
-          by the request (which is: Time Signed, plus/minus Fudge),
-          the server MUST generate an error response with RCODE 9
-          (NOTAUTH) and TSIG ERROR 18 (BADTIME).  The server SHOULD
-          also cache the most recent time signed value in a message
-          generated by a key, and SHOULD return BADTIME if a message
-          received later has an earlier time signed value.  A
-          response indicating a BADTIME error MUST be signed by the
-          same key as the request.  It MUST include the client's
-          current time in the time signed field, the server's current
-          time (an unsigned 48-bit integer) in the other data field, and 6 in the
-          other data length field.  This is done so that the client
-          can verify a message with a BADTIME error without the
-          verification failing due to another BADTIME error.  The
-          data signed is specified in <xref target="on_error"/>.
-          The server SHOULD log the error.</t>
-        </section>
-
-        <section title="Truncation Check and Error Handling"
-                 anchor="trunc_check">
-          <t>If a TSIG is received with truncation that is permitted
-          under <xref target="trunc"/> above but the MAC is too short
-          for the local policy in force, an RCODE 9 (NOTAUTH) and TSIG
-          ERROR 22 (BADTRUNC) MUST be returned. The server SHOULD
-          log the error.</t>
-          
-        </section>
       </section>
 
       <section title="Client Processing of Answer">
@@ -829,7 +840,7 @@
         as having a format error and discarded.  The client then
         extracts the TSIG, adjusts the ARCOUNT, and calculates the
         MAC in the same way as the server, applying the
-        same rules to decide if truncated MAC is valid.
+        same rules to decide if the (possibly truncated) MAC is valid.
         If the TSIG
         does not validate, that response MUST be discarded, unless
         the RCODE is 9 (NOTAUTH), in which case the client SHOULD
@@ -842,13 +853,14 @@
         response until the request times out.</t>
 
         <section title="Key Error Handling">
-          <t>If an RCODE on a response is 9 (NOTAUTH), and the
+          <t>If an RCODE on a response is 9 (NOTAUTH), but the
           response TSIG validates, and the TSIG key is different
           from the key used on the request, then this is a Key
           error.  The client MAY retry the request using the key
-          specified by the server.  This should never occur, as a
-          server MUST NOT sign a response with a different key than
-          signed the request.</t>
+          specified by the server.  However, this should never occur,
+          as a
+          server MUST NOT sign a response with a different key to
+          that used to sign the request.</t>
         </section>
 
         <section title="MAC Error Handling">
@@ -924,11 +936,10 @@
         Key agreement can be by the TKEY mechanism <xref target="RFC2930"/>
         or some other mutually agreeable method.</t>
 
-        <t>The current HMAC-MD5.SIG-ALG.REG.INT and gss-tsig
-        <xref target="RFC3645"/> identifiers are included in the table
-        below for convenience.  Implementations that support TSIG MUST
+        <t>Implementations that support TSIG MUST
         also implement HMAC SHA1 and HMAC SHA256 and MAY implement
-        gss-tsig and the other algorithms listed below.</t>
+        gss-tsig and the other algorithms listed below.  SHA-1 truncated
+        to 96 bits (12 octets) SHOULD be implemented.</t>
 
         <texttable style="headers" anchor="allowed_algs">
           <ttcol>Requirement</ttcol>
@@ -942,7 +953,6 @@
           <c>Optional</c>  <c>hmac-sha512</c>
         </texttable>
 
-        <t>SHA-1 truncated to 96 bits (12 octets) SHOULD be implemented.</t>
     </section>
 
     <section title="TSIG Truncation Policy" anchor="trunc_pol">
