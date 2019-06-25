@@ -346,7 +346,8 @@
               MAC Size.  The length of this field is given by the Mac Size.
               Calculation of the MAC is detailed in <xref target="mac_computation"/>.</t>
 
-              <t>Original ID - the message ID of the original request message.
+              <t>Original ID - An unsigned 16-bit integer holding
+              the message ID of the original request message.
               For a TSIG RR on a request, it is set equal to the DNS message ID.
               In a TSIG attached to a response - or in cases such as the
               forwarding of a dynamic update request - the field contains the
