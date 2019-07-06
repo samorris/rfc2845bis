@@ -638,6 +638,15 @@
           addition, the fudge field MUST be set to the fudge value
           received from the client.  The data signed is specified in
           <xref target="on_error"/>.  The server SHOULD log the error.</t>
+
+          <t>Caching the most recent time
+          signed value and rejecting requests with an earlier one could lead
+          to valid messages being rejected if transit through
+          the network led to UDP packets being reordered.  Implementations
+          should be aware of this possibility and prepared to deal with it,
+          e.g. by retransmitting the rejected request with a new TSIG but
+          delaying the sending of it until outstanding requests have completed or
+          until the time given by their time signed plus fudge values has passed.</t>
         </section>
 
         <section title="Truncation Check and Error Handling"
@@ -1269,6 +1278,8 @@
        <t>Make implementation of HMAC-MD5 optional.</t>
        <t>Require that the Fudge field in BADTIME response be equal to the
        Fudge field received from the client.</t>
+       <t>Added comment concerning the handling of BADTIME messages due to out
+       of order packet reception.</t>
      </list></t>
     </section>
 
