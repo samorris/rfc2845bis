@@ -32,7 +32,7 @@
 <?rfc inline="yes" ?>
 
 <!-- includes pre RFC 5378 (2008) material -->
-<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-04"
+<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-05"
      ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
@@ -827,45 +827,48 @@
     </section>
 
     <section title="Algorithms and Identifiers" anchor="algorithm_id">
-        <t>The only message digest algorithm specified in the first
-        version of these specifications <xref target="RFC2845"/> was
-       "HMAC-MD5" (see <xref target="RFC1321"/>, <xref
-        target="RFC2104"/>).  The "HMAC-MD5" algorithm is mandatory to
-        implement for interoperability.</t>
+      <t>The only message digest algorithm specified in the first
+      version of these specifications <xref target="RFC2845"/> was
+      "HMAC-MD5" (see <xref target="RFC1321"/>, <xref target="RFC2104"/>).
+      Although a review of its security <xref target="RFC6151"/> concluded
+      that "it may not be urgent to remove HMAC-MD5 from existing
+      protocols”, with the availability of more secure alternatives the
+      opportunity has been taken to make the implementation of this
+      algorithm optional. </t>
 
-        <t>The use of SHA-1 <xref target="FIPS180-4"/>,
-        <xref target="RFC3174"/>, (which is a 160-bit hash as compared to
-        the 128 bits for MD5), and additional hash algorithms in
-        the SHA family <xref target="FIPS180-4"/>, <xref target="RFC3874"/>,
-        <xref target="RFC6234"/> with 224, 256, 384, and
-        512 bits may be preferred in some cases.  This is because
-        increasingly successful cryptanalytic attacks are being made on the
-        shorter hashes.</t>
+      <t>The use of SHA-1 <xref target="FIPS180-4"/>,
+      <xref target="RFC3174"/>, (which is a 160-bit hash as compared to
+      the 128 bits for MD5), and additional hash algorithms in
+      the SHA family <xref target="FIPS180-4"/>, <xref target="RFC3874"/>,
+      <xref target="RFC6234"/> with 224, 256, 384, and
+      512 bits may be preferred in some cases.  This is because
+      increasingly successful cryptanalytic attacks are being made on the
+      shorter hashes.</t>
 
-        <t>Use of TSIG between two DNS agents is by mutual
-        agreement.  That agreement can include the support of additional
-        algorithms and criteria as to which algorithms and truncations are
-        acceptable, subject to the restriction and guidelines in
-        <xref target="trunc"/> above.
-        Key agreement can be by the TKEY mechanism <xref target="RFC2930"/>
-        or some other mutually agreeable method.</t>
+      <t>Use of TSIG between two DNS agents is by mutual
+      agreement.  That agreement can include the support of additional
+      algorithms and criteria as to which algorithms and truncations are
+      acceptable, subject to the restriction and guidelines in
+      <xref target="trunc"/> above.
+      Key agreement can be by the TKEY mechanism <xref target="RFC2930"/>
+      or some other mutually agreeable method.</t>
 
-        <t>Implementations that support TSIG MUST
-        also implement HMAC SHA1 and HMAC SHA256 and MAY implement
-        gss-tsig and the other algorithms listed below.  SHA-1 truncated
-        to 96 bits (12 octets) SHOULD be implemented.</t>
+      <t>Implementations that support TSIG MUST
+      also implement HMAC SHA1 and HMAC SHA256 and MAY implement
+      gss-tsig and the other algorithms listed below.  SHA-1 truncated
+      to 96 bits (12 octets) SHOULD be implemented.</t>
 
-        <texttable style="headers" anchor="allowed_algs">
-          <ttcol>Requirement</ttcol>
-          <ttcol>Name</ttcol>
-          <c>Mandatory</c> <c>HMAC-MD5.SIG-ALG.REG.INT</c>
-          <c>Optional</c>  <c>gss-tsig</c>
-          <c>Mandatory</c> <c>hmac-sha1</c>
-          <c>Optional</c>  <c>hmac-sha224</c>
-          <c>Mandatory</c> <c>hmac-sha256</c>
-          <c>Optional</c>  <c>hmac-sha384</c>
-          <c>Optional</c>  <c>hmac-sha512</c>
-        </texttable>
+      <texttable style="headers" anchor="allowed_algs">
+        <ttcol>Requirement</ttcol>
+        <ttcol>Name</ttcol>
+        <c>Optional</c> <c>HMAC-MD5.SIG-ALG.REG.INT</c>
+        <c>Optional</c>  <c>gss-tsig</c>
+        <c>Mandatory</c> <c>hmac-sha1</c>
+        <c>Optional</c>  <c>hmac-sha224</c>
+        <c>Mandatory</c> <c>hmac-sha256</c>
+        <c>Optional</c>  <c>hmac-sha384</c>
+        <c>Optional</c>  <c>hmac-sha512</c>
+      </texttable>
 
     </section>
 
@@ -1073,6 +1076,7 @@
       <?rfc include="reference.RFC.2845.xml"?>
       <?rfc include="reference.RFC.3597.xml"?>
       <?rfc include="reference.RFC.4635.xml"?>
+      <?rfc include="reference.RFC.6151.xml"?>
       <?rfc include="reference.RFC.8174.xml"?>
     </references>
     <references title="Informative References">
@@ -1124,7 +1128,7 @@
       <t>Peter van Dijk, Benno Overeinder, Willem Toroop, Ondrej Sury,
       Mukund Sivaraman and Ralph Dolmans participated in the discussions
       that prompted this document.  Mukund Sivaraman and Martin Hoffman
-      made extermely helpful suggestions concerning the structure and
+      made extremely helpful suggestions concerning the structure and
       wording of the updated document.</t>
 
 <!-- If we get the reporter correctly spelled we can try to fix some
@@ -1247,17 +1251,22 @@
      </list></t>
 
      <t>draft-ietf-dnsop-rfc2845bis-04</t>
-      <t><list>
-        <t>Major restructing as a result of comprehensive review by Martin Hoffman.
-        Amongst the more significant changes:
-        <list style="symbols">
-          <t>More comprehensive introduction.</t>
-          <t>Merged "Protocol Description" and "Protocol Details" sections.</t>
-          <t>Reordered sections so as to follow message exchange through "client
-          "sending", "server receipt", "server sending", "client receipt".</t>
-          <t>Added miscellaneous clarifications.</t>
-        </list></t>
-      </list></t>
+     <t><list>
+       <t>Major restructing as a result of comprehensive review by Martin Hoffman.
+       Amongst the more significant changes:
+       <list style="symbols">
+         <t>More comprehensive introduction.</t>
+         <t>Merged "Protocol Description" and "Protocol Details" sections.</t>
+         <t>Reordered sections so as to follow message exchange through "client
+         "sending", "server receipt", "server sending", "client receipt".</t>
+         <t>Added miscellaneous clarifications.</t>
+       </list></t>
+     </list></t>
+
+     <t>draft-ietf-dnsop-rfc2845bis-05</t>
+     <t><list>
+       <t>Make implementation of HMAC-MD5 optional.</t>
+     </list></t>
     </section>
 
   </back>
