@@ -634,9 +634,10 @@
           time (an unsigned 48-bit integer) in the other data field, and 6 in the
           other data length field.  This is done so that the client
           can verify a message with a BADTIME error without the
-          verification failing due to another BADTIME error.  The
-          data signed is specified in <xref target="on_error"/>.
-          The server SHOULD log the error.</t>
+          verification failing due to another BADTIME error.  In
+          addition, the fudge field MUST be set to the fudge value
+          received from the client.  The data signed is specified in
+          <xref target="on_error"/>.  The server SHOULD log the error.</t>
         </section>
 
         <section title="Truncation Check and Error Handling"
@@ -1266,6 +1267,8 @@
      <t>draft-ietf-dnsop-rfc2845bis-05</t>
      <t><list>
        <t>Make implementation of HMAC-MD5 optional.</t>
+       <t>Require that the Fudge field in BADTIME response be equal to the
+       Fudge field received from the client.</t>
      </list></t>
     </section>
 
