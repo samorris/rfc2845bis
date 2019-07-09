@@ -32,7 +32,7 @@
 <?rfc inline="yes" ?>
 
 <!-- includes pre RFC 5378 (2008) material -->
-<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-05"
+<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-06"
      ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
@@ -81,7 +81,7 @@
     </author>
 
     <author fullname="Donald E. Eastlake 3rd" initials="D" surname="Eastlake 3rd">
-      <organization abbrev="Huawei">Huawei Technologies</organization>
+      <organization abbrev="Futurewei">Futurewei Technologies</organization>
       <address>
         <postal>
           <street>155 Beaver Street</street>
@@ -193,7 +193,7 @@
          also includes the MAC of the query as part of the calculation.
          Where a response comprises multiple packets, the calculation of
          the MAC associated with the second and subsequent packets includes in
-         its inputs the MAC for the the preceding packet.
+         its inputs the MAC for the preceding packet.
          In this way it is possible to detect any interruption in the
          packet sequence.</t>
 
@@ -272,16 +272,15 @@
           &lt;id&gt;.B.example.net, and
           &lt;id&gt;.A.site.example.B.example.net.  It should be
           possible for more than one key to be in simultaneous use
-          among a set of interacting hosts.  The name only needs
-          to be meaningful to the communicating hosts but a meaningful
-          mnemonic name as suggested above is strongly recommended.
-          <vspace/><vspace/> The name may be used as a local index
+          among a set of interacting hosts.</t>
+
+          <t>The name may be used as a local index
           to the key involved and it is recommended that it be
           globally unique.  Where a key is just shared between two
           hosts, its name actually need only be meaningful to
           them but it is recommended that the key name be mnemonic
           and incorporates the names of participating agents or
-          resources.</t>
+          resources as suggested above.</t>
 
           <t hangText="TYPE">This MUST be TSIG (250: Transaction SIGnature)</t>
 
@@ -371,7 +370,7 @@
       </section>
       <section title="MAC Computation" anchor="mac_computation">
         <t>When generating or verifying the contents of a TSIG record,
-        the the data listed in the rest of this section are passed,
+        the data listed in the rest of this section are passed,
         in the order listed below, as input to MAC computation.  The
         data are passed in network byte order or wire format,
         as appropriate, and are fed into the hashing function
@@ -541,7 +540,7 @@
 
         <t>If the TSIG RR cannot be understood, the server MUST
         regard the message as corrupt and return a FORMERR to the server.
-        Otherwise the the server is REQUIRED to return a TSIG RR in
+        Otherwise the server is REQUIRED to return a TSIG RR in
         the response.</t>
 
         <t>To validate the received TSIG RR, the server MUST perform the
@@ -719,7 +718,7 @@
         "TSIG timers" comprises the "Time Signed" and "Fudge" fields (in
         that order) pertaining to the message for which the TSIG is being created:
         this means that the successive TSIG records in the stream will have
-        monotonically increasing "Time Signed" fields. Note that only the
+        non-decreasing "Time Signed" fields. Note that only the
         timers are included in the second and subsequent messages, not all
         the TSIG variables.</t>
 
@@ -1149,6 +1148,7 @@
     </section>
 
     <section title="Change History (to be removed before publication)">
+    <t>RFC EDITOR: Please remove this appendix before publication.</t>
 
      <t>draft-dupont-dnsop-rfc2845bis-00</t>
      <t><list>
@@ -1281,6 +1281,11 @@
        Fudge field received from the client.</t>
        <t>Added comment concerning the handling of BADTIME messages due to out
        of order packet reception.</t>
+     </list></t>
+
+     <t>draft-ietf-dnsop-rfc2845bis-06</t>
+     <t><list>
+       <t>Wording changes and minor corrections after feedback.</t>
      </list></t>
     </section>
 
