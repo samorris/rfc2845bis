@@ -639,14 +639,15 @@
           received from the client.  The data signed is specified in
           <xref target="on_error"/>.  The server SHOULD log the error.</t>
 
-          <t>Caching the most recent time
-          signed value and rejecting requests with an earlier one could lead
-          to valid messages being rejected if transit through
-          the network led to UDP packets being reordered.  Implementations
-          should be aware of this possibility and prepared to deal with it,
-          e.g. by retransmitting the rejected request with a new TSIG but
-          delaying the sending of it until outstanding requests have completed or
-          until the time given by their time signed plus fudge values has passed.</t>
+          <t>Caching the most recent time signed value and rejecting
+          requests with an earlier one could lead to valid messages
+          being rejected if transit through the network led to UDP
+          packets arriving in a different order to the one in which
+          they were sent.  Implementations should be aware of
+          this possibility and be prepared to deal with it, e.g. by
+          retransmitting the rejected request with a new TSIG once
+          outstanding requests have completed or the time given by their
+          time signed plus fudge value has passed.</t>
         </section>
 
         <section title="Truncation Check and Error Handling"
@@ -841,7 +842,7 @@
       version of these specifications <xref target="RFC2845"/> was
       "HMAC-MD5" (see <xref target="RFC1321"/>, <xref target="RFC2104"/>).
       Although a review of its security <xref target="RFC6151"/> concluded
-      that "it may not be urgent to remove HMAC-MD5 from existing
+      that "it may not be urgent to remove HMAC-MD5 from the existing
       protocols”, with the availability of more secure alternatives the
       opportunity has been taken to make the implementation of this
       algorithm optional. </t>
@@ -1086,7 +1087,6 @@
       <?rfc include="reference.RFC.2845.xml"?>
       <?rfc include="reference.RFC.3597.xml"?>
       <?rfc include="reference.RFC.4635.xml"?>
-      <?rfc include="reference.RFC.6151.xml"?>
       <?rfc include="reference.RFC.8174.xml"?>
     </references>
     <references title="Informative References">
@@ -1115,6 +1115,7 @@
       <?rfc include="reference.RFC.4034.xml"?>
       <?rfc include="reference.RFC.4035.xml"?>
       <?rfc include="reference.RFC.4086.xml"?>
+      <?rfc include="reference.RFC.6151.xml"?>
       <?rfc include="reference.RFC.6234.xml"?>
       <?rfc include="reference.RFC.6895.xml"?>
       <?rfc include="reference.RFC.8126.xml"?>
