@@ -165,7 +165,7 @@
          shared secret keys to establish a trust relationship between two
          entities.  Such keys must be protected in a manner similar to
          private keys, lest a third party masquerade as one of the intended
-         parties (by forging the MAC).  There is an urgent need to provide simple and
+         parties (by forging the MAC).  There was a need to provide simple and
          efficient authentication between clients and local servers and this
          proposal addresses that need.  The proposal is unsuitable for
          general server to server authentication for servers which speak with
