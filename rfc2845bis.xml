@@ -208,6 +208,12 @@
          were fixed but, to avoid similar problems in the future, the
          two documents were updated and merged, producing this revised
          specification for TSIG.</t>
+
+         <t>While TSIG implemented according to this RFC provides for enhanced
+         security, there are no changes in interoperability. TSIG is on the wire
+         still the same mechanism described in <xref target="RFC2845"/>; only
+         the checking semantics have been changed. See <xref target="issuesfixed"/>
+         for further details.</t>
        </section>
      </section>
 
