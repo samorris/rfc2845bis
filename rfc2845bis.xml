@@ -32,7 +32,7 @@
 <?rfc inline="yes" ?>
 
 <!-- includes pre RFC 5378 (2008) material -->
-<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-06"
+<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-07"
      ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
@@ -84,10 +84,10 @@
       <organization abbrev="Futurewei">Futurewei Technologies</organization>
       <address>
         <postal>
-          <street>155 Beaver Street</street>
-          <city>Milford</city>
-          <region>MA</region>
-          <code>01753</code>
+          <street>2386 Panoramic Circle</street>
+          <city>Apopka</city>
+          <region>FL</region>
+          <code>32703</code>
           <country>United States of America</country>
         </postal>
         <email>d3e3e3@gmail.com</email>
