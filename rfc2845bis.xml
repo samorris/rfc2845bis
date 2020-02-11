@@ -852,14 +852,14 @@
       opportunity has been taken to make the implementation of this
       algorithm optional. </t>
 
-      <t>The use of SHA-1 <xref target="FIPS180-4"/>,
-      <xref target="RFC3174"/>, (which is a 160-bit hash as compared to
-      the 128 bits for MD5), and additional hash algorithms in
-      the SHA family <xref target="FIPS180-4"/>, <xref target="RFC3874"/>,
-      <xref target="RFC6234"/> with 224, 256, 384, and
-      512 bits may be preferred in some cases.  This is because
-      increasingly successful cryptanalytic attacks are being made on the
-      shorter hashes.</t>
+      <t><xref target="RFC4635"/> added mandatory support in TSIG
+      for SHA-1 <xref target="FIPS180-4"/>,  <xref target="RFC3174"/>. 
+      SHA-1 collisions have been demonstrated so the MD5 security
+      considerations apply to SHA-1 in a similar manner.  Although
+      support for hmac-sha1 in TSIG is still mandatory for compatibility
+      reasons, existing uses should be replaced with hmac-sha256 or
+      other SHA-2 digest algorithms <xref target="FIPS180-4"/>, 
+      <xref target="RFC3874"/>, <xref target="RFC6234"/>.</t>
 
       <t>Use of TSIG between two DNS agents is by mutual
       agreement.  That agreement can include the support of additional
@@ -1293,6 +1293,13 @@
      <t><list>
        <t>Wording changes and minor corrections after feedback.</t>
      </list></t>
+
+     <t>draft-ietf-dnsop-rfc2845bis-07</t>
+     <t><list>
+       <t>Updated text about use of hmac-sha1 using suggestion from
+          Tony Finch.</t>
+     </list></t>
+
     </section>
 
   </back>
