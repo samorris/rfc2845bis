@@ -269,10 +269,11 @@
 
         <t><list style="hanging" hangIndent="6">
 
-          <t hangText="NAME">The name of the key used in domain
+          <t hangText="NAME">The name of the key used, in domain
           name syntax.  The name should reflect the names of the
           hosts and uniquely identify the key among a set of keys
-          these two hosts may share at any given time.  If hosts
+          these two hosts may share at any given time.  For example,
+          if hosts
           A.site.example and B.example.net share a key, possibilities
           for the key name include &lt;id&gt;.A.site.example,
           &lt;id&gt;.B.example.net, and
