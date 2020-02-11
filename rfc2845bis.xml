@@ -953,7 +953,7 @@
       <xref target="RFC3645"/>.</t>
 
       <t>New algorithms are assigned using
-      the IETF Consensus policy defined in <xref target="RFC8126"/>.
+      the IETF Review policy defined in <xref target="RFC8126"/>.
       The algorithm name
       HMAC-MD5.SIG-ALG.REG.INT looks like a fully-qualified domain
       name for historical reasons;
@@ -1298,6 +1298,7 @@
      <t><list>
        <t>Updated text about use of hmac-sha1 using suggestion from
           Tony Finch.</t>
+       <t>Corrected name of review policy used for new algorithms.</t>
      </list></t>
 
     </section>
