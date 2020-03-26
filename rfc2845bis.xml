@@ -39,13 +39,13 @@
     <title abbrev="DNS TSIG">Secret Key Transaction Authentication for DNS (TSIG)</title>
 
     <author fullname="Francis Dupont" initials="F" surname="Dupont">
-      <organization abbrev="ISC">Internet Software Consortium</organization>
+      <organization abbrev="ISC">Internet Systems Consortium, Inc.</organization>
       <address>
         <postal>
-          <street>950 Charter Street</street>
-          <city>Redwood City</city>
-          <region>CA</region>
-          <code>94063</code>
+          <street>PO Box 360</street>
+          <city>Newmarket</city>
+          <region>NH</region>
+          <code>03857</code>
           <country>United States of America</country>
         </postal>
         <email>Francis.Dupont@fdupont.fr</email>
@@ -53,13 +53,13 @@
     </author>
 
     <author fullname="Stephen Morris" initials="S" surname="Morris">
-      <organization abbrev="ISC">Internet Software Consortium</organization>
+      <organization abbrev="ISC">Internet Systems Consortium, Inc.</organization>
       <address>
         <postal>
-          <street>950 Charter Street</street>
-          <city>Redwood City</city>
-          <region>CA</region>
-          <code>94063</code>
+          <street>PO Box 360</street>
+          <city>Newmarket</city>
+          <region>NH</region>
+          <code>03857</code>
           <country>United States of America</country>
         </postal>
         <email>sa.morris8@gmail.com</email>
