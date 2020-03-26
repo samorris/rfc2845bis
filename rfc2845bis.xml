@@ -418,19 +418,21 @@
         </section>
 
         <section title="DNS Message">
-          <t>A whole and complete DNS message in wire format. When
-          creating a TSIG, this is the message before
+          <t>The DNS message used in the MAC computation is
+          a whole and complete DNS message in wire format.</t>
+
+          <t>When creating a TSIG, it is the message before
           the TSIG RR has been added to the additional data section
           and before the DNS Message Header's ARCOUNT field has
           been incremented to contain the TSIG RR.</t>
 
-          <t>When verifying
-          an incoming message, this is the message after the TSIG RR
-          and been removed and the ARCOUNT field has been decremented.
-          If the message
-          ID differs from the original message ID, the original
-          message ID is substituted for the message ID.  (This could
-          happen, for example, when forwarding a dynamic update request.)</t>
+          <t>When verifying an incoming message, it is the message after
+          the TSIG RR has been removed and the ARCOUNT field
+          decremented.  If the message ID differs from the original
+          message ID, the original message ID is substituted for the
+          message ID.  (This could happen, for example, when forwarding
+          a dynamic update request.)</t>
+
         </section>
 
         <section title="TSIG Variables">
