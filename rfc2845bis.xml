@@ -204,7 +204,8 @@
          <t>TSIG was originally specified by <xref target="RFC2845"/>.
          In 2017, two nameservers strictly following that document (and
          the related  <xref target="RFC4635"/>) were discovered to have
-         security problems related to this feature.  The implementations
+         security problems related to this feature (<xref target="CVE-2017-3142"/>,
+         <xref target="CVE-2017-3143"/>, <xref target="CVE-2017-11104"/>).  The implementations
          were fixed but, to avoid similar problems in the future, the
          two documents were updated and merged, producing this revised
          specification for TSIG.</t>
@@ -1095,6 +1096,7 @@
       <?rfc include="reference.RFC.4635.xml"?>
       <?rfc include="reference.RFC.8174.xml"?>
     </references>
+
     <references title="Informative References">
 <!--
       <reference anchor="FIPS202" target="">
@@ -1125,7 +1127,34 @@
       <?rfc include="reference.RFC.6234.xml"?>
       <?rfc include="reference.RFC.6895.xml"?>
       <?rfc include="reference.RFC.8126.xml"?>
-    </references>
+      <reference anchor="CVE-2017-3142" target="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-3142">
+        <front>
+          <title>CVE-2017-3142: An error in TSIG authentication can permit unauthorized zone transfers</title>
+          <author>
+            <organization>Common Vulnerabilities and Exposures</organization>
+          </author>
+          <date month="June" year="2017"/>
+        </front>
+      </reference>
+      <reference anchor="CVE-2017-3143" target="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-3143">
+        <front>
+          <title>CVE-2017-3143: An error in TSIG authentication can permit unauthorized dynamic updates</title>
+          <author>
+            <organization>Common Vulnerabilities and Exposures</organization>
+          </author>
+          <date month="June" year="2017"/>
+        </front>
+      </reference>
+      <reference anchor="CVE-2017-11104" target="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11104">
+        <front>
+          <title>CVE-2017-11104: Improper TSIG validity period check can allow TSIG forgery</title>
+          <author>
+            <organization>Common Vulnerabilities and Exposures</organization>
+          </author>
+          <date month="June" year="2017"/>
+        </front>
+      </reference>
+     </references>
 
     <section title="Acknowledgments" anchor="acks">
       <t>This document consolidates and updates the earlier documents
