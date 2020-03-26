@@ -1003,12 +1003,10 @@
       network delays.  The RECOMMENDED value in most situations is 300
       seconds.</t>
 
-      <t>For all of the message authentication code algorithms listed in
-      this document,
-      those producing longer values are believed to be stronger; however,
-      while there have been some arguments that mild truncation can
+      <t>Although the strength of an algorithm determines its security,
+      there have been some arguments that mild truncation can
       strengthen a MAC by reducing the information available to an
-      attacker, excessive truncation clearly weakens authentication by
+      attacker.  However, excessive truncation clearly weakens authentication by
       reducing the number of bits an attacker has to try to break the
       authentication by brute force <xref target="RFC2104"/>.</t>
 
