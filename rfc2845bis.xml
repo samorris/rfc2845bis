@@ -856,14 +856,16 @@
       opportunity has been taken to make the implementation of this
       algorithm optional. </t>
 
-      <t><xref target="RFC4635"/> added mandatory support in TSIG
-      for SHA-1 <xref target="FIPS180-4"/>,  <xref target="RFC3174"/>. 
-      SHA-1 collisions have been demonstrated so the MD5 security
-      considerations apply to SHA-1 in a similar manner.  Although
-      support for hmac-sha1 in TSIG is still mandatory for compatibility
-      reasons, existing uses should be replaced with hmac-sha256 or
-      other SHA-2 digest algorithms <xref target="FIPS180-4"/>, 
-      <xref target="RFC3874"/>, <xref target="RFC6234"/>.</t>
+      <t><xref target="RFC4635"/> added mandatory support in TSIG for
+      SHA-1 <xref target="FIPS180-4"/>,  <xref target="RFC3174"/>.
+      SHA-1 collisions have been demonstrated <xref
+      target="SHA1SHAMBLES"/> so the MD5 security considerations
+      described in section 2 of <xref target="RFC6151"/> apply to SHA-1 in a similar
+      manner.  Although support for hmac-sha1 in TSIG is still mandatory
+      for compatibility reasons, existing uses SHOULD be replaced with
+      hmac-sha256 or other SHA-2 digest algorithms <xref
+      target="FIPS180-4"/>, <xref target="RFC3874"/>, <xref
+      target="RFC6234"/>.</t>
 
       <t>Use of TSIG between two DNS agents is by mutual
       agreement.  That agreement can include the support of additional
@@ -1156,6 +1158,22 @@
           <date month="June" year="2017"/>
         </front>
       </reference>
+      <reference anchor="SHA1SHAMBLES" target="https://eprint.iacr.org/2020/014.pdf">
+        <front>
+          <title>SHA-1 is a Shambles</title>
+          <author surname="Leurent" initials="G"/>
+          <author surname="Peyrin" initials="T"/>
+          <date month="January" year="2020"/>
+        </front>
+      </reference>
+<!--      <reference anchor="TRANCOLL" target="https://eprint.iacr.org/2020/014.pdf">
+        <front>
+          <title>SHA-1 is a Shambles</title>
+          <author surname="Leurent" initials="G"/>
+          <author surname="Peyrin" initials="T"/>
+          <date month="January" year="2016"/>
+        </front>
+      </reference> -->
      </references>
 
     <section title="Acknowledgments" anchor="acks">
