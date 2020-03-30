@@ -161,18 +161,17 @@
         <xref target="RFC4035"/>) does not protect glue records and unsigned
         records unless SIG(0) (transaction signature) is used.</t>
 
-         <t>The authentication mechanism proposed in this document uses
-         shared secret keys to establish a trust relationship between two
-         entities.  Such keys must be protected in a manner similar to
-         private keys, lest a third party masquerade as one of the intended
-         parties (by forging the MAC).  There was a need to provide simple and
-         efficient authentication between clients and local servers and this
-         proposal addresses that need.  The proposal is unsuitable for
-         general server to server authentication for servers which speak with
-         many other servers, since key management would become unwieldy with
-         the number of shared keys going up quadratically. But it is suitable
-         for many resolvers on hosts that only talk to a few recursive
-         servers.</t>
+        <t>The authentication mechanism proposed here provides a
+        simple and efficient authentication between clients and local servers,
+        by using shared secret keys to establish a trust relationship between
+        two entities.  Such keys must be protected in a manner similar to
+        private keys, lest a third party masquerade as one of the intended
+        parties (by forging the MAC).  The proposal is unsuitable for general
+        server to server authentication and for servers which speak with many
+        other servers, since key management would become unwieldy with the
+        number of shared keys going up quadratically. But it is suitable for
+        many resolvers on hosts that only talk to a few recursive servers.</t>
+
        </section>
        <section title="Protocol Overview">
          <t>Secret Key Transaction Authentication makes use of signatures
