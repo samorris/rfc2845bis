@@ -496,7 +496,7 @@
           <t>For each label type, there must be a defined "Canonical
           wire format" that specifies how to express a label in an
           unambiguous way.  For label type 00, this is defined in <xref
-          target="RFC4034"/> Section 6.1.  The use of label types other than
+          target="RFC4034"/> Section 6.2.  The use of label types other than
           00 is not defined for this specification.</t>
 
           <section title="Time Values Used in TSIG Calculations">
