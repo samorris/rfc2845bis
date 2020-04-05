@@ -32,7 +32,7 @@
 <?rfc inline="yes" ?>
 
 <!-- includes pre RFC 5378 (2008) material -->
-<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-07"
+<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-08"
      ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
