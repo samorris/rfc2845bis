@@ -572,7 +572,7 @@
         </section>
 
         <section title="MAC Check and Error Handling">
-          <t>Using the information in the TSIG, the server should verify
+          <t>Using the information in the TSIG, the server MUST verify
           the MAC by doing its own calculation and comparing the result with
           the MAC received. If the MAC fails to
           verify, the server MUST generate an
