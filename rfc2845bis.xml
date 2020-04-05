@@ -367,10 +367,12 @@
               <t>Other Len - an unsigned 16-bit integer specifying the length
               of the "Other Data" field in octets.</t>
 
-               <t>Other Data - this unsigned 48-bit integer field will be empty
+              <t>Other Data - additional data relevant to the TSIG record.
+              This will be empty (i.e. "Other Len" will be zero)
               unless the content of the Error field is BADTIME, in which case it
-              will contain the server's current time as the number of seconds
-              since 00:00 on 1970-01-01 UTC, ignoring leap seconds (see
+              will be a 48-bit unsigned integer containing the server's current
+              time as the number of seconds since 00:00 on 1970-01-01 UTC, ignoring
+              leap seconds (see
               <xref target="time_check"/>).</t>
              </list>
            </t>
