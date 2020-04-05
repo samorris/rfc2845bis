@@ -279,7 +279,9 @@
           &lt;id&gt;.B.example.net, and
           &lt;id&gt;.A.site.example.B.example.net.  It should be
           possible for more than one key to be in simultaneous use
-          among a set of interacting hosts.</t>
+          among a set of interacting hosts. This allows for periodic
+          key rotation as per best operational practices, as well as
+          algorithm agility as indicated by <xref target="BCP201"/>.</t>
 
           <t>The name may be used as a local index
           to the key involved and it is recommended that it be
@@ -1112,6 +1114,18 @@
          <seriesInfo name="FIPS" value="PUB 202"/>
       </reference>
 -->
+      <reference anchor="BCP201" target="https://www.rfc-editor.org/info/bcp201">
+        <front>
+          <title>Guidelines for Cryptographic Algorithm Agility and Selecting Mandatory-to-Implement Algorithms</title>
+          <author initials="R." surname="Housley" fullname="R. Housley">
+             <organization/>
+          </author>
+          <date year="2015" month="November"/>
+        </front>
+        <seriesInfo name="BCP" value="201"/>
+        <seriesInfo name="RFC" value="7696"/>
+        <seriesInfo name="DOI" value="10.17487/RFC7696"/>
+       </reference>
       <?rfc include="reference.RFC.1321.xml"?>
       <?rfc include="reference.RFC.2104.xml"?>
       <?rfc include="reference.RFC.2136.xml"?>
