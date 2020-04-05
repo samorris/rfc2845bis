@@ -194,7 +194,7 @@
          the MAC associated with the second and subsequent packets includes in
          its inputs the MAC for the preceding packet.
          In this way it is possible to detect any interruption in the
-         packet sequence.</t>
+         packet sequence, although not its premature termination.</t>
 
          <t>The MAC is contained in a TSIG resource record included
          in the Additional Section of the DNS message.</t>
