@@ -532,12 +532,6 @@
           <t>DNS Message (request)<vspace/>
              TSIG Variables (request)</t>
         </list></t>
-
-        <t>Note that some older name servers will not accept requests with
-        a nonempty additional data section.  Clients SHOULD only attempt
-        signed transactions with servers who are known to support TSIG and
-        share some algorithm and secret key with the client -- so,
-        this is not a problem in practice.</t>
       </section>
 
       <section title="Server Processing of Request" anchor="request_processing">
