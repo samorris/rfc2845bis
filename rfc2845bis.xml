@@ -761,7 +761,7 @@
              TSIG Variables (response)</t>
         </list></t>
 
-        <t>The reason that the request is not included in this MAC in
+        <t>The reason that the request MAC is not included in this MAC in
         some cases is to make it possible for the client to verify the
         error.  If the error is not a TSIG error the response MUST be
         generated as specified in <xref target="answers"/>.</t>
