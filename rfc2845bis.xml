@@ -709,7 +709,7 @@
               anchor="tcp">
         <t>A zone transfer over a DNS TCP session can include multiple
         DNS messages. Using TSIG on such a connection can protect the
-        connection from hijacking and provide data integrity.  The TSIG
+        connection from attack and provide data integrity.  The TSIG
         MUST be included on all DNS messages in the response.  For backward
         compatibility, a client which receives DNS messages and verifies
         TSIG MUST accept up to 99 intermediary messages without a TSIG.
