@@ -789,7 +789,7 @@
 
         <section title="Key Error Handling">
           <t>If an RCODE on a response is 9 (NOTAUTH), but the
-          response TSIG validates and the TSIG key recognised
+          response TSIG validates and the TSIG key is recognized
           by the client but different from that used on the request,
           then this is a Key
           Error.  The client MAY retry the request using the key
