@@ -852,7 +852,7 @@
       <t>The only message digest algorithm specified in the first
       version of these specifications <xref target="RFC2845"/> was
       "HMAC-MD5" (see <xref target="RFC1321"/>, <xref target="RFC2104"/>).
-      Although a review of its security <xref target="RFC6151"/> concluded
+      Although a review of its security some years ago <xref target="RFC6151"/> concluded
       that "it may not be urgent to remove HMAC-MD5 from the existing
       protocols”, with the availability of more secure alternatives the
       opportunity has been taken to make the implementation of this
