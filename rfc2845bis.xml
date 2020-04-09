@@ -1016,9 +1016,9 @@
       authentication by brute force <xref target="RFC2104"/>.</t>
 
       <t>Significant progress has been made recently in cryptanalysis of hash
-      functions of the types used here.  While the results so far should not affect
-      HMAC, the stronger SHA-1 and SHA-256 algorithms are being made
-      mandatory as a precaution.</t>
+      functions of the types used here.  While the results so far should not
+      affect HMAC, the stronger SHA-256 algorithm is being made mandatory as a
+      precaution.</t>
 
       <t>See also the Security Considerations section of <xref
       target="RFC2104"/> from which the limits on truncation in this
