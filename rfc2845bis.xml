@@ -741,7 +741,7 @@
         enough (as specified above) it SHOULD assume the connection has
         been hijacked and it SHOULD close the connection.  The client SHOULD
         treat this the same way as they would any other interrupted transfer
-        (although the exact behavior is not specified here).</t>
+        (although the exact behavior is not specified).</t>
       </section>
 
       <section title="Generation of TSIG on Error Returns" anchor="on_error">
