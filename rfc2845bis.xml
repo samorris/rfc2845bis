@@ -983,15 +983,16 @@
       a local name server to the user resolver, or between primary and
       secondary nameservers.</t>
 
-       <t>Recommendations for choosing and maintaining secret keys
-      can be found in <xref target="RFC2104"/>.  If the client host
-      has been compromised, the server should suspend the use of all
-      secrets known to that client.  If possible, secrets should be stored
-      in encrypted form.  Secrets should never be transmitted in the clear
-      over any network.  This document does not address the issue on how
-      to distribute secrets except that it mentions the possibilities
-      of manual configuration and the use of TKEY <xref target="RFC2930"/>.
-      Secrets SHOULD NOT be shared by more than two entities.</t>
+      <t>Recommendations for choosing and maintaining secret keys can be found
+      in <xref target="RFC2104"/>.  If the client host has been compromised,
+      the server should suspend the use of all secrets known to that client.
+      If possible, secrets should be stored in encrypted form.  Secrets should
+      never be transmitted in the clear over any network.  This document does
+      not address the issue on how to distribute secrets except that it
+      mentions the possibilities of manual configuration and the use of TKEY
+      <xref target="RFC2930"/>.  Secrets SHOULD NOT be shared by more than two
+      entities; any such additional sharing would allow any party knowing the
+      key to impersonate any other such party to members of the group.</t>
 
       <t>This mechanism does not authenticate source data, only its
       transmission between two parties who share some secret.  The
