@@ -952,10 +952,10 @@
 
     <section title="IANA Considerations">
       <t>IANA maintains a registry of algorithm names to be used as
-       "Algorithm Names" as defined in <xref target="format"/>. Algorithm
+      "Algorithm Names" as defined in <xref target="format"/>. Algorithm
       names are text strings encoded using the syntax of a domain name.  There
-      is no structure required other than names for different algorithms must
-      be unique when compared as DNS names, i.e., comparison is case
+      is no structure to the names, and algorithm names are compared
+      as if they were DNS names, i.e., comparison is case
       insensitive. Previous specifications <xref target="RFC2845"/> and <xref
       target="RFC4635"/> defined values for the HMAC-MD5 and various HMAC-SHA
       algorithms. IANA has also registered "gss-tsig" as an identifier for TSIG
