@@ -201,7 +201,7 @@
        </section>
        <section title="Document History">
          <t>TSIG was originally specified by <xref target="RFC2845"/>.
-         In 2017, two nameservers strictly following that document (and
+         In 2017, two nameserver implementations strictly following that document (and
          the related  <xref target="RFC4635"/>) were discovered to have
          security problems related to this feature (<xref target="CVE-2017-3142"/>,
          <xref target="CVE-2017-3143"/>, <xref target="CVE-2017-11104"/>).  The implementations
