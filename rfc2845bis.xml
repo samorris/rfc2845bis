@@ -967,7 +967,7 @@
       The algorithm name
       HMAC-MD5.SIG-ALG.REG.INT looks like a fully-qualified domain
       name for historical reasons;
-      other algorithm names are simple (i.e., single-component) names.</t>
+      other algorithm names are simple, single-component names.</t>
 
       <t>IANA maintains a registry of RCODES (error codes), including
       "TSIG Error values" to be used for "Error" values as defined in
