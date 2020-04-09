@@ -1097,6 +1097,7 @@
       </reference>
       <?rfc include="reference.RFC.1034.xml"?>
       <?rfc include="reference.RFC.1035.xml"?>
+      <?rfc include="reference.RFC.2104.xml"?>
       <?rfc include="reference.RFC.2119.xml"?>
       <?rfc include="reference.RFC.2845.xml"?>
       <?rfc include="reference.RFC.3597.xml"?>
@@ -1131,7 +1132,6 @@
         <seriesInfo name="DOI" value="10.17487/RFC7696"/>
        </reference>
       <?rfc include="reference.RFC.1321.xml"?>
-      <?rfc include="reference.RFC.2104.xml"?>
       <?rfc include="reference.RFC.2136.xml"?>
       <?rfc include="reference.RFC.2930.xml"?>
       <?rfc include="reference.RFC.3007.xml"?>
