@@ -541,8 +541,8 @@
         or a TSIG record is present
         in any other position, the DNS message is dropped and a response
         with RCODE 1 (FORMERR) MUST be returned.  Upon receipt of
-        a message with exactly one correctly placed TSIG RR, the TSIG RR is
-        copied to a safe location, removed from the DNS Message,
+        a message with exactly one correctly placed TSIG RR, a copy of the
+        TSIG RR is stored, and the TSIG RR is removed from the DNS Message,
         and decremented out of the DNS message header's ARCOUNT.</t>
 
         <t>If the TSIG RR cannot be understood, the server MUST
