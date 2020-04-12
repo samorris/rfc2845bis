@@ -1367,6 +1367,12 @@
        <t>Corrected name of review policy used for new algorithms.</t>
      </list></t>
 
+     <t>draft-ietf-dnsop-rfc2845bis-08</t>
+     <t><list>
+       <t>Addressed comments from IESG review. These can be found at
+       https://datatracker.ietf.org/doc/draft-ietf-dnsop-rfc2845bis/ballot/</t>
+     </list></t>
+
     </section>
 
   </back>
