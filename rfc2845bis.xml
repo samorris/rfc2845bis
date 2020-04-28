@@ -1008,6 +1008,8 @@
       network delays.  The RECOMMENDED value in most situations is 300
       seconds.</t>
 
+      <t>There SHOULD only be one algorithm associated with any given key name.</t>
+
       <t>Although the strength of an algorithm determines its security,
       there have been some arguments that mild truncation can
       strengthen a MAC by reducing the information available to an
