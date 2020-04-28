@@ -881,7 +881,7 @@
       also implement HMAC SHA1 and HMAC SHA256 and MAY implement
       gss-tsig and the other algorithms listed below.  SHA-1 truncated
       to 96 bits (12 octets) SHOULD be implemented.</t>
-
+<!--
       <texttable style="headers" anchor="allowed_algs">
         <ttcol>Requirement</ttcol>
         <ttcol>Name</ttcol>
@@ -895,6 +895,22 @@
         <c>Optional</c>  <c>hmac-sha384</c>
         <c>Optional</c>  <c>hmac-sha512-256</c>
         <c>Optional</c>  <c>hmac-sha512</c>
+      </texttable>
+-->
+      <texttable style="headers" anchor="allowed_algs">
+        <ttcol>Name</ttcol>
+        <ttcol>Implementation</ttcol>
+        <ttcol>Use</ttcol>
+        <c>HMAC-MD5.SIG-ALG.REG.INT</c> <c>MAY</c>  <c>MUST NOT</c>
+        <c>gss-tsig</c>                 <c>MAY</c>  <c>MAY</c>
+        <c>hmac-sha1</c>                <c>MUST</c> <c>NOT RECOMMENDED</c>
+        <c>hmac-sha224</c>              <c>MAY</c>  <c>NOT RECOMMENDED</c>
+        <c>hmac-sha256</c>              <c>MUST</c> <c>RECOMMENDED</c>
+        <c>hmac-sha256-128</c>          <c>MAY</c>  <c>MAY</c>
+        <c>hmac-sha384</c>              <c>MAY</c>  <c>MAY</c>
+        <c>hmac-sha384-192</c>          <c>MAY</c>  <c>MAY</c>
+        <c>hmac-sha512</c>              <c>MAY</c>  <c>MAY</c>
+        <c>hmac-sha512-256</c>          <c>MAY</c>  <c>MAY</c>
       </texttable>
 
     </section>
