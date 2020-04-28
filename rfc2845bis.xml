@@ -562,7 +562,7 @@
 
         <section title="Key Check and Error Handling">
           <t>If a non-forwarding server does not recognize the key
-          or algorithm used by the client (or recognises the algorithm but does
+          or algorithm used by the client (or recognizes the algorithm but does
           not implement it), the server MUST generate an error
           response with RCODE 9 (NOTAUTH) and TSIG ERROR 17 (BADKEY).
           This response MUST be unsigned as specified in <xref target=
@@ -1034,7 +1034,7 @@
          further checks and could use an invalid request MAC in the
          signed reply.</t>
 
-         <t>This document makes it a madatory that the request MAC
+         <t>This document makes it a mandatory that the request MAC
          is considered to be invalid until it has been validated:
          until then, any answer must be unsigned.  For this reason, the
          request MAC is now checked before the TIME value.</t>
@@ -1335,7 +1335,7 @@
 
      <t>draft-ietf-dnsop-rfc2845bis-04</t>
      <t><list>
-       <t>Major restructing as a result of comprehensive review by Martin Hoffman.
+       <t>Major restructuring as a result of comprehensive review by Martin Hoffman.
        Amongst the more significant changes:
        <list style="symbols">
          <t>More comprehensive introduction.</t>
