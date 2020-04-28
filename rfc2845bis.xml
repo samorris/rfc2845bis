@@ -658,7 +658,9 @@
           this possibility and be prepared to deal with it, e.g. by
           retransmitting the rejected request with a new TSIG once
           outstanding requests have completed or the time given by their
-          Time Signed plus fudge value has passed.</t>
+          Time Signed plus fudge value has passed.  If implementations
+          do retry requests in these cases, a limit SHOULD be placed
+          on the maximum number of retries.</t>
         </section>
 
         <section title="Truncation Check and Error Handling"
