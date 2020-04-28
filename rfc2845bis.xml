@@ -162,7 +162,7 @@
         records.</t>
 
         <t>The authentication mechanism proposed here provides a
-        simple and efficient authentication between clients and local servers,
+        simple and efficient authentication between clients and servers,
         by using shared secret keys to establish a trust relationship between
         two entities.  Such keys must be protected in a manner similar to
         private keys, lest a third party masquerade as one of the intended
