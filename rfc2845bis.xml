@@ -1072,41 +1072,49 @@
       </section>
 
       <section title="Why not DNSSEC?">
-         <t>This section from the original document <xref target="RFC2845"/>
-         analyzes DNSSEC in order to justify the introduction of TSIG.</t>
+         <t>These extracts from the original document <xref target="RFC2845"/>
+         analyze DNSSEC in order to justify the introduction of TSIG.
+         The extract has been edited to reference the latest DNSSEC
+         standards.</t>
 
-         <t>"DNS has recently been extended by DNSSEC
-         (<xref target="RFC4033"/>, <xref target="RFC4034"/> and
-         <xref target="RFC4035"/>) to provide for data origin
-         authentication, and public key distribution, all based on
-         public key cryptography and public key based digital
-         signatures.  To be practical, this form of security
-         generally requires extensive local caching of keys and
-         tracing of authentication through multiple keys and
-         signatures to a pre-trusted locally configured key.</t>
+         <t><list style="empty" hangIndent="10">
+           <t>DNS has recently been extended by DNSSEC
+           (<xref target="RFC4033"/>, <xref target="RFC4034"/> and
+           <xref target="RFC4035"/>) to provide for data origin
+           authentication, and public key distribution, all based on
+           public key cryptography and public key based digital
+           signatures.  To be practical, this form of security
+           generally requires extensive local caching of keys and
+           tracing of authentication through multiple keys and
+           signatures to a pre-trusted locally configured key.</t>
 
-         <t>One difficulty with the DNSSEC scheme is that common DNS
-         implementations include simple "stub" resolvers which do not
-         have caches.  Such resolvers typically rely on a caching DNS
-         server on another host.  It is impractical for these stub
-         resolvers to perform general DNSSEC authentication and they
-         would naturally depend on their caching DNS server to
-         perform such services for them.  To do so securely requires
-         secure communication of queries and responses.  DNSSEC
-         provides public key transaction signatures to support this,
-         but such signatures are very expensive computationally to
-         generate.  In general, these require the same complex public
-         key logic that is impractical for stubs.</t>
+           <t>One difficulty with the DNSSEC scheme is that common DNS
+           implementations include simple "stub" resolvers which do not
+           have caches.  Such resolvers typically rely on a caching DNS
+           server on another host.  It is impractical for these stub
+           resolvers to perform general DNSSEC authentication and they
+           would naturally depend on their caching DNS server to
+           perform such services for them.  To do so securely requires
+           secure communication of queries and responses.  DNSSEC
+           provides public key transaction signatures to support this,
+           but such signatures are very expensive computationally to
+           generate.  In general, these require the same complex public
+           key logic that is impractical for stubs.</t>
+         </list></t>
 
-         <t>A second area where use of straight DNSSEC public key
-         based mechanisms may be impractical is authenticating
-         dynamic update <xref target="RFC2136"/> requests. DNSSEC
-         provides for request signatures but with DNSSEC they, like
-         transaction signatures, require computationally expensive
-         public key cryptography and complex authentication logic.
-         Secure Domain Name System Dynamic Update
-         (<xref target="RFC3007"/>) describes how different keys are
-         used in dynamically updated zones."</t>
+         <t>and</t>
+
+         <t><list style="empty" hangIndent="10">
+           <t>A second area where use of straight DNSSEC public key
+           based mechanisms may be impractical is authenticating
+           dynamic update <xref target="RFC2136"/> requests. DNSSEC
+           provides for request signatures but with DNSSEC they, like
+           transaction signatures, require computationally expensive
+           public key cryptography and complex authentication logic.
+           Secure Domain Name System Dynamic Update
+           (<xref target="RFC3007"/>) describes how different keys are
+           used in dynamically updated zones.</t>
+         </list></t>
       </section>
 
     </section>
