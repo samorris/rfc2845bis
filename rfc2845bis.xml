@@ -331,7 +331,7 @@
 
               <t>Algorithm Name - a octet sequence identifying the TSIG algorithm name in
               the domain name syntax. (Allowed names are listed in
-              <xref target="allowed_algs"/>.) The name is stored in the
+              <xref target="allowed-algorithms"/>.) The name is stored in the
               DNS name wire format as described in <xref target="RFC1034"/>.
               As per <xref target="RFC3597"/>, this name MUST NOT be
               compressed.</t>
@@ -443,7 +443,7 @@
           in the TSIG RR.  Adding this data provides further protection against an
           attempt to interfere with the message.</t>
 
-          <texttable style="headers">
+          <texttable style="headers" anchor="tisg-field-names">
             <ttcol>Source</ttcol>
             <ttcol>Field Name</ttcol>
             <ttcol>Notes</ttcol>
@@ -898,7 +898,7 @@
         <c>Optional</c>  <c>hmac-sha512</c>
       </texttable>
 -->
-      <texttable style="headers" anchor="allowed_algs">
+      <texttable style="headers" anchor="allowed-algorithms">
         <ttcol>Name</ttcol>
         <ttcol>Implementation</ttcol>
         <ttcol>Use</ttcol>
@@ -974,10 +974,12 @@
       is no structure to the names, and algorithm names are compared
       as if they were DNS names, i.e., comparison is case
       insensitive. Previous specifications <xref target="RFC2845"/> and <xref
-      target="RFC4635"/> defined values for the HMAC-MD5 and various HMAC-SHA
+      target="RFC4635"/> defined values for the HMAC-MD5 and some HMAC-SHA
       algorithms. IANA has also registered "gss-tsig" as an identifier for TSIG
       authentication where the cryptographic operations are delegated to the
-      Generic Security Service (GSS) <xref target="RFC3645"/>.</t>
+      Generic Security Service (GSS) <xref target="RFC3645"/>.  This document
+      adds to allowed algorithms, and the registry should be updated with the
+      names listed in <xref target="allowed-algorithms"/>.</t>
 
       <t>New algorithms are assigned using
       the IETF Review policy defined in <xref target="RFC8126"/>.
