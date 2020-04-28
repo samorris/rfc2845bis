@@ -709,15 +709,17 @@
         client SHOULD at this point retry the request using TCP
         (as per <xref target="RFC1035"/> 4.2.2).</t>
 
-      <section title="TSIG on Zone Transfer Over a TCP Connection"
+      <section title="TSIG on TCP Connections"
               anchor="tcp">
-        <t>A zone transfer over a DNS TCP session can include multiple
+        <t>A DNS TCP session such as a zone transfer can include multiple
         DNS messages. Using TSIG on such a connection can protect the
         connection from attack and provide data integrity.  The TSIG
         MUST be included on all DNS messages in the response.  For backward
         compatibility, a client which receives DNS messages and verifies
-        TSIG MUST accept up to 99 intermediary messages without a TSIG.
-        The first message is processed as a standard answer
+        TSIG MUST accept up to 99 intermediary messages without a TSIG and
+        MUST verify that both the first and last message contain a TSIG.</t>
+
+        <t>The first message is processed as a standard answer
         (see <xref target="answers"/>) but
         subsequent messages have the following digest components:</t>
 
