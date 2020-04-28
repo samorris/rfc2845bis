@@ -1409,7 +1409,30 @@
      <t>draft-ietf-dnsop-rfc2845bis-08</t>
      <t><list>
        <t>Addressed comments from IESG review. These can be found at
-       https://datatracker.ietf.org/doc/draft-ietf-dnsop-rfc2845bis/ballot/</t>
+       https://datatracker.ietf.org/doc/draft-ietf-dnsop-rfc2845bis/ballot.
+       Significant changes are:
+       <list style="symbols">
+         <t>Added references to CVEs that initiated this draft.</t>
+         <t>Added reference to paper describing SHA1 collisions.</t>
+         <t>Modified some paragraphs to remove language that has not "aged well".</t>
+         <t>Mentioned that multiple keys allows for periodic key rotation.</t>
+         <t>Noted that TSIG detects interruption of packet sequence but not premature termination.</t>
+         <t>Added new algorithms to the algorithm list.</t>
+         <t>Marked hmac-sha224 as NOT RECOMMENDED.</t>
+         <t>Added recommendation that there should only be one algorithm for each key.</t>
+         <t>Added some paragraphs to the security recommendations section.</t>
+       </list></t>
+
+       <t>Other changes:
+       <list style="symbols">
+         <t>Explicity define contents of all fields in TSIG for both requests and responses.</t>
+         <t>Reworked the section on client processing of response to remove ambiguity.</t>
+         <t>Section on TSIG over TCP now mentions zone transfer as an example, rather than the entire section
+            being about zone transfers.</t>
+         <t>Note that quote from RFC2845 in "What is DNSSEC?" section has been edited to
+            refer to the latest standards.</t>
+        </list></t>
+
      </list></t>
 
     </section>
