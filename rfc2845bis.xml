@@ -159,7 +159,7 @@
         including any glue records sent.  The protocol described by DNSSEC
         (<xref target="RFC4033"/>, <xref target="RFC4034"/>,
         <xref target="RFC4035"/>) does not protect glue records and unsigned
-        records unless SIG(0) (transaction signature) is used.</t>
+        records.</t>
 
         <t>The authentication mechanism proposed here provides a
         simple and efficient authentication between clients and local servers,
