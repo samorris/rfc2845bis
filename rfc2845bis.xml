@@ -373,8 +373,8 @@
               unless the content of the Error field is BADTIME, in which case it
               will be a 48-bit unsigned integer containing the server's current
               time as the number of seconds since 00:00 on 1970-01-01 UTC, ignoring
-              leap seconds (see <xref target="time_check"/>). In requests, this
-              MUST be empty.
+              leap seconds (see <xref target="time_check"/>). It presently has no
+              meaning in requests.
               <xref target="time_check"/>).</t>
              </list>
            </t>
