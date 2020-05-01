@@ -387,7 +387,7 @@
         in the order listed below, as input to MAC computation.  The
         data are passed in network byte order or wire format,
         as appropriate, and are fed into the hashing function
-        as a continuous octet sequence with no interfield separator or
+        as a continuous octet sequence with no inter-field separator or
         padding.</t>
 
         <section title="Request MAC">
@@ -859,7 +859,7 @@
       "HMAC-MD5" (see <xref target="RFC1321"/>, <xref target="RFC2104"/>).
       Although a review of its security some years ago <xref target="RFC6151"/> concluded
       that "it may not be urgent to remove HMAC-MD5 from the existing
-      protocols”, with the availability of more secure alternatives the
+      protocols", with the availability of more secure alternatives the
       opportunity has been taken to make the implementation of this
       algorithm optional. </t>
 
@@ -1425,7 +1425,8 @@
 
        <t>Other changes:
        <list style="symbols">
-         <t>Explicity define contents of all fields in TSIG for both requests and responses.</t>
+         <t>Explicitly define contents Error field in requests.  State that "Other Data" currently has no
+            meaning in requests.</t>
          <t>Reworked the section on client processing of response to remove ambiguity.</t>
          <t>Section on TSIG over TCP now mentions zone transfer as an example, rather than the entire section
             being about zone transfers.</t>
