@@ -373,9 +373,8 @@
               unless the content of the Error field is BADTIME, in which case it
               will be a 48-bit unsigned integer containing the server's current
               time as the number of seconds since 00:00 on 1970-01-01 UTC, ignoring
-              leap seconds (see <xref target="time_check"/>). It presently has no
-              meaning in requests.
-              <xref target="time_check"/>).</t>
+              leap seconds (see <xref target="time_check"/>). This document assigns
+              no meaning to its contents in requests.</t>
              </list>
            </t>
         </list></t>
@@ -547,7 +546,7 @@
         TSIG RR is stored, and the TSIG RR is removed from the DNS Message,
         and decremented out of the DNS message header's ARCOUNT.</t>
 
-        <t>If the TSIG RR cannot be understood, the server MUST
+        <t>If the TSIG RR cannot be interpreted, the server MUST
         regard the message as corrupt and return a FORMERR to the server.
         Otherwise the server is REQUIRED to return a TSIG RR in
         the response.</t>
@@ -790,7 +789,8 @@
 
         <t>Regardless of the RCODE, a message containing a TSIG RR that is
         unsigned as specified in <xref target="on_error"/> or which fails
-        verification SHOULD NOT be considered an acceptable response; the
+        verification SHOULD NOT be considered an acceptable response as it
+        may have been spoofed or manipulated. Instead, the
         client SHOULD log an error and continue to wait for a signed response
         until the request times out.</t>
 
@@ -1031,13 +1031,14 @@
       network delays.  The RECOMMENDED value in most situations is 300
       seconds.</t>
 
-      <t>There SHOULD only be one algorithm associated with any given key name.</t>
+      <t>To prevent cross-algorithm attacks, there SHOULD only be one
+      algorithm associated with any given key name.</t>
 
       <t>In several cases where errors are detected, an unsigned error
       message must be returned. This can allow for an attacker to spoof
-      these responses.  <xref target="client_proc_answer"/> recommends
-      to log these as errors and continue to wait for a signed response
-      or until the response times out.</t>
+      or manipulate these responses.  <xref target="client_proc_answer"/>
+      recommends logging these as errors and continuing to wait for a
+      signed response until the request times out.</t>
 
       <t>Although the strength of an algorithm determines its security,
       there have been some arguments that mild truncation can
@@ -1073,9 +1074,8 @@
 
       <section title="Why not DNSSEC?">
          <t>These extracts from the original document <xref target="RFC2845"/>
-         analyze DNSSEC in order to justify the introduction of TSIG.
-         The extract has been edited to reference the latest DNSSEC
-         standards.</t>
+         (updated to reference current standards) analyze DNSSEC in order to
+         justify the introduction of TSIG.</t>
 
          <t><list style="empty" hangIndent="10">
            <t>DNS has recently been extended by DNSSEC
