@@ -32,7 +32,7 @@
 <?rfc inline="yes" ?>
 
 <!-- includes pre RFC 5378 (2008) material -->
-<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-08"
+<rfc category="std" docName="draft-ietf-dnsop-rfc2845bis-09"
      ipr="pre5378Trust200902" obsoletes="2845, 4635" >
 
   <front>
@@ -909,7 +909,7 @@
         <c>HMAC-MD5.SIG-ALG.REG.INT</c> <c>MAY</c>  <c>MUST NOT</c>
         <c>gss-tsig</c>                 <c>MAY</c>  <c>MAY</c>
         <c>hmac-sha1</c>                <c>MUST</c> <c>NOT RECOMMENDED</c>
-        <c>hmac-sha224</c>              <c>MAY</c>  <c>NOT RECOMMENDED</c>
+        <c>hmac-sha224</c>              <c>MAY</c>  <c>MAY</c>
         <c>hmac-sha256</c>              <c>MUST</c> <c>RECOMMENDED</c>
         <c>hmac-sha256-128</c>          <c>MAY</c>  <c>MAY</c>
         <c>hmac-sha384</c>              <c>MAY</c>  <c>MAY</c>
@@ -1433,9 +1433,12 @@
          <t>Note that quote from RFC2845 in "What is DNSSEC?" section has been edited to
             refer to the latest standards.</t>
         </list></t>
-
      </list></t>
 
+     <t>draft-ietf-dnsop-rfc2845bis-09</t>
+     <t><list>
+       <t>Change use of hmac-224 from NOT RECOMMENDED to MAY.</t>
+     </list></t>
     </section>
 
   </back>
